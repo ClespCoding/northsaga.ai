@@ -1,217 +1,284 @@
 import React, { useState } from 'react';
 import { Ship, Compass, BookOpen, Code, Youtube, Share2, Clock, Globe } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default function NorthSagaHome() {
   const [activeSection, setActiveSection] = useState('saga');
 
   const sections = {
-    saga: { icon: Ship, title: 'The Saga', color: 'from-blue-600 to-cyan-500' },
-    tech: { icon: Code, title: 'Tech Journey', color: 'from-purple-600 to-pink-500' },
-    content: { icon: BookOpen, title: 'Content Hub', color: 'from-green-600 to-emerald-500' },
-    connect: { icon: Share2, title: 'Connect', color: 'from-orange-600 to-red-500' }
+    saga: { icon: Ship, title: 'The Saga' },
+    tech: { icon: Code, title: 'Tech Journey' },
+    content: { icon: BookOpen, title: 'Content Hub' },
+    connect: { icon: Share2, title: 'Connect' }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-800 text-white">
+    <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-black/20 backdrop-blur-md z-50 border-b border-white/10">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+      <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="container flex h-14 items-center justify-between">
           <div className="flex items-center space-x-2">
-            <Ship className="w-8 h-8 text-cyan-400" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
-              NorthSaga.ai
-            </span>
+            <Ship className="h-6 w-6 text-primary" />
+            <span className="text-xl font-bold">NorthSaga.ai</span>
           </div>
-          <div className="flex space-x-6">
+          <div className="flex space-x-1">
             {Object.entries(sections).map(([key, section]) => (
-              <button
+              <Button
                 key={key}
+                variant={activeSection === key ? "default" : "ghost"}
+                size="sm"
                 onClick={() => setActiveSection(key)}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-300 ${
-                  activeSection === key 
-                    ? 'bg-white/20 text-white' 
-                    : 'text-gray-300 hover:text-white hover:bg-white/10'
-                }`}
+                className="flex items-center space-x-1"
               >
-                <section.icon className="w-4 h-4" />
-                <span>{section.title}</span>
-              </button>
+                <section.icon className="h-4 w-4" />
+                <span className="hidden sm:inline">{section.title}</span>
+              </Button>
             ))}
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <div className="pt-24 pb-16 px-4">
-        <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-6xl font-bold mb-6 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
-            Where History Meets Technology
+      <section className="container space-y-6 py-8 md:py-12 lg:py-20">
+        <div className="mx-auto flex max-w-4xl flex-col items-center space-y-4 text-center">
+          <h1 className="text-3xl font-bold leading-tight tracking-tighter md:text-5xl lg:text-6xl lg:leading-[1.1]">
+            Where History Meets
+            <span className="text-primary"> Technology</span>
           </h1>
-          <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+          <p className="max-w-2xl text-lg text-muted-foreground sm:text-xl">
             Exploring the North Sea Empire, Hanseatic League, and the digital threads that connect 
             ancient trade routes to modern innovation. Built with AI, deployed with passion.
           </p>
           
-          {/* QR Code Placeholder */}
-          <div className="inline-flex items-center justify-center w-32 h-32 bg-white/10 rounded-xl border-2 border-dashed border-white/30 mb-8">
-            <div className="text-center">
-              <Share2 className="w-8 h-8 mx-auto mb-2 text-gray-400" />
-              <span className="text-sm text-gray-400">QR Code</span>
-              <div className="text-xs text-gray-500 mt-1">Mar-Soc-QR-main</div>
-            </div>
-          </div>
+          {/* QR Code Card */}
+          <Card className="w-40 h-40 flex items-center justify-center">
+            <CardContent className="flex flex-col items-center space-y-2 pt-6">
+              <Share2 className="h-8 w-8 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">QR Code</p>
+              <Badge variant="outline">Mar-Soc-QR-main</Badge>
+            </CardContent>
+          </Card>
         </div>
-      </div>
+      </section>
 
-      {/* Dynamic Content Section */}
-      <div className="max-w-6xl mx-auto px-4 pb-16">
-        <div className={`bg-gradient-to-r ${sections[activeSection].color} p-8 rounded-2xl shadow-2xl`}>
-          {activeSection === 'saga' && (
-            <div className="grid md:grid-cols-2 gap-8">
-              <div>
-                <h2 className="text-3xl font-bold mb-4 flex items-center">
-                  <Ship className="w-8 h-8 mr-3" />
+      {/* Main Content */}
+      <section className="container py-8">
+        <Tabs value={activeSection} onValueChange={setActiveSection} className="w-full">
+          <TabsList className="grid w-full grid-cols-4">
+            {Object.entries(sections).map(([key, section]) => (
+              <TabsTrigger key={key} value={key} className="flex items-center space-x-1">
+                <section.icon className="h-4 w-4" />
+                <span className="hidden sm:inline">{section.title}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+
+          <TabsContent value="saga" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center text-2xl">
+                  <Ship className="mr-3 h-6 w-6" />
                   The North Sea Saga
-                </h2>
-                <p className="text-lg mb-6 text-white/90">
+                </CardTitle>
+                <CardDescription className="text-base">
                   From Viking longships to Hanseatic cogs, explore how maritime networks shaped 
                   European civilization. We trace the digital DNA of ancient trade routes.
-                </p>
-                <div className="space-y-3">
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="grid gap-6 md:grid-cols-2">
+                <div className="space-y-4">
                   <div className="flex items-center space-x-3">
-                    <Clock className="w-5 h-5" />
+                    <Clock className="h-5 w-5 text-muted-foreground" />
                     <span>793 AD - Viking Age Begins</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Globe className="w-5 h-5" />
+                    <Globe className="h-5 w-5 text-muted-foreground" />
                     <span>1200s - Hanseatic League Forms</span>
                   </div>
                   <div className="flex items-center space-x-3">
-                    <Code className="w-5 h-5" />
+                    <Code className="h-5 w-5 text-muted-foreground" />
                     <span>2024 - Digital Reconstruction</span>
                   </div>
                 </div>
-              </div>
-              <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
-                <h3 className="text-xl font-semibold mb-4">Timeline Hub</h3>
-                <div className="space-y-2 text-sm">
-                  <div className="p-2 bg-white/10 rounded">dev-data-timeline-core</div>
-                  <div className="p-2 bg-white/10 rounded">dev-data-blog-chart</div>
-                  <div className="p-2 bg-white/10 rounded">mar-content-timeline</div>
-                </div>
-              </div>
-            </div>
-          )}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Timeline Hub</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <Badge variant="secondary">dev-data-timeline-core</Badge>
+                    <Badge variant="secondary">dev-data-blog-chart</Badge>
+                    <Badge variant="secondary">mar-content-timeline</Badge>
+                  </CardContent>
+                </Card>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-          {activeSection === 'tech' && (
-            <div>
-              <h2 className="text-3xl font-bold mb-4 flex items-center">
-                <Code className="w-8 h-8 mr-3" />
-                Our Tech Journey
-              </h2>
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
-                  <h3 className="text-xl font-semibold mb-3">Development Stack</h3>
-                  <ul className="space-y-2 text-sm">
-                    <li>• Next.js + React</li>
-                    <li>• Vercel Deployment</li>
-                    <li>• AI-Assisted Development</li>
-                    <li>• GitHub Integration</li>
-                  </ul>
-                  <div className="mt-4 text-xs text-white/70">NS-dev-core-stack</div>
-                </div>
-                <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
-                  <h3 className="text-xl font-semibold mb-3">Content Pipeline</h3>
-                  <ul className="space-y-2 text-sm">
-                    <li>• AI Research Assistant</li>
-                    <li>• Automated Blog Generation</li>
-                    <li>• YouTube Shorts</li>
-                    <li>• Social Media QR Codes</li>
-                  </ul>
-                  <div className="mt-4 text-xs text-white/70">NS-content-pipeline</div>
-                </div>
-                <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
-                  <h3 className="text-xl font-semibold mb-3">Monetization</h3>
-                  <ul className="space-y-2 text-sm">
-                    <li>• Affiliate Marketing</li>
-                    <li>• Crypto Integration</li>
-                    <li>• Digital Products</li>
-                    <li>• Consulting Services</li>
-                  </ul>
-                  <div className="mt-4 text-xs text-white/70">NS-commerce-hub</div>
-                </div>
-              </div>
-            </div>
-          )}
+          <TabsContent value="tech" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center text-2xl">
+                  <Code className="mr-3 h-6 w-6" />
+                  Our Tech Journey
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-6 md:grid-cols-3">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Development Stack</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <p className="text-sm">• Next.js + React</p>
+                    <p className="text-sm">• Shadcn/ui Components</p>
+                    <p className="text-sm">• Vercel Deployment</p>
+                    <p className="text-sm">• AI-Assisted Development</p>
+                    <p className="text-sm">• GitHub Integration</p>
+                    <Badge variant="outline" className="mt-2">NS-dev-core-stack</Badge>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Content Pipeline</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <p className="text-sm">• AI Research Assistant</p>
+                    <p className="text-sm">• Automated Blog Generation</p>
+                    <p className="text-sm">• YouTube Shorts</p>
+                    <p className="text-sm">• Social Media QR Codes</p>
+                    <Badge variant="outline" className="mt-2">NS-content-pipeline</Badge>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Monetization</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <p className="text-sm">• Affiliate Marketing</p>
+                    <p className="text-sm">• Crypto Integration</p>
+                    <p className="text-sm">• Digital Products</p>
+                    <p className="text-sm">• Consulting Services</p>
+                    <Badge variant="outline" className="mt-2">NS-commerce-hub</Badge>
+                  </CardContent>
+                </Card>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-          {activeSection === 'content' && (
-            <div>
-              <h2 className="text-3xl font-bold mb-4 flex items-center">
-                <BookOpen className="w-8 h-8 mr-3" />
-                Content Ecosystem
-              </h2>
-              <div className="grid md:grid-cols-2 gap-8">
+          <TabsContent value="content" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center text-2xl">
+                  <BookOpen className="mr-3 h-6 w-6" />
+                  Content Ecosystem
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-6 md:grid-cols-2">
                 <div className="space-y-4">
-                  <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm">
-                    <h3 className="font-semibold mb-2">Blog Series</h3>
-                    <p className="text-sm text-white/90">Deep dives into historical connections and tech implementation</p>
-                    <div className="text-xs text-white/70 mt-2">content-blog-series</div>
-                  </div>
-                  <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm">
-                    <h3 className="font-semibold mb-2">YouTube Shorts</h3>
-                    <p className="text-sm text-white/90">Bite-sized historical insights with QR code CTAs</p>
-                    <div className="text-xs text-white/70 mt-2">mar-soc-yt-shorts</div>
-                  </div>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Blog Series</CardTitle>
+                      <CardDescription>
+                        Deep dives into historical connections and tech implementation
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Badge variant="outline">content-blog-series</Badge>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>YouTube Shorts</CardTitle>
+                      <CardDescription>
+                        Bite-sized historical insights with QR code CTAs
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Badge variant="outline">mar-soc-yt-shorts</Badge>
+                    </CardContent>
+                  </Card>
                 </div>
                 <div className="space-y-4">
-                  <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm">
-                    <h3 className="font-semibold mb-2">Affiliate Hub</h3>
-                    <p className="text-sm text-white/90">Curated historical books and educational resources</p>
-                    <div className="text-xs text-white/70 mt-2">mar-aff-book-hub</div>
-                  </div>
-                  <div className="bg-white/10 rounded-xl p-4 backdrop-blur-sm">
-                    <h3 className="font-semibold mb-2">Interactive Maps</h3>
-                    <p className="text-sm text-white/90">Digital recreation of historical trade routes</p>
-                    <div className="text-xs text-white/70 mt-2">dev-data-maps-interactive</div>
-                  </div>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Affiliate Hub</CardTitle>
+                      <CardDescription>
+                        Curated historical books and educational resources
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Badge variant="outline">mar-aff-book-hub</Badge>
+                    </CardContent>
+                  </Card>
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Interactive Maps</CardTitle>
+                      <CardDescription>
+                        Digital recreation of historical trade routes
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Badge variant="outline">dev-data-maps-interactive</Badge>
+                    </CardContent>
+                  </Card>
                 </div>
-              </div>
-            </div>
-          )}
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-          {activeSection === 'connect' && (
-            <div className="text-center">
-              <h2 className="text-3xl font-bold mb-6 flex items-center justify-center">
-                <Share2 className="w-8 h-8 mr-3" />
-                Connect & Collaborate
-              </h2>
-              <div className="grid md:grid-cols-3 gap-6">
-                <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
-                  <Youtube className="w-12 h-12 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">YouTube</h3>
-                  <p className="text-sm text-white/90">Historical insights meet modern tech</p>
-                </div>
-                <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
-                  <Share2 className="w-12 h-12 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">Social Links</h3>
-                  <p className="text-sm text-white/90">QR codes bridge digital and physical</p>
-                </div>
-                <div className="bg-white/10 rounded-xl p-6 backdrop-blur-sm">
-                  <Compass className="w-12 h-12 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold mb-2">Partnerships</h3>
-                  <p className="text-sm text-white/90">Collaborate with historians and educators</p>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+          <TabsContent value="connect" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-center text-2xl">
+                  <Share2 className="mr-3 h-6 w-6" />
+                  Connect & Collaborate
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="grid gap-6 md:grid-cols-3">
+                <Card className="text-center">
+                  <CardContent className="pt-6">
+                    <Youtube className="mx-auto mb-4 h-12 w-12" />
+                    <CardTitle className="mb-2">YouTube</CardTitle>
+                    <CardDescription>
+                      Historical insights meet modern tech
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+                <Card className="text-center">
+                  <CardContent className="pt-6">
+                    <Share2 className="mx-auto mb-4 h-12 w-12" />
+                    <CardTitle className="mb-2">Social Links</CardTitle>
+                    <CardDescription>
+                      QR codes bridge digital and physical
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+                <Card className="text-center">
+                  <CardContent className="pt-6">
+                    <Compass className="mx-auto mb-4 h-12 w-12" />
+                    <CardTitle className="mb-2">Partnerships</CardTitle>
+                    <CardDescription>
+                      Collaborate with historians and educators
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+      </section>
+
+      <Separator />
 
       {/* Footer */}
-      <footer className="border-t border-white/10 mt-16 py-8">
-        <div className="max-w-6xl mx-auto px-4 text-center text-gray-400">
-          <p>Built with AI assistance • Deployed on Vercel • Open Source Philosophy</p>
-          <p className="text-sm mt-2">Where ancient wisdom meets cutting-edge technology</p>
+      <footer className="py-6 md:py-0">
+        <div className="container flex flex-col items-center justify-center gap-4 md:h-24 md:flex-row">
+          <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
+            Built with AI assistance • Deployed on Vercel • Open Source Philosophy
+          </p>
         </div>
       </footer>
     </div>
