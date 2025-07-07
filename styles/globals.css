@@ -1,50 +1,173 @@
+@import '@fontsource/eb-garamond/400.css';
+@import '@fontsource/eb-garamond/400-italic.css';
+@import '@fontsource/eb-garamond/500.css';
+@import '@fontsource/eb-garamond/600.css';
+@import '@fontsource/cinzel/400.css';
+@import '@fontsource/cinzel/600.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --background: 250 248 243;
+    --foreground: 26 22 17;
+    --card: 250 248 243;
+    --card-foreground: 26 22 17;
+    --popover: 250 248 243;
+    --popover-foreground: 26 22 17;
+    --primary: 92 31 31;
+    --primary-foreground: 250 248 243;
+    --secondary: 184 149 106;
+    --secondary-foreground: 26 22 17;
+    --muted: 240 233 223;
+    --muted-foreground: 61 52 43;
+    --accent: 44 66 81;
+    --accent-foreground: 250 248 243;
+    --destructive: 0 84 60;
+    --destructive-foreground: 250 248 243;
+    --border: 212 184 150;
+    --input: 212 184 150;
+    --ring: 184 149 106;
     --radius: 0.5rem;
   }
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+
+  body {
+    @apply bg-parchment text-ink-black font-garamond leading-golden;
+    background-image: 
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 250px,
+        rgba(92, 31, 31, 0.03) 250px,
+        rgba(92, 31, 31, 0.03) 251px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 250px,
+        rgba(92, 31, 31, 0.02) 250px,
+        rgba(92, 31, 31, 0.02) 251px
+      );
   }
 }
 
-@layer base {
-  * {
-    @apply border-border;
+@layer components {
+  /* Renaissance Typography Components */
+  .drop-cap::first-letter {
+    @apply float-left font-display text-drop-cap leading-[3.5rem] pr-2 -mt-1 text-burgundy;
+    text-shadow: 1px 1px 2px rgba(184, 149, 106, 0.5);
   }
-  body {
-    @apply bg-background text-foreground;
+  
+  .marginalia {
+    @apply absolute -left-32 w-24 text-sm italic text-ink-brown text-right leading-[1.4];
   }
+  
+  .section-divider {
+    @apply text-center my-12 text-merchant-gold text-2xl;
+  }
+  
+  .folio {
+    @apply absolute top-8 right-8 italic text-ink-brown text-sm;
+  }
+
+  /* Your existing navigation styles with Renaissance updates */
+  nav ul {
+    @apply list-none flex p-0 my-4 justify-center;
+  }
+
+  nav ul li {
+    @apply mx-4;
+  }
+
+  nav ul li a {
+    @apply no-underline text-sea-blue font-medium px-2 border-b border-transparent transition-all;
+  }
+
+  nav ul li a:hover, 
+  nav ul li a.active {
+    @apply text-burgundy border-b-2 border-burgundy;
+  }
+
+  /* Blog listing with Renaissance style */
+  .blog-posts {
+    @apply my-8;
+  }
+
+  .blog-post {
+    @apply mb-8 pb-8 border-b border-merchant-gold-light;
+  }
+
+  .blog-post h3 {
+    @apply mb-2 font-display text-2xl;
+  }
+
+  .blog-post h3 a {
+    @apply text-burgundy no-underline transition-colors;
+  }
+
+  .blog-post h3 a:hover {
+    @apply text-sea-blue;
+  }
+
+  .post-meta {
+    @apply text-ink-brown text-sm mb-4 italic;
+  }
+
+  .read-more {
+    @apply inline-block mt-2 text-sea-blue no-underline font-medium border-b border-dotted border-merchant-gold hover:text-burgundy hover:border-solid transition-all;
+  }
+
+  /* Single blog post */
+  .blog-single h2 {
+    @apply text-4xl text-burgundy font-display mb-6;
+  }
+
+  .blog-single h3 {
+    @apply mt-6 text-sea-blue font-display text-2xl;
+  }
+
+  .post-content {
+    @apply leading-golden;
+  }
+
+  .post-content p {
+    @apply mb-6 text-lg text-justify indent-6;
+  }
+
+  .post-navigation {
+    @apply mt-12 pt-4 border-t border-merchant-gold-light;
+  }
+
+  /* Additional Renaissance UI Components */
+  .renaissance-card {
+    @apply bg-parchment/70 border border-merchant-gold-light rounded-lg p-6 shadow-sm;
+  }
+
+  .renaissance-button {
+    @apply bg-burgundy text-parchment px-6 py-2 rounded font-display transition-all hover:bg-sea-blue;
+  }
+
+  .ornament {
+    @apply text-merchant-gold text-center my-8;
+  }
+}
+
+/* Custom scrollbar for Renaissance feel */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--parchment-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--merchant-gold);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--burgundy);
 }
