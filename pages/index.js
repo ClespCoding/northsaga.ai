@@ -23,10 +23,16 @@ export default function Home() {
           </p>
         </header>
 
+        <div className="flex justify-center my-6">
+          <Link href="/blog" className="renaissance-button text-lg px-8 py-3 font-display shadow-lg">
+            Read the Chronicles
+          </Link>
+        </div>
+
         <nav>
           <ul>
             <li><Link href="/" className="active">Home</Link></li>
-            <li><Link href="/chronicle">Chronicle</Link></li>
+            <li><Link href="/blog">Chronicle</Link></li>
             <li><Link href="/tech-codex">Tech Codex</Link></li>
             <li><Link href="/about">About</Link></li>
           </ul>
