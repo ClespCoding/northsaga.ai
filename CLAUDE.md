@@ -1,190 +1,249 @@
 # CLAUDE.md
 
-Guidance for Claude Code and other AI assistants working in this repository.
+Governs all work in this repository. Read it before touching anything.
 
-## Project
+## Provenance of this file
 
-**North Saga** (`northsaga.ai`) — "Where History Meets Technology." A Next.js
-content site about North Sea / Hanseatic League maritime trade networks,
-presented through a hand-built "Renaissance manuscript" visual theme
-(parchment background, drop caps, marginalia, folio numbers).
+This file was written from a brief that described a repository state that did
+not exist yet. There was no `BRAND.md`, no `index.html`, no `css/`, no `js/`
+and no `assets/logo/` — the repo held an unrelated Next.js blog, which was
+deleted and replaced by the current static site.
 
-It is a small, early-stage static content site: a themed homepage plus a
-markdown-backed blog. There is no backend, no database, no API routes, no
-auth, and no test suite.
+Two consequences that matter:
 
-## Commands
+- **There is no `BRAND.md`.** The brief said to defer to it. It does not
+  exist, so this file is the sole source of brand truth. If a `BRAND.md` is
+  added later and the two disagree, `BRAND.md` wins and this file gets
+  corrected.
+- **The logo SVGs in `assets/logo/` are placeholders drawn to a written
+  description, not the real artwork.** See [The mark](#the-mark).
 
-```bash
-npm install       # install dependencies (node_modules is gitignored)
-npm run dev       # dev server on http://localhost:3000
-npm run build     # production build + static prerender (see caveat below)
-npm run start     # serve the production build
-npm run lint      # DO NOT RUN — see below
-```
+## What the business is
 
-**`npm run lint` is not usable.** There is no `.eslintrc*` in the repo, so
-`next lint` drops into an interactive "How would you like to configure
-ESLint?" prompt and hangs a non-interactive shell. `eslint` and
-`eslint-config-next` are in `devDependencies` but were never configured.
-Either skip linting or add an ESLint config first.
+Northsaga installs AI agents into small local businesses and then maintains
+them. The commercial model deliberately mirrors installing a piece of
+equipment into a firm's estate — not a SaaS subscription, not an agency
+retainer.
 
-**`npm run build` currently fails.** See [Known issues](#known-issues). Use it
-as the verification step anyway — it is the only real check in the repo — but
-expect the pre-existing failures described below, and don't assume you caused
-them.
+1. **Survey** — a paid half-day mapping how work actually moves through the
+   business: who does what, where it stalls, what the stall costs. The client
+   keeps the map whether or not they proceed.
+2. **Install** — a single agreed upfront price, stated plainly before
+   commitment, using the framing: *"for what you want, given these cost
+   metrics, that would be X — does that number align with your expectations,
+   or does it shock you?"*
+3. **Maintain** — a monthly fee for monitoring, fixes and tuning, with a named
+   person to ring.
 
-## Layout
+Alongside the agents, Northsaga installs the operating system the agents plug
+into: EOS-inspired job profiles, scorecards, quarterly priorities ("rocks")
+and clear accountability. The agents are the visible part; the operating
+system is what makes them stick.
 
-```
-pages/                 Next.js Pages Router (not App Router)
-  _app.js              Only imports styles/globals.css
-  index.js             Homepage — the Renaissance-themed page
-  blog/index.js        Blog listing
-  blog/[id].js         Blog post, SSG via getStaticPaths/getStaticProps
-  chronicles.js        Tag-filtered listing (currently renders empty)
-  index.js.backup      Dead file — old homepage, not a route
-lib/
-  blog.js              Markdown loading: frontmatter + remark → HTML
-  utils.ts             shadcn `cn()` helper (clsx + tailwind-merge)
-content/blog/*.md      Blog posts; filename (minus .md) is the URL slug
-components/ui/         shadcn/ui primitives — currently unused by any page
-styles/globals.css     The real stylesheet: fonts, CSS vars, design system
-tailwind.config.js     Renaissance palette + fonts + shadcn token wiring
-css                    Dead file — extensionless, superseded by globals.css
-#                      Dead file — empty, created by a stray shell redirect
-```
+Northsaga also still does SEO for local clients, delivered agentically — for
+example scraping property and competitor pricing data across postcodes and
+compiling it by price, age and aspect.
 
-Routes that actually exist: `/`, `/blog`, `/blog/[id]`, `/chronicles`.
+## Ideal client profile
 
-## Stack
+Owner-managed local businesses and trades in **Dulwich and West Norwood, south
+London**, typically 3–30 staff: builders, electricians, plumbers, roofers,
+landscapers, garages, veterinary practices, dental and private clinics, estate
+and lettings agents, independent retailers, professional services.
 
-- **Next.js 14, Pages Router.** Do not add `app/` directory files; the project
-  is entirely Pages Router and `_app.js` is the only shell.
-- **React 18**, no server components (`components.json` sets `"rsc": false`).
-- **Tailwind CSS 3** with `tailwindcss-animate`.
-- **TypeScript is configured but barely used.** `tsconfig.json` has
-  `strict: true` and `allowJs: true`. Every page and `lib/blog.js` is plain
-  JavaScript; only `lib/utils.ts` and `components/ui/*.tsx` are TypeScript.
-  Follow the local convention: new pages in `.js`, new UI components in `.tsx`.
-- **Path alias:** `@/*` → repo root. So `@/lib/utils`, `@/components/ui/button`.
-  Note that the existing pages use relative imports (`../../lib/blog`) instead;
-  both work.
+They are practical, time-poor, sceptical of marketing, and have usually been
+let down by an agency before. Write for that reader.
 
-## Content pipeline
+**Postcodes are unverified.** The site currently hard-codes SE21, SE22, SE24
+and SE27 across the contact section, the footer and the `areaServed` block of
+every page's JSON-LD. Those four match Dulwich Village, East Dulwich, Herne
+Hill and West Norwood, but nobody has confirmed them against the real service
+area, and "and surrounding" was never resolved into a list. Confirm with the
+business and correct all three places together before treating them as fact.
 
-`lib/blog.js` is the whole CMS. It reads `content/blog/*.md` at build time:
+## Brand rules
 
-- `getSortedPostsData()` — frontmatter only, sorted by `date` descending.
-- `getAllPostIds()` — slugs for `getStaticPaths`.
-- `getPostData(id)` — frontmatter plus `contentHtml` rendered by
-  `remark` + `remark-html`, injected with `dangerouslySetInnerHTML`.
+### The mark
 
-Frontmatter fields the pages consume:
+A symmetric arrow that is also the letter **N**, four strokes. The left arm
+mirrors the N's diagonal at exactly the same angle — that mirroring is what
+stops it reading as "1N".
 
-```yaml
----
-title: 'Post Title'
-date: '2024-07-07'          # string; sorted lexicographically, so keep YYYY-MM-DD
-excerpt: 'One-line summary shown on listing pages.'
-tags: ['history', 'technology']
-readTime: 5                 # integer minutes
-author: 'North Saga Team'
----
-```
+**Never redraw it by eye or alter the geometry. Always reference the SVGs in
+`assets/logo/`.**
 
-**Frontmatter gotchas:**
+That rule cannot be honoured yet. No artwork was supplied, so
+`assets/logo/mark.svg` and `assets/logo/mark-draw.svg` were constructed from
+the written description alone: full-height outer verticals plus two diagonals
+meeting at a top apex. It is symmetric and it is four strokes, but the
+proportion, stroke weight and angle are guesses and the N reading is weak.
 
-- The values are single-quoted YAML. A literal apostrophe must be escaped by
-  **doubling it** (`today''s`), not with a backslash (`today\'s`). A backslash
-  breaks the whole document — this is the cause of the current build failure.
-- `date` is compared as a string, never parsed. Non-`YYYY-MM-DD` dates will
-  sort wrong. (`date-fns` is a dependency but nothing imports it.)
-- Adding a `.md` file to `content/blog/` is all that's needed to publish a
-  post; the route is generated automatically. Filename is the slug.
-- There is no draft/unpublished mechanism. Every file in the directory ships.
+Treat the current files as a stand-in, not as reference geometry. Replace them
+with the real artwork, then delete this paragraph. Until then, do not derive
+new lockups, favicons or spacing rules from them — you would be propagating a
+guess.
 
-## Design system
+Never apply a gradient, glow, shadow, outline or containing box to the mark.
 
-The homepage (`pages/index.js`) is the reference implementation of the site's
-intended look. The design system lives in `styles/globals.css` under
-`@layer components`, built from Tailwind `@apply`.
+### The chrome treatment is not the logo
 
-Custom colors (`tailwind.config.js`): `parchment` / `parchment-dark`,
-`ink-black` / `ink-brown`, `burgundy`, `merchant-gold` / `merchant-gold-light`,
-`sea-blue`.
+The faceted metal treatment is reserved for physical and ceremonial use —
+signage, embossed proposal covers, livery. **It must never appear on the
+website.**
 
-Fonts, self-hosted via `@fontsource` imports at the top of `globals.css`:
-`font-garamond` (EB Garamond, body) and `font-display` (Cinzel, headings).
-Also `leading-golden` (1.618) and `text-drop-cap` (4.5rem).
+### Colour
 
-Component classes: `.drop-cap`, `.marginalia`, `.folio`, `.section-divider`,
-`.ornament`, `.renaissance-card`, `.renaissance-button`, `.blog-post`,
-`.post-meta`, `.read-more`, plus bare `nav ul` styling.
+All values live in `css/tokens.css` and are referenced as custom properties.
+**Nothing hard-codes a hex outside that file.**
 
-**Style the way the homepage does.** Use these classes and the named palette
-rather than ad-hoc utilities. The blog pages do not currently follow this —
-they use generic `bg-gradient-to-br from-amber-50 to-orange-50` / white cards
-that predate the theme. Treat that as debt, not as a pattern to copy; if you
-touch a blog page, moving it onto the Renaissance system is welcome.
+| Token | Value | Use |
+| --- | --- | --- |
+| `--ink` | `#0E1A24` | base |
+| `--ink-deep` | `#08111A` | overlays, footer |
+| `--ink-raised` | `#16242F` | panels |
+| `--bone` | `#E9E4D9` | primary type |
+| `--bone-dim` | `#97A1A9` | secondary type |
+| `--paper` | `#EDE9DE` | light sections |
+| `--paper-ink` | `#12202B` | type on light |
+| `--brass` | `#B08D4F` | accent |
+| `--brass-soft` | `#7C6438` | accent on light |
 
-Editorial voice on rendered pages leans archaic on purpose ("Anno Domini
-MMXXV", "Finis coronat opus", ❦ ornaments). Keep it when writing UI copy.
+Brass is **the earned colour**. It marks only things of consequence — a price,
+a section eyebrow, a rule under a heading. It never exceeds roughly 5% of any
+screen. There is no second accent. **No gradients anywhere.**
 
-## Known issues
+### Type
 
-These are pre-existing. Fix them if the task calls for it; otherwise don't be
-surprised by them.
+- **Cormorant Garamond 300** for display, set large and tight.
+- **Archivo 400/500** for body.
+- **Archivo 500 uppercase, `letter-spacing: 0.22em`** for eyebrows, buttons
+  and labels **only** — never for sentences.
+- Sentence case in body copy.
+- **No letter-spaced serif.**
 
-1. **Build fails on `content/blog/technology-behind-history.md`.** Its
-   `excerpt` uses `today\'s` — an invalid backslash escape inside a
-   single-quoted YAML scalar. `gray-matter` throws
-   `YAMLException: can not read a block mapping entry`, which fails
-   prerendering for `/blog`, `/blog/technology-behind-history`, and
-   `/chronicles`. Fix: `today''s`. Note that `lib/blog.js` has no error
-   handling, so one malformed post takes down every page that lists posts.
+### Layout
 
-2. **Dead nav links on the homepage.** `pages/index.js` links to
-   `/tech-codex` and `/about`; neither page exists. Both 404.
+Square corners throughout (`--radius: 0`). Generous whitespace. Hairline rules
+rather than boxes and cards wherever possible. Nothing rounded, nothing
+shadowed.
 
-3. **`/chronicles` always renders empty.** It filters posts for the tag
-   `chronicle`, and no post carries that tag. It is also a near-duplicate of
-   `pages/blog/index.js`.
+### Motion
 
-4. **Homepage post list is hardcoded.** The "Latest Chronicles" section in
-   `pages/index.js` hardcodes two posts in JSX with hand-written dates rather
-   than calling `getSortedPostsData()`. New posts will not appear there.
+**One orchestrated moment only** — the mark draws itself once on load.
+Everything else is a quiet reveal on scroll.
 
-5. **shadcn CSS variables are in the wrong color space.** `globals.css`
-   defines them as space-separated *RGB* (`--background: 250 248 243`) while
-   `tailwind.config.js` consumes them as `hsl(var(--background))`. The values
-   are out of range for HSL and clamp to white. Any shadcn component using
-   `bg-background`, `bg-card`, `text-primary`, etc. will render with wrong
-   colors. Either convert the variables to HSL triples or change the config to
-   `rgb(...)`.
+`prefers-reduced-motion` is respected everywhere, without exception. Do not add
+animation for its own sake; scattered effects make the site read as generated.
 
-6. **`components/ui/*` is unused.** accordion, badge, button, card, separator
-   and tabs are installed but imported by nothing. They will not look right
-   until issue 5 is resolved.
+### Navigation
 
-7. **Cruft to leave alone unless asked:** `pages/index.js.backup`, the
-   extensionless `css` file, and the empty `#` file.
+A full-screen menu overlay in the Mylands style: the panel wipes up over the
+page, oversized Cormorant links rise in with a stagger, the hamburger rotates
+into a cross. **This is a signature element — extend it for new pages, don't
+replace it with a conventional nav bar.**
 
-## Conventions
+### Voice
 
-- Pages Router idioms only — `getStaticProps` / `getStaticPaths`, no
-  `getServerSideProps` anywhere so far, and everything is statically generated.
-- `next/link` for internal navigation, `next/head` for page metadata.
-  Only `pages/index.js` currently sets `<Head>`; adding it to other pages is
-  an improvement.
-- Tailwind utilities inline in JSX; shared patterns promoted to
-  `@layer components` in `globals.css`.
-- No test framework, no CI, no formatter config. Match surrounding style by eye.
+Plain English, spoken to a foreman, not sold to a prospect. Name things
+concretely — "missed-call text-back", never "intelligent engagement
+solutions". Short sentences. Real numbers including prices. State what
+Northsaga will not do as well as what it will.
+
+**Banned outright:** leverage, synergy, seamless, transform, revolutionise,
+unlock, empower, cutting-edge, game-changing, exclamation marks, and any claim
+that cannot be attached to a named client.
+
+**Approved lines:**
+- *New tools. Old standards.* (primary)
+- *Built the old way. Runs the new way.* (headline)
+- *At Northsaga, the technology is new. The way we work isn't.*
+
+### Never use the Smith Barney line
+
+**"We make our money the old-fashioned way. We earn it."** is Smith Barney's
+line from their John Houseman advertisements and remains widely recognised. It
+must never appear on any Northsaga property.
+
+Borrow the cadence — claim, full stop, humbler correction — never the words.
+This prohibition is recorded here so it is not reintroduced later by someone
+who only remembers that the cadence was approved.
+
+### Trust behaviours the site must uphold
+
+These are brand rules, not marketing preferences. Any change that breaks one
+is wrong.
+
+- **Published pricing logic.** The ledger section is the point of the site.
+- **Named humans and real photographs.** No stock imagery, no illustrated
+  characters, and no abstract "AI" visuals — no neural networks, no glowing
+  brains, no blue circuitry.
+- **Proof over promise:** named client, named problem, named number.
+- **No claim ships without a source.** If a figure isn't verified, it doesn't
+  go on the page.
+
+## Technical rules
+
+- Static HTML, CSS and vanilla JS. **No framework, no build step, no
+  dependencies, no npm.** There is deliberately no `package.json`. If a task
+  seems to need a build step, **stop and ask** rather than introducing one.
+- `css/tokens.css` is the single source of design values. `css/site.css` holds
+  layout and components and references tokens only.
+- **Surfaces flip tokens, components don't know which surface they are on.**
+  `body` sets `--dim`, `--accent`, `--hairline`, `--hairline-strong` and
+  `--accent-hairline` for the dark base; `.section--paper` redeclares the same
+  five. Components reference those, never `--bone-dim` or `--brass` directly.
+  Writing a `.section--paper .thing { color: … }` override means you reached
+  for the wrong token. This is not cosmetic: `--bone-dim` on `--paper` is
+  2.2:1 and fails WCAG AA, which is how the pattern was introduced.
+- **Watch selector specificity, particularly section padding.** Class-based and
+  element-based selectors have cancelled each other out here before. Section
+  padding is set by `.section` only — never add a bare `section { padding }`
+  rule.
+- No `localStorage`. No third-party analytics or trackers without explicit
+  instruction.
+- Fonts currently load from Google Fonts. Self-hosting them in `assets/fonts/`
+  is a desirable future change.
+- **Accessibility floor, non-negotiable:** responsive to 390px with no
+  horizontal overflow, visible keyboard focus, semantic landmarks, alt text,
+  reduced motion respected.
+- Deployment is Vercel from `main`, no build command, output directory root.
+  `vercel.json` holds caching and security headers.
+
+### Adding a page
+
+1. Duplicate the header, menu and footer blocks **exactly**.
+2. Add the page to `.menu-nav` in every existing page.
+3. Add the page to `sitemap.xml`.
+4. Copy the `LocalBusiness` JSON-LD block.
+
+`cleanUrls` is enabled, so `case-studies.html` serves at `/case-studies`.
+Cross-page links omit the extension; in-page anchors from a subpage point at
+`/#anchor`.
+
+## Placeholders
+
+Unknown content is marked with `class="is-placeholder"`, which renders a
+visible brass `PLACEHOLDER — REPLACE` tag in the browser. This is intentional:
+an unfilled placeholder should be impossible to ship by accident.
+
+**The ledger prices are the highest-priority content gap.** A page headed
+"most agencies will not print this" above a row of `£000` actively undermines
+the brand — it fails the published-pricing trust behaviour at exactly the
+moment it draws attention to it. Fill those three numbers before the site goes
+in front of anyone.
+
+Remaining gaps, in priority order: ledger prices; the two proof cards on the
+homepage; both case studies in full; the founder biography and photograph;
+contact details, address, telephone and opening hours; the service-area
+postcodes.
+
+The two case studies name real companies — **Broadland Products** and
+**Telemechry**. No detail, figure, quote or outcome for either has been
+supplied. **Do not invent any.** Every fact on that page is a placeholder
+until the business provides it.
 
 ## Git
 
 - Default branch: `main`.
-- Commit messages in this repo are short, imperative, single-line
-  (e.g. "Add blog pages", "Fix 'Read the Chronicles' button to go to /blog").
-  Match that.
-- Do not commit `node_modules/`, `.next/`, or `.vercel` — all gitignored.
+- Commit messages are short, imperative, single-line.
+- Do not commit `.vercel/` or OS cruft.
