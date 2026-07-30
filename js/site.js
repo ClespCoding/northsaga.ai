@@ -1,125 +1,72 @@
-/* site.js — vanilla, no dependencies, no build step.
-
-   Three jobs:
-     1. the full-screen menu overlay
-     2. the mark drawing itself once on load (the site's only orchestrated moment)
-     3. quiet reveals on scroll
-
-   prefers-reduced-motion is honoured in CSS; JS only avoids adding work. */
+/* Northsaga — site behaviour.
+   Three jobs only: the menu, the header state, and the scroll reveal. */
 
 (function () {
-  "use strict";
+  'use strict';
 
-  var root = document.documentElement;
-  root.classList.add("js");
+  var body = document.body;
+  var toggle = document.getElementById('menuToggle');
+  var menu = document.getElementById('menu');
+  var header = document.getElementById('siteHeader');
 
-  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-
-  /* ------------------------------------------------------------- menu -- */
-
-  var toggle = document.querySelector("[data-menu-toggle]");
-  var menu = document.getElementById("menu");
+  /* ---- Full-screen menu ---- */
+  function setMenu(open) {
+    body.dataset.menu = open ? 'open' : 'closed';
+    toggle.setAttribute('aria-expanded', String(open));
+    var label = toggle.querySelector('.menu-label');
+    if (label) label.textContent = open ? 'Close' : 'Menu';
+    body.style.overflow = open ? 'hidden' : '';
+  }
 
   if (toggle && menu) {
-    var lastFocus = null;
-
-    var focusables = function () {
-      return menu.querySelectorAll('a[href], button:not([disabled])');
-    };
-
-    var setMenu = function (open) {
-      menu.setAttribute("data-open", open ? "true" : "false");
-      menu.setAttribute("aria-hidden", open ? "false" : "true");
-      toggle.setAttribute("aria-expanded", open ? "true" : "false");
-      toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
-      root.classList.toggle("is-menu-open", open);
-      document.body.style.overflow = open ? "hidden" : "";
-
-      if (open) {
-        lastFocus = document.activeElement;
-        var first = focusables()[0];
-        if (first) first.focus();
-      } else if (lastFocus) {
-        lastFocus.focus();
-        lastFocus = null;
-      }
-    };
-
-    var isOpen = function () {
-      return menu.getAttribute("data-open") === "true";
-    };
-
-    toggle.addEventListener("click", function () {
-      setMenu(!isOpen());
-    });
-
-    /* Follow a link, then close — cleanUrls means same-page anchors need the
-       overlay out of the way before the scroll happens. */
-    menu.addEventListener("click", function (e) {
-      if (e.target.closest("a")) setMenu(false);
-    });
-
-    document.addEventListener("keydown", function (e) {
-      if (!isOpen()) return;
-
-      if (e.key === "Escape") {
-        setMenu(false);
-        return;
-      }
-
-      if (e.key !== "Tab") return;
-
-      var items = focusables();
-      if (!items.length) return;
-
-      var first = items[0];
-      var last = items[items.length - 1];
-
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault();
-        last.focus();
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault();
-        first.focus();
-      }
-    });
-
     setMenu(false);
-  }
+    toggle.addEventListener('click', function () {
+      setMenu(body.dataset.menu !== 'open');
+    });
 
-  /* ------------------------------------------------------------- mark -- */
-  /* The one orchestrated moment. Fires once, on load, and never again. */
-
-  var mark = document.querySelector("[data-mark]");
-  if (mark && !reduced.matches) {
-    requestAnimationFrame(function () {
-      mark.classList.add("mark--draw");
+    /* Close on link click and on Escape */
+    menu.addEventListener('click', function (e) {
+      if (e.target.closest('a')) setMenu(false);
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && body.dataset.menu === 'open') {
+        setMenu(false);
+        toggle.focus();
+      }
     });
   }
 
-  /* ----------------------------------------------------------- reveal -- */
-
-  var reveals = document.querySelectorAll(".reveal");
-
-  if (!reveals.length) return;
-
-  if (reduced.matches || !("IntersectionObserver" in window)) {
-    for (var i = 0; i < reveals.length; i++) reveals[i].classList.add("is-in");
-    return;
+  /* ---- Header background once scrolled off the hero ---- */
+  if (header) {
+    var onScroll = function () {
+      header.dataset.scrolled = window.scrollY > 40 ? 'true' : 'false';
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
   }
 
-  var observer = new IntersectionObserver(
-    function (entries) {
+  /* ---- Scroll reveal (skipped entirely if reduced motion is requested) ---- */
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var items = document.querySelectorAll('.reveal');
+
+  if (reduced || !('IntersectionObserver' in window)) {
+    items.forEach(function (el) { el.classList.add('is-in'); });
+  } else {
+    var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
-        entry.target.classList.add("is-in");
-        observer.unobserve(entry.target);
+        entry.target.classList.add('is-in');
+        io.unobserve(entry.target);
       });
-    },
-    { rootMargin: "0px 0px -12% 0px", threshold: 0.08 }
-  );
+    }, { rootMargin: '0px 0px -12% 0px' });
 
-  reveals.forEach(function (el) {
-    observer.observe(el);
-  });
+    items.forEach(function (el, i) {
+      el.style.transitionDelay = (i % 6) * 60 + 'ms';
+      io.observe(el);
+    });
+  }
+
+  /* ---- Footer year ---- */
+  var year = document.getElementById('year');
+  if (year) year.textContent = new Date().getFullYear();
 })();

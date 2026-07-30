@@ -1,29 +1,19 @@
 # CLAUDE.md
 
-Governs all work in this repository. Read it before touching anything.
+Governs all work in this repository. Read it, and `BRAND.md`, before touching
+anything.
 
-## Provenance of this file
+## Precedence
 
-This file was written from a brief that described a repository state that did
-not exist yet. There was no `BRAND.md`, no `index.html`, no `css/`, no `js/`
-and no `assets/logo/` — the repo held an unrelated Next.js blog, which was
-deleted and replaced by the current static site.
-
-Two consequences that matter:
-
-- **There is no `BRAND.md`.** The brief said to defer to it. It does not
-  exist, so this file is the sole source of brand truth. If a `BRAND.md` is
-  added later and the two disagree, `BRAND.md` wins and this file gets
-  corrected.
-- **The logo SVGs in `assets/logo/` are placeholders drawn to a written
-  description, not the real artwork.** See [The mark](#the-mark).
+**`BRAND.md` is the source of brand truth.** This file adds the operational
+detail — repo layout, conventions, what is unfinished — and never contradicts
+it. If the two ever disagree, `BRAND.md` wins and this file gets corrected.
 
 ## What the business is
 
-Northsaga installs AI agents into small local businesses and then maintains
-them. The commercial model deliberately mirrors installing a piece of
-equipment into a firm's estate — not a SaaS subscription, not an agency
-retainer.
+Northsaga installs AI agents into small businesses and then maintains them. The
+commercial model deliberately mirrors installing a piece of equipment into a
+firm's estate — not a SaaS subscription, not an agency retainer.
 
 1. **Survey** — a paid half-day mapping how work actually moves through the
    business: who does what, where it stalls, what the stall costs. The client
@@ -42,7 +32,8 @@ system is what makes them stick.
 
 Northsaga also still does SEO for local clients, delivered agentically — for
 example scraping property and competitor pricing data across postcodes and
-compiling it by price, age and aspect.
+compiling it by price, age and aspect. On the site this is the "price and
+patch watch" item.
 
 ## Ideal client profile
 
@@ -54,100 +45,116 @@ and lettings agents, independent retailers, professional services.
 They are practical, time-poor, sceptical of marketing, and have usually been
 let down by an agency before. Write for that reader.
 
-**Postcodes are unverified.** The site currently hard-codes SE21, SE22, SE24
-and SE27 across the contact section, the footer and the `areaServed` block of
-every page's JSON-LD. Those four match Dulwich Village, East Dulwich, Herne
+**The postcodes are unverified.** SE21, SE22, SE24 and SE27 are hard-coded in
+**three places** — the contact section, the footer, and the `areaServed` block
+of the JSON-LD on every page. They match Dulwich Village, East Dulwich, Herne
 Hill and West Norwood, but nobody has confirmed them against the real service
 area, and "and surrounding" was never resolved into a list. Confirm with the
-business and correct all three places together before treating them as fact.
+business and correct all three places together.
 
-## Brand rules
+## The mark
 
-### The mark
+See `BRAND.md` §2 for the rules. The operational points:
 
-A symmetric arrow that is also the letter **N**, four strokes. The left arm
-mirrors the N's diagonal at exactly the same angle — that mirroring is what
-stops it reading as "1N".
+**Never redraw it by eye. Always reference `assets/logo/`.** The geometry is
+four strokes, and it is exact:
 
-**Never redraw it by eye or alter the geometry. Always reference the SVGs in
-`assets/logo/`.**
+| Stroke | Path |
+| --- | --- |
+| Left arm | `M 0 -160 L -70 -32` |
+| Left stem | `M 0 -160 L 0 160` |
+| N diagonal | `M 0 -160 L 175 160` |
+| Right stem | `M 175 -160 L 175 160` |
 
-That rule cannot be honoured yet. No artwork was supplied, so
-`assets/logo/mark.svg` and `assets/logo/mark-draw.svg` were constructed from
-the written description alone: full-height outer verticals plus two diagonals
-meeting at a top apex. It is symmetric and it is four strokes, but the
-proportion, stroke weight and angle are guesses and the N reading is weak.
+All three of the N's strokes meet at a single apex, `0 -160`. The left arm
+projects up-left from that same apex.
 
-Treat the current files as a stand-in, not as reference geometry. Replace them
-with the real artwork, then delete this paragraph. Until then, do not derive
-new lockups, favicons or spacing rules from them — you would be propagating a
-guess.
+The mirror is exact and load-bearing: the arm is `(-70, 128)` and the diagonal
+is `(175, 320)`, both `|dx/dy| = 0.546875` — 118.673° and 61.327°. **That
+equality is what stops the mark reading as "1N".** If you ever regenerate or
+rescale the artwork, check that ratio still holds.
 
-Never apply a gradient, glow, shadow, outline or containing box to the mark.
+Files, per `BRAND.md`:
 
-### The chrome treatment is not the logo
+| File | Use |
+| --- | --- |
+| `northsaga-mark-bone.svg` | Default, on dark |
+| `northsaga-mark-ink.svg` | On paper and light grounds |
+| `northsaga-mark-brass.svg` | Sparingly — stamps, seals, embossing |
+| `northsaga-lockup-bone.svg` | Horizontal lockup, on dark |
+| `northsaga-lockup-ink.svg` | Horizontal lockup, on light |
 
-The faceted metal treatment is reserved for physical and ceremonial use —
-signage, embossed proposal covers, livery. **It must never appear on the
-website.**
+The header and hero inline the mark's four paths directly in the HTML rather
+than linking the SVG file, because the hero strokes have to be animated and
+the header has to inherit `currentColor`. **That means the geometry is
+duplicated in every page.** If it ever changes, change `assets/logo/` first,
+then propagate to the header and hero block of every page.
 
-### Colour
+- Clear space: at least the width of the left arm on all sides.
+- Minimum size: 20px on screen, 8mm in print. Below that use the favicon crop.
+- Never a gradient, glow, shadow, outline or containing box.
+- **The chrome/faceted treatment is not the logo** and must never appear on
+  the website.
 
-All values live in `css/tokens.css` and are referenced as custom properties.
-**Nothing hard-codes a hex outside that file.**
+**The logo SVGs contain live text** for the "orthsaga" wordmark, so they need
+Cormorant Garamond installed to render correctly outside the site. Convert the
+text to outlines before sending anything to a printer or signwriter.
 
-| Token | Value | Use |
-| --- | --- | --- |
-| `--ink` | `#0E1A24` | base |
-| `--ink-deep` | `#08111A` | overlays, footer |
-| `--ink-raised` | `#16242F` | panels |
-| `--bone` | `#E9E4D9` | primary type |
-| `--bone-dim` | `#97A1A9` | secondary type |
-| `--paper` | `#EDE9DE` | light sections |
-| `--paper-ink` | `#12202B` | type on light |
-| `--brass` | `#B08D4F` | accent |
-| `--brass-soft` | `#7C6438` | accent on light |
+The same caveat applies to `assets/og-image.svg`. `assets/og-image.png` is
+generated from it and **must be rendered by a browser with the webfonts
+loaded** — rendering it with cairosvg falls back to a wide sans, and the
+headline overflows the 1200px canvas and gets cut off.
 
-Brass is **the earned colour**. It marks only things of consequence — a price,
-a section eyebrow, a rule under a heading. It never exceeds roughly 5% of any
-screen. There is no second accent. **No gradients anywhere.**
+## Colour, type, layout
 
-### Type
+All in `BRAND.md` §3 and §4. Operationally:
 
-- **Cormorant Garamond 300** for display, set large and tight.
-- **Archivo 400/500** for body.
-- **Archivo 500 uppercase, `letter-spacing: 0.22em`** for eyebrows, buttons
-  and labels **only** — never for sentences.
-- Sentence case in body copy.
-- **No letter-spaced serif.**
+- **Every value lives in `css/tokens.css`.** Nothing hard-codes a hex anywhere
+  else. `css/site.css` references tokens only.
+- Brass is **the earned colour** — a price, a section eyebrow, a rule under a
+  heading. Never more than roughly 5% of a screen. There is no second accent,
+  and no gradients.
+- Cormorant Garamond 300 for display, set large and tight. Archivo 400/500 for
+  body. Archivo 500 uppercase at `--tracking-eyebrow` (0.22em) for eyebrows,
+  buttons and labels **only** — never sentences. No letter-spaced serif.
+- Square corners throughout (`--radius: 0`). Hairline rules rather than boxes
+  and cards wherever possible.
 
-### Layout
+**One known tension with `BRAND.md`.** §3 says brass is "never a background,
+never a fill", but `site.css` uses a brass fill in two places: `.btn:hover`
+and the `.is-placeholder::after` tag. Both look deliberate and both are tiny,
+so they have been left alone — but they are exceptions to a rule stated
+absolutely. Raise it with the business rather than quietly extending the
+pattern.
 
-Square corners throughout (`--radius: 0`). Generous whitespace. Hairline rules
-rather than boxes and cards wherever possible. Nothing rounded, nothing
-shadowed.
+## Motion
 
-### Motion
+**One orchestrated moment only** — the mark draws itself once on load, four
+strokes, about a second. Everything else is a quiet reveal on scroll
+(`.reveal` → `.is-in`).
 
-**One orchestrated moment only** — the mark draws itself once on load.
-Everything else is a quiet reveal on scroll.
+`prefers-reduced-motion` is respected everywhere, without exception. Do not
+add animation for its own sake; scattered effects make the site read as
+generated.
 
-`prefers-reduced-motion` is respected everywhere, without exception. Do not add
-animation for its own sake; scattered effects make the site read as generated.
-
-### Navigation
+## Navigation
 
 A full-screen menu overlay in the Mylands style: the panel wipes up over the
-page, oversized Cormorant links rise in with a stagger, the hamburger rotates
-into a cross. **This is a signature element — extend it for new pages, don't
-replace it with a conventional nav bar.**
+page via `clip-path`, oversized Cormorant links rise in with a stagger, the
+two-rule hamburger rotates into a cross. **This is a signature element —
+extend it for new pages, don't replace it with a conventional nav bar.**
 
-### Voice
+The stagger is per-item CSS in `site.css`
+(`body[data-menu="open"] .menu-nav li:nth-child(N) a`). **Adding a menu item
+means adding an `nth-child` delay**, or the new item snaps in with no stagger.
+There are currently six.
 
-Plain English, spoken to a foreman, not sold to a prospect. Name things
-concretely — "missed-call text-back", never "intelligent engagement
-solutions". Short sentences. Real numbers including prices. State what
-Northsaga will not do as well as what it will.
+## Voice
+
+`BRAND.md` §6 is authoritative. The short version: plain English, spoken to a
+foreman, not sold to a prospect. Name things concretely — "missed-call
+text-back", never "intelligent engagement solutions". Short sentences. Real
+numbers including prices. Say what Northsaga will not do.
 
 **Banned outright:** leverage, synergy, seamless, transform, revolutionise,
 unlock, empower, cutting-edge, game-changing, exclamation marks, and any claim
@@ -156,63 +163,61 @@ that cannot be attached to a named client.
 **Approved lines:**
 - *New tools. Old standards.* (primary)
 - *Built the old way. Runs the new way.* (headline)
-- *At Northsaga, the technology is new. The way we work isn't.*
+- *At Northsaga, the technology is new. The way we work isn't.* (long form)
+- *We don't sell AI. We earn the right to install it.* (sparingly — strong but
+  boastful)
 
 ### Never use the Smith Barney line
 
 **"We make our money the old-fashioned way. We earn it."** is Smith Barney's
-line from their John Houseman advertisements and remains widely recognised. It
-must never appear on any Northsaga property.
+line from their John Houseman advertisements (c. 1980) and remains widely
+recognised. It must never appear on any Northsaga property.
 
 Borrow the cadence — claim, full stop, humbler correction — never the words.
-This prohibition is recorded here so it is not reintroduced later by someone
-who only remembers that the cadence was approved.
+Recorded here so it is not reintroduced later by someone who only remembers
+that the cadence was approved.
 
 ### Trust behaviours the site must uphold
 
-These are brand rules, not marketing preferences. Any change that breaks one
-is wrong.
+`BRAND.md` §7. These are brand rules, not marketing preferences. Any change
+that breaks one is wrong.
 
-- **Published pricing logic.** The ledger section is the point of the site.
-- **Named humans and real photographs.** No stock imagery, no illustrated
-  characters, and no abstract "AI" visuals — no neural networks, no glowing
-  brains, no blue circuitry.
-- **Proof over promise:** named client, named problem, named number.
-- **No claim ships without a source.** If a figure isn't verified, it doesn't
-  go on the page.
+1. **Named humans and real photographs.** No stock imagery, no illustrated
+   characters, no abstract "AI" visuals — no neural networks, no glowing
+   brains, no blue circuitry.
+2. **Published pricing logic.** The ledger section is the point of the site.
+3. **Proof over promise:** named client, named problem, named number.
+4. **Plain English everywhere**, including invoices and error messages.
+5. **Hand-over on request.** If a client wants to take it in-house, they can,
+   and the site says so publicly. The ledger note carries this — don't quietly
+   drop it.
 
 ## Technical rules
 
 - Static HTML, CSS and vanilla JS. **No framework, no build step, no
   dependencies, no npm.** There is deliberately no `package.json`. If a task
-  seems to need a build step, **stop and ask** rather than introducing one.
-- `css/tokens.css` is the single source of design values. `css/site.css` holds
-  layout and components and references tokens only.
-- **Surfaces flip tokens, components don't know which surface they are on.**
-  `body` sets `--dim`, `--accent`, `--hairline`, `--hairline-strong` and
-  `--accent-hairline` for the dark base; `.section--paper` redeclares the same
-  five. Components reference those, never `--bone-dim` or `--brass` directly.
-  Writing a `.section--paper .thing { color: … }` override means you reached
-  for the wrong token. This is not cosmetic: `--bone-dim` on `--paper` is
-  2.2:1 and fails WCAG AA, which is how the pattern was introduced.
-- **Watch selector specificity, particularly section padding.** Class-based and
-  element-based selectors have cancelled each other out here before. Section
-  padding is set by `.section` only — never add a bare `section { padding }`
-  rule.
+  seems to need a build step, **stop and ask**.
+- `css/tokens.css` is the single source of design values; `css/site.css` holds
+  layout and components.
+- **Watch selector specificity, particularly section padding.** Class-based
+  and element-based selectors have cancelled each other out here before.
+  Padding is set by `.band` / `.band--tall` only — never add a bare
+  `section { padding }` rule.
 - No `localStorage`. No third-party analytics or trackers without explicit
   instruction.
-- Fonts currently load from Google Fonts. Self-hosting them in `assets/fonts/`
-  is a desirable future change.
+- Fonts load from Google Fonts. Self-hosting them in `assets/fonts/` is a
+  desirable future change — see `README.md`.
 - **Accessibility floor, non-negotiable:** responsive to 390px with no
   horizontal overflow, visible keyboard focus, semantic landmarks, alt text,
   reduced motion respected.
 - Deployment is Vercel from `main`, no build command, output directory root.
-  `vercel.json` holds caching and security headers.
+  `vercel.json` holds `cleanUrls`, caching and security headers.
 
 ### Adding a page
 
 1. Duplicate the header, menu and footer blocks **exactly**.
-2. Add the page to `.menu-nav` in every existing page.
+2. Add the page to `.menu-nav` in every existing page, and add the matching
+   `nth-child` stagger delay in `site.css`.
 3. Add the page to `sitemap.xml`.
 4. Copy the `LocalBusiness` JSON-LD block.
 
@@ -222,25 +227,38 @@ Cross-page links omit the extension; in-page anchors from a subpage point at
 
 ## Placeholders
 
-Unknown content is marked with `class="is-placeholder"`, which renders a
-visible brass `PLACEHOLDER — REPLACE` tag in the browser. This is intentional:
-an unfilled placeholder should be impossible to ship by accident.
+Unknown content carries `class="is-placeholder"`, which renders a brass
+`PLACEHOLDER — REPLACE` tag pinned to the element's top-right corner. **Remove
+the class once the content is real** and the tag disappears. This is
+deliberate: an unfilled placeholder should be impossible to ship by accident.
+
+Because the tag is absolutely positioned, put the class on an element with
+enough room to show it. On inline items in `.case-meta` the tag is given
+right-padding so it does not overlap the next item.
 
 **The ledger prices are the highest-priority content gap.** A page headed
 "most agencies will not print this" above a row of `£000` actively undermines
-the brand — it fails the published-pricing trust behaviour at exactly the
-moment it draws attention to it. Fill those three numbers before the site goes
-in front of anyone.
+the brand — it breaks the published-pricing trust behaviour at exactly the
+moment it draws attention to it. Real numbers, or cut the section; a fake
+range is worse than none.
 
-Remaining gaps, in priority order: ledger prices; the two proof cards on the
-homepage; both case studies in full; the founder biography and photograph;
-contact details, address, telephone and opening hours; the service-area
-postcodes.
+Remaining gaps, in priority order:
+
+1. Ledger prices — five rows on the homepage.
+2. The two proof cards on the homepage.
+3. Both case studies in full.
+4. Founder biography and a real photograph (`#who`).
+5. Telephone and opening hours.
+6. The service-area postcodes (three places, see above).
+7. `hello@northsaga.ai` — appears in several places; confirm or replace.
+8. The company registration line in the footer.
 
 The two case studies name real companies — **Broadland Products** and
-**Telemechry**. No detail, figure, quote or outcome for either has been
-supplied. **Do not invent any.** Every fact on that page is a placeholder
-until the business provides it.
+**Telemechry** (route optimisation). No detail, figure, quote or outcome has
+been supplied for either. **Do not invent any.** Every fact on that page is a
+placeholder until the business provides it. Inventing one would breach both
+"no claims you cannot name a client for" and "proof over promise", on the page
+whose entire job is proof.
 
 ## Git
 

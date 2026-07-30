@@ -1,31 +1,44 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Northsaga — AI agents installed and maintained for local businesses in Dulwich and West Norwood</title>
-<meta name="description" content="Northsaga installs AI agents into owner-managed businesses in Dulwich and West Norwood, then maintains them. A paid survey, one upfront price, a monthly fee and a named person to ring.">
-<link rel="canonical" href="https://northsaga.ai/">
+<title>Northsaga — AI agents installed into small businesses in Dulwich and West Norwood</title>
+<meta name="description" content="We install AI agents into small businesses and trades around Dulwich and West Norwood, then maintain them. Fixed price to install, fixed price to keep running. Built the old way. Runs the new way.">
 
+<link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/favicon/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#0E1A24">
+
+<meta property="og:title" content="Northsaga — AI agents installed into small businesses">
+<meta property="og:description" content="Built the old way. Runs the new way.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://northsaga.ai/">
-<meta property="og:site_name" content="Northsaga">
-<meta property="og:title" content="Northsaga — new tools, old standards">
-<meta property="og:description" content="AI agents installed into local businesses in Dulwich and West Norwood, then maintained. Prices printed on the page.">
-<meta name="twitter:card" content="summary">
-
-<link rel="icon" href="/assets/logo/mark.svg" type="image/svg+xml">
+<meta property="og:url" content="https://northsaga.ai">
+<meta property="og:image" content="https://northsaga.ai/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Northsaga — AI agents installed into small businesses">
+<meta name="twitter:description" content="Built the old way. Runs the new way.">
+<meta name="twitter:image" content="https://northsaga.ai/assets/og-image.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&family=Cormorant+Garamond:wght@300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="/css/tokens.css">
 <link rel="stylesheet" href="/css/site.css">
 
-<!-- LocalBusiness. Address, telephone and opening hours are deliberately
-     absent rather than invented. Postcodes in areaServed are UNVERIFIED —
-     confirm against the real service area. See CLAUDE.md. -->
+<!-- .reveal starts at opacity 0 and is un-hidden by js/site.js. Without this,
+     a failed or disabled script leaves most of the page invisible. -->
+<noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
+
+<!-- LocalBusiness. address, telephone and openingHours are deliberately absent
+     rather than invented — add them once confirmed. The postcodes in
+     areaServed are UNVERIFIED; check them against the real service area and
+     correct here, in the contact section and in the footer together. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -33,372 +46,349 @@
   "@id": "https://northsaga.ai/#business",
   "name": "Northsaga",
   "url": "https://northsaga.ai/",
-  "description": "Installs and maintains AI agents for owner-managed local businesses in south London.",
+  "email": "hello@northsaga.ai",
+  "description": "Installs and maintains AI agents for owner-managed small businesses and trades in Dulwich and West Norwood, south London.",
   "slogan": "New tools. Old standards.",
   "areaServed": [
+    { "@type": "Place", "name": "Dulwich, London" },
+    { "@type": "Place", "name": "West Norwood, London" },
     { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE21", "postalCodeEnd": "SE21" },
     { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE22", "postalCodeEnd": "SE22" },
     { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE24", "postalCodeEnd": "SE24" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE27", "postalCodeEnd": "SE27" },
-    { "@type": "Place", "name": "Dulwich, London" },
-    { "@type": "Place", "name": "West Norwood, London" }
+    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE27", "postalCodeEnd": "SE27" }
   ]
 }
 </script>
 </head>
 <body>
 
-<a class="skip-link" href="#main">Skip to content</a>
+<!-- ============================ HEADER ============================ -->
+<header class="site-header" id="siteHeader">
+  <a class="header-mark" href="/" aria-label="Northsaga home">
+    <svg viewBox="-77 -167 259 334" aria-hidden="true">
+      <g fill="none" stroke="currentColor" stroke-width="16">
+        <path d="M 0 -160 L -70 -32"/><path d="M 0 -160 L 0 160"/>
+        <path d="M 0 -160 L 175 160"/><path d="M 175 -160 L 175 160"/>
+      </g>
+    </svg>
+    <span>orthsaga</span>
+  </a>
 
-<header class="masthead">
-  <div class="shell masthead__inner">
-    <a class="brand" href="/" aria-label="Northsaga, home">
-      <!-- Mark geometry is a PLACEHOLDER. Source of truth:
-           assets/logo/mark-draw.svg. Inline so CSS can animate the strokes. -->
-      <svg class="brand__mark" data-mark viewBox="0 0 100 120" fill="none"
-           stroke="currentColor" stroke-width="11" stroke-linecap="butt"
-           aria-hidden="true" focusable="false">
-        <path class="mark__stroke" style="--i:0" pathLength="1" d="M12 116 V 52" />
-        <path class="mark__stroke" style="--i:1" pathLength="1" d="M12 52 L 50 6" />
-        <path class="mark__stroke" style="--i:2" pathLength="1" d="M50 6 L 88 52" />
-        <path class="mark__stroke" style="--i:3" pathLength="1" d="M88 52 V 116" />
-      </svg>
-      <span class="brand__name">Northsaga</span>
-    </a>
-
-    <button class="menu-toggle" data-menu-toggle type="button"
-            aria-expanded="false" aria-controls="menu" aria-label="Open menu">
-      <span class="menu-toggle__label" aria-hidden="true">Menu</span>
-      <span class="menu-toggle__bars" aria-hidden="true">
-        <span></span><span></span><span></span>
-      </span>
-    </button>
-  </div>
+  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="menu">
+    <span class="menu-label">Menu</span>
+    <i></i><i></i>
+  </button>
 </header>
 
-<div class="menu" id="menu" data-open="false" aria-hidden="true">
-  <div class="shell menu__inner">
-    <nav aria-label="Main">
-      <ul class="menu-nav">
-        <li><a style="--i:0" href="#work">The work</a></li>
-        <li><a style="--i:1" href="#how">How it works</a></li>
-        <li><a style="--i:2" href="/case-studies">Case studies</a></li>
-        <li><a style="--i:3" href="#ledger">What it costs</a></li>
-        <li><a style="--i:4" href="#refusals">What we won't do</a></li>
-        <li><a style="--i:5" href="#contact">Contact</a></li>
-      </ul>
-    </nav>
-    <p class="menu__foot">Dulwich and West Norwood, south London. SE21, SE22, SE24, SE27 and surrounding.</p>
+<!-- ============================ MENU ============================ -->
+<nav class="menu" id="menu" aria-label="Main">
+  <ul class="menu-nav">
+    <li><a href="#work">The work</a></li>
+    <li><a href="#process">How it works</a></li>
+    <li><a href="/case-studies">Case studies</a></li>
+    <li><a href="#ledger">What it costs</a></li>
+    <li><a href="#proof">Proof</a></li>
+    <li><a href="#contact">Talk to us</a></li>
+  </ul>
+  <div class="menu-foot">
+    <span>Northsaga — operations, installed. Dulwich and West Norwood.</span>
+    <a href="mailto:hello@northsaga.ai">hello@northsaga.ai</a>
   </div>
-</div>
+</nav>
 
-<main id="main">
+<main>
 
-  <!-- ============================================================ hero -->
-  <section class="section hero">
-    <div class="shell">
-      <span class="eyebrow">New tools. Old standards.</span>
-      <h1 class="hero__title">Built the old way. <em>Runs the new way.</em></h1>
-      <p class="hero__lede">
-        We install AI agents into small businesses around Dulwich and West
-        Norwood, then we look after them. You get one price before you commit,
-        and a named person to ring when something breaks.
-      </p>
-      <div class="hero__actions">
-        <a class="btn" href="#ledger">See what it costs</a>
-        <a class="btn btn--quiet" href="#how">How it works</a>
+<!-- ============================ HERO ============================ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-lockup">
+      <svg viewBox="-77 -167 259 334" aria-hidden="true">
+        <g fill="none" stroke="currentColor" stroke-width="14">
+          <path class="mark-path" style="--len:146"   d="M 0 -160 L -70 -32"/>
+          <path class="mark-path" style="--len:320"   d="M 0 -160 L 0 160"/>
+          <path class="mark-path" style="--len:365"   d="M 0 -160 L 175 160"/>
+          <path class="mark-path" style="--len:320"   d="M 175 -160 L 175 160"/>
+        </g>
+      </svg>
+      <span class="wordmark">orthsaga</span>
+    </div>
+
+    <h1>Built the old way.<br>Runs the <em>new</em> way.</h1>
+
+    <p class="lede">
+      We install AI agents into small businesses around Dulwich and West Norwood —
+      the ones that answer your missed calls, chase your quotes and keep your reviews
+      coming — and then we look after them. Fixed price to install. Fixed price to
+      keep running.
+    </p>
+
+    <div class="hero-actions">
+      <a class="btn" href="#ledger">See what it costs</a>
+      <a class="btn btn--quiet" href="#work">What we install</a>
+    </div>
+  </div>
+  <span class="hero-scroll">Scroll</span>
+</section>
+
+<!-- ============================ THE WORK ============================ -->
+<section class="band band--paper band--tall" id="work">
+  <div class="container">
+    <p class="eyebrow">The work</p>
+    <h2 class="display" style="font-size:var(--step-3); max-width:18ch;">
+      Six jobs you are currently doing yourself.
+    </h2>
+
+    <ul class="install-list">
+      <li class="reveal">
+        <h3>Missed-call text-back</h3>
+        <p>Every call you cannot answer gets a text within a minute asking what they need.
+           Most of the work you lose, you lose here — usually to whoever picked up second.</p>
+      </li>
+      <li class="reveal">
+        <h3>Quote follow-up</h3>
+        <p>Quotes get chased on day three, day seven and day fourteen without you
+           remembering to do it. Chasing stops the moment they reply.</p>
+      </li>
+      <li class="reveal">
+        <h3>Review chasing</h3>
+        <p>A polite ask goes out once the job is signed off — to the right person,
+           on the platform that actually matters for your trade.</p>
+      </li>
+      <li class="reveal">
+        <h3>Enquiry triage</h3>
+        <p>New enquiries sorted into work, suppliers and noise, with the urgent ones
+           flagged before you have opened the laptop.</p>
+      </li>
+      <li class="reveal">
+        <h3>Scheduling and reminders</h3>
+        <p>Jobs booked into the diary, confirmations sent, and the day-before reminder
+           that stops half your no-shows.</p>
+      </li>
+      <li class="reveal">
+        <h3>Price and patch watch</h3>
+        <p>We pull competitor and property data across your postcodes and send one page
+           a month: who is charging what, where, and how it has moved since last time.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ PROCESS ============================ -->
+<section class="band band--tall" id="process">
+  <div class="container">
+    <p class="eyebrow">How it works</p>
+    <h2 class="display" style="font-size:var(--step-3); max-width:20ch;">
+      Survey the estate. Install once. Maintain it properly.
+    </h2>
+    <p class="lede" style="margin-top:var(--space-3);">
+      The same order you would use for anything else you put into a business —
+      wiring, plant, a new van. Nothing gets installed before it has been measured.
+    </p>
+
+    <ol class="steps">
+      <li class="step reveal">
+        <span class="num">01</span>
+        <h3>Survey</h3>
+        <p>Half a day, on site or on a call. We map how work actually moves through your
+           business: who does what, where it stalls, and what the stall costs you.
+           You keep the map whether or not you hire us.</p>
+      </li>
+      <li class="step reveal">
+        <span class="num">02</span>
+        <h3>Install</h3>
+        <p>We build the agents and connect them to the tools you already use. One
+           upfront price, agreed before anything starts. You see the number long
+           before you see an invoice.</p>
+      </li>
+      <li class="step reveal">
+        <span class="num">03</span>
+        <h3>Maintain</h3>
+        <p>Your prices change, your suppliers change, the software changes underneath
+           you. A monthly fee keeps it running and tuned, with a named person to ring
+           when it does not.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================ THE LEDGER ============================ -->
+<section class="band band--tall" id="ledger" style="background:var(--ink-deep);">
+  <div class="container">
+    <p class="eyebrow">What it costs</p>
+    <h2 class="display" style="font-size:var(--step-3); max-width:16ch;">
+      Most agencies will not print this.
+    </h2>
+    <p class="lede" style="margin-top:var(--space-3);">
+      Real ranges, not a starting-from figure designed to get us through the door.
+      Where you land depends on how many agents you need and how tangled your systems
+      already are. We give you the number before you commit — and if it shocks you,
+      we would rather hear it then than later.
+    </p>
+
+    <!-- HIGHEST-PRIORITY CONTENT GAP. A heading that says "most agencies will
+         not print this" sitting above a row of £000 undermines the brand at
+         exactly the moment it draws attention to the pricing. Real numbers, or
+         cut the section. See CLAUDE.md. -->
+    <div class="ledger is-placeholder">
+      <div class="ledger-row">
+        <span class="item">
+          <strong>Operations survey</strong>
+          <span>Half a day. You get the process map and the costings, yours to keep.</span>
+        </span>
+        <span class="figure">£000 <small>one-off · credited against install</small></span>
+      </div>
+      <div class="ledger-row">
+        <span class="item">
+          <strong>One agent, installed</strong>
+          <span>Built, connected to your tools, tested on your real jobs, handed over working.</span>
+        </span>
+        <span class="figure">£0,000 <small>one-off · per agent</small></span>
+      </div>
+      <div class="ledger-row">
+        <span class="item">
+          <strong>Full install — three to five agents</strong>
+          <span>The usual starting point for a firm of five to twenty people.</span>
+        </span>
+        <span class="figure">£0,000 <small>one-off</small></span>
+      </div>
+      <div class="ledger-row">
+        <span class="item">
+          <strong>Maintenance and tuning</strong>
+          <span>Monitoring, fixes, changes as your business changes. A named person to ring.</span>
+        </span>
+        <span class="figure">£000 <small>per month · 30 days' notice</small></span>
+      </div>
+      <div class="ledger-row">
+        <span class="item">
+          <strong>Systems build</strong>
+          <span>Job profiles, scorecards, quarterly priorities — the operating system the agents plug into.</span>
+        </span>
+        <span class="figure">from £0,000 <small>one-off · quoted per business</small></span>
       </div>
     </div>
-  </section>
 
-  <!-- ============================================================ work -->
-  <section class="section section--paper" id="work">
-    <div class="shell split reveal">
+    <div class="ledger-note">
+      <p>No lock-in. No per-seat pricing. No percentage of your revenue.</p>
+      <p>If you want to bring it in-house later, we hand over everything and show your
+         team how to run it. That is the whole arrangement.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PROOF ============================ -->
+<section class="band band--tall" id="proof">
+  <div class="container">
+    <p class="eyebrow">Proof</p>
+    <h2 class="display" style="font-size:var(--step-3); max-width:18ch;">
+      Named firms. Named numbers.
+    </h2>
+    <p class="lede" style="margin-top:var(--space-3);">
+      One real job, described properly, is worth more than a page of claims about
+      artificial intelligence. These are ours.
+    </p>
+
+    <!-- Broadland Products and Telemechry are real companies. No figure has been
+         supplied for either. Do not invent one — see CLAUDE.md. -->
+    <div class="proof">
+      <article class="proof-card is-placeholder reveal">
+        <span class="figure">00%</span>
+        <p>One-line description of what changed, in the client's terms — jobs won,
+           hours returned, calls answered. Replace with the real figure.</p>
+        <cite>Broadland Products</cite>
+      </article>
+      <article class="proof-card is-placeholder reveal">
+        <span class="figure">00 hrs</span>
+        <p>Second case. Say what the business was doing by hand before, what it does
+           now, and who at the firm noticed the difference.</p>
+        <cite>Telemechry · Route optimisation</cite>
+      </article>
+    </div>
+
+    <div class="hero-actions">
+      <a class="btn" href="/case-studies">Read the case studies</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ WHO ============================ -->
+<section class="band band--paper band--tall" id="who">
+  <div class="container">
+    <p class="eyebrow">Who you deal with</p>
+    <h2 class="display" style="font-size:var(--step-3); max-width:20ch;">
+      The person who surveys it is the person who installs it.
+    </h2>
+    <div class="prose is-placeholder" style="margin-top:var(--space-3);">
+      <p><strong>[Your name], founder.</strong> Two or three sentences in the first person:
+         what you did before this, why you work with trades and small firms specifically,
+         and what you will not do. Put a real photograph here — not an illustration and
+         not a stock image. This section is doing more work for trust than anything else
+         on the page.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CONTACT ============================ -->
+<section class="band band--tall" id="contact">
+  <div class="container">
+    <p class="eyebrow">Talk to us</p>
+    <div class="contact-grid">
       <div>
-        <span class="eyebrow">The work</span>
-        <h2 class="section__title">Two things, installed together</h2>
-      </div>
-      <div>
-        <div class="prose">
-          <p class="sub">The agents are the visible part. The operating system is what makes them stick.</p>
-          <div class="rule"></div>
-          <p>
-            An agent is a piece of software that does a job you are currently
-            doing by hand, or not doing at all. Missed-call text-back. Quotes
-            chased on day three and day seven. Job sheets turned into invoices.
-            Supplier prices checked across postcodes and sorted by price, age
-            and aspect.
-          </p>
-          <p>
-            On its own that lasts about a month. So we also install the thing
-            it plugs into: job profiles that say who owns what, a scorecard
-            with numbers someone is accountable for, and quarterly priorities
-            short enough to finish. It is EOS-inspired, and it is the
-            unglamorous half of the work.
-          </p>
-          <p>
-            We still do SEO for local clients. We deliver it the same way —
-            agentically, with the data scraped and compiled rather than
-            guessed.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================= how -->
-  <section class="section" id="how">
-    <div class="shell">
-      <div class="reveal">
-        <span class="eyebrow">How it works</span>
-        <h2 class="section__title">Three steps. You can stop after any of them.</h2>
-        <div class="rule"></div>
-      </div>
-
-      <div class="grid grid--3 reveal">
-        <div class="step">
-          <span class="step__n">01</span>
-          <h3 class="step__title">Survey</h3>
-          <p class="step__body">
-            A paid half-day mapping how work actually moves through your
-            business: who does what, where it stalls, what the stall costs. You
-            keep the map whether or not you go further. If the answer is that
-            you don't need us, the map says so.
-          </p>
-        </div>
-        <div class="step">
-          <span class="step__n">02</span>
-          <h3 class="step__title">Install</h3>
-          <p class="step__body">
-            One agreed price, upfront, stated before you commit. Our words are:
-            for what you want, given these cost metrics, that would be X — does
-            that number align with your expectations, or does it shock you? You
-            answer that before anyone signs anything.
-          </p>
-        </div>
-        <div class="step">
-          <span class="step__n">03</span>
-          <h3 class="step__title">Maintain</h3>
-          <p class="step__body">
-            A monthly fee for monitoring, fixes and tuning. Agents drift when
-            your business changes, and your business changes. You get a named
-            person to ring, not a ticket queue.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================================================== ledger -->
-  <section class="section section--paper" id="ledger">
-    <div class="shell">
-      <div class="reveal">
-        <span class="eyebrow">What it costs</span>
-        <h2 class="section__title">Most agencies will not print this</h2>
-        <div class="rule"></div>
-        <p class="prose">
-          Equipment has a price on it before you buy it. So does this. The
-          survey is fixed. The install is quoted once, in full, before you
-          commit — no day rates, no scope creep, no discovery phase that
-          bills. The monthly fee is what it says.
+        <h2 class="display" style="font-size:var(--step-3); max-width:16ch;">
+          Start with the survey.
+        </h2>
+        <p class="lede" style="margin-top:var(--space-3);">
+          Half a day, a fixed fee, and a map of your operation at the end of it —
+          yours either way. If the numbers do not work for you, you will know inside
+          a week rather than inside a quarter.
         </p>
-      </div>
-
-      <!-- HIGHEST-PRIORITY CONTENT GAP.
-           This section is the point of the site. A heading that says "most
-           agencies will not print this" above three placeholders undermines
-           the brand more than having no ledger at all. Fill these first. -->
-      <div class="ledger reveal">
-        <div class="ledger__row">
-          <div class="ledger__what">Survey</div>
-          <p class="ledger__detail">Half a day on site. A written map of the work, the stalls and what they cost. Yours to keep.</p>
-          <div class="ledger__price"><span class="is-placeholder"></span><span class="ledger__note">fixed</span></div>
+        <div class="hero-actions">
+          <a class="btn" href="mailto:hello@northsaga.ai">Book the survey</a>
         </div>
-        <div class="ledger__row">
-          <div class="ledger__what">Install</div>
-          <p class="ledger__detail">Agents built, tested and put into daily use, with the job profiles and scorecard they plug into.</p>
-          <div class="ledger__price"><span class="is-placeholder"></span><span class="ledger__note">from, quoted once</span></div>
-        </div>
-        <div class="ledger__row">
-          <div class="ledger__what">Maintain</div>
-          <p class="ledger__detail">Monitoring, fixes and tuning. A named person to ring. Cancel with a month's notice.</p>
-          <div class="ledger__price"><span class="is-placeholder"></span><span class="ledger__note">per month</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- =========================================================== proof -->
-  <section class="section" id="proof">
-    <div class="shell">
-      <div class="reveal">
-        <span class="eyebrow">Proof</span>
-        <h2 class="section__title">Named client, named problem, named number</h2>
-        <div class="rule"></div>
-        <p class="prose">
-          We don't publish a figure we can't attach to a client who will take
-          your call. Two of those are below. The detail is being confirmed
-          with both companies before it goes on the page.
-        </p>
-      </div>
-
-      <!-- Both cards are placeholders. Broadland Products and Telemechry are
-           real companies; no figure has been supplied for either. Do not
-           invent one. -->
-      <div class="grid grid--2 reveal">
-        <div class="proof">
-          <span class="figure__value is-placeholder"></span>
-          <span class="figure__label">Broadland Products — <span class="is-placeholder"></span></span>
-        </div>
-        <div class="proof">
-          <span class="figure__value is-placeholder"></span>
-          <span class="figure__label">Telemechry, route optimisation — <span class="is-placeholder"></span></span>
-        </div>
-      </div>
-
-      <p class="reveal" style="margin-top: var(--space-xl)">
-        <a class="btn" href="/case-studies">Read the case studies</a>
-      </p>
-    </div>
-  </section>
-
-  <!-- ======================================================== refusals -->
-  <section class="section section--raised" id="refusals">
-    <div class="shell split reveal">
-      <div>
-        <span class="eyebrow">What we won't do</span>
-        <h2 class="section__title">The short list</h2>
       </div>
       <div>
-        <ul class="refusals">
-          <li>
-            <strong>We won't quote before the survey.</strong>
-            Anyone who prices your business without looking at it is guessing,
-            and you will pay for the guess later.
-          </li>
-          <li>
-            <strong>We won't sell you an agent you don't need.</strong>
-            Some of the work that comes out of a survey is a spreadsheet and a
-            conversation. We will tell you when that is the answer.
-          </li>
-          <li>
-            <strong>We won't lock you in.</strong>
-            The monthly fee cancels with a month's notice. You keep the job
-            profiles, the scorecard and the map.
-          </li>
-          <li>
-            <strong>We won't put a number on this site we can't source.</strong>
-            If a figure isn't confirmed by the client it named, it doesn't get
-            printed.
-          </li>
+        <ul class="contact-lines is-placeholder">
+          <li><span class="k">Email</span><span class="v">hello@northsaga.ai</span></li>
+          <li><span class="k">Telephone</span><span class="v">0000 000 0000</span></li>
+          <li><span class="k">Hours</span><span class="v">Mon–Fri, 8–6</span></li>
         </ul>
-      </div>
-    </div>
-  </section>
 
-  <!-- ========================================================== people -->
-  <section class="section" id="people">
-    <div class="shell split reveal">
-      <div>
-        <span class="eyebrow">Who you'd be dealing with</span>
-        <h2 class="section__title">A person, not a portal</h2>
-      </div>
-      <div class="prose">
-        <!-- Founder biography and photograph. Real photograph only — no stock
-             imagery, no illustrated characters, no abstract "AI" visuals. -->
-        <p class="is-placeholder"></p>
-        <p class="muted small">
-          Photograph and biography to follow. This site will not carry stock
-          imagery in the meantime.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ========================================================= contact -->
-  <section class="section section--paper" id="contact">
-    <div class="shell split reveal">
-      <div>
-        <span class="eyebrow">Contact</span>
-        <h2 class="section__title">Start with the survey</h2>
-      </div>
-      <div>
-        <div class="prose">
-          <p class="sub">If it's a fit, we'll say so. If it isn't, we'll say that instead.</p>
-          <div class="rule"></div>
+        <div class="service-area">
+          <span class="k">Service area</span>
+          <p>
+            Dulwich and West Norwood, south London — SE21, SE22, SE24, SE27 and
+            surrounding. Owner-managed firms of roughly three to thirty people:
+            builders, electricians, plumbers, roofers, landscapers, garages,
+            veterinary practices, dental and private clinics, estate and lettings
+            agents, independent retailers and professional services.
+          </p>
         </div>
-
-        <dl class="grid grid--2" style="margin-top: var(--space-l)">
-          <div>
-            <dt class="label">Email</dt>
-            <dd><span class="is-placeholder"></span></dd>
-          </div>
-          <div>
-            <dt class="label">Telephone</dt>
-            <dd><span class="is-placeholder"></span></dd>
-          </div>
-          <div>
-            <dt class="label">Address</dt>
-            <dd><span class="is-placeholder"></span></dd>
-          </div>
-          <div>
-            <dt class="label">Hours</dt>
-            <dd><span class="is-placeholder"></span></dd>
-          </div>
-        </dl>
-
-        <hr class="hair" style="margin-block: var(--space-l)">
-
-        <p class="label" style="margin-bottom: var(--space-2xs)">Service area</p>
-        <p>
-          Dulwich and West Norwood, south London — SE21, SE22, SE24, SE27 and
-          surrounding. Owner-managed firms of roughly 3 to 30 staff: builders,
-          electricians, plumbers, roofers, landscapers, garages, veterinary
-          practices, dental and private clinics, estate and lettings agents,
-          independent retailers and professional services.
-        </p>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
 </main>
 
+<!-- ============================ FOOTER ============================ -->
 <footer class="site-footer">
-  <div class="shell">
-    <div class="site-footer__grid">
-      <div>
-        <h2>Northsaga</h2>
-        <p class="muted small">
-          AI agents installed and maintained for owner-managed businesses in
-          south London.
-        </p>
-      </div>
-      <div>
-        <h2>Pages</h2>
-        <ul>
-          <li><a href="/#work">The work</a></li>
-          <li><a href="/#how">How it works</a></li>
-          <li><a href="/case-studies">Case studies</a></li>
-          <li><a href="/#ledger">What it costs</a></li>
-          <li><a href="/#contact">Contact</a></li>
-        </ul>
-      </div>
-      <div>
-        <h2>Service area</h2>
-        <p class="muted small">
-          Dulwich and West Norwood, south London.<br>
-          SE21, SE22, SE24, SE27 and surrounding.
-        </p>
-      </div>
-      <div>
-        <h2>Get in touch</h2>
-        <p class="muted small"><span class="is-placeholder"></span></p>
-      </div>
+  <div class="container">
+    <div class="footer-top">
+      <p class="footer-motto">New tools.<br>Old standards.</p>
+      <p class="footer-area">
+        Dulwich and West Norwood, south London.<br>
+        SE21, SE22, SE24, SE27 and surrounding.
+      </p>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="#work">The work</a>
+        <a href="#process">How it works</a>
+        <a href="/case-studies">Case studies</a>
+        <a href="#ledger">What it costs</a>
+        <a href="#contact">Talk to us</a>
+      </nav>
     </div>
-
-    <div class="site-footer__base">
-      <span class="site-footer__strap">At Northsaga, the technology is new. The way we work isn't.</span>
-      <span>&copy; 2026 Northsaga</span>
+    <div class="footer-bottom">
+      <span>&copy; <span id="year">2026</span> Northsaga. Registered in England.</span>
+      <a href="mailto:hello@northsaga.ai">hello@northsaga.ai</a>
     </div>
   </div>
 </footer>

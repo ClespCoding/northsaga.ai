@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0E1A24"/>
+  <g transform="translate(96,232) scale(0.60)">
+    <g fill="none" stroke="#E9E4D9" stroke-width="17"><path d="M 0 -160 L -70 -32"/><path d="M 0 -160 L 0 160"/><path d="M 0 -160 L 175 160"/><path d="M 175 -160 L 175 160"/></g>
+  </g>
+  <text x="222" y="284" font-family="Cormorant Garamond, Garamond, Georgia, serif"
+        font-size="176" font-weight="300" fill="#E9E4D9">orthsaga</text>
+  <text x="96" y="392" font-family="Cormorant Garamond, Garamond, Georgia, serif"
+        font-size="62" font-weight="300" fill="#E9E4D9">Built the old way. Runs the new way.</text>
+  <rect x="96" y="440" width="120" height="2" fill="#B08D4F"/>
+  <text x="96" y="502" font-family="Archivo, Helvetica, Arial, sans-serif"
+        font-size="25" letter-spacing="5" fill="#97A1A9">AI AGENTS INSTALLED INTO SMALL BUSINESSES</text>
+</svg>

@@ -1,31 +1,44 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Case studies — Northsaga</title>
 <meta name="description" content="What Northsaga installed at Broadland Products and Telemechry: the situation before, what went in, what changed, and the number attached to it.">
-<link rel="canonical" href="https://northsaga.ai/case-studies">
 
+<link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/favicon/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#0E1A24">
+
+<meta property="og:title" content="Case studies — Northsaga">
+<meta property="og:description" content="Named firms. Named numbers.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://northsaga.ai/case-studies">
-<meta property="og:site_name" content="Northsaga">
-<meta property="og:title" content="Case studies — Northsaga">
-<meta property="og:description" content="Named client, named problem, named number.">
-<meta name="twitter:card" content="summary">
-
-<link rel="icon" href="/assets/logo/mark.svg" type="image/svg+xml">
+<meta property="og:image" content="https://northsaga.ai/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Case studies — Northsaga">
+<meta name="twitter:description" content="Named firms. Named numbers.">
+<meta name="twitter:image" content="https://northsaga.ai/assets/og-image.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&family=Cormorant+Garamond:wght@300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="/css/tokens.css">
 <link rel="stylesheet" href="/css/site.css">
 
-<!-- LocalBusiness. Address, telephone and opening hours are deliberately
-     absent rather than invented. Postcodes in areaServed are UNVERIFIED —
-     confirm against the real service area. See CLAUDE.md. -->
+<!-- .reveal starts at opacity 0 and is un-hidden by js/site.js. Without this,
+     a failed or disabled script leaves most of the page invisible. -->
+<noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
+
+<!-- LocalBusiness. address, telephone and openingHours are deliberately absent
+     rather than invented — add them once confirmed. The postcodes in
+     areaServed are UNVERIFIED; check them against the real service area and
+     correct here, in the contact section and in the footer together. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -33,218 +46,210 @@
   "@id": "https://northsaga.ai/#business",
   "name": "Northsaga",
   "url": "https://northsaga.ai/",
-  "description": "Installs and maintains AI agents for owner-managed local businesses in south London.",
+  "email": "hello@northsaga.ai",
+  "description": "Installs and maintains AI agents for owner-managed small businesses and trades in Dulwich and West Norwood, south London.",
   "slogan": "New tools. Old standards.",
   "areaServed": [
+    { "@type": "Place", "name": "Dulwich, London" },
+    { "@type": "Place", "name": "West Norwood, London" },
     { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE21", "postalCodeEnd": "SE21" },
     { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE22", "postalCodeEnd": "SE22" },
     { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE24", "postalCodeEnd": "SE24" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE27", "postalCodeEnd": "SE27" },
-    { "@type": "Place", "name": "Dulwich, London" },
-    { "@type": "Place", "name": "West Norwood, London" }
+    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE27", "postalCodeEnd": "SE27" }
   ]
 }
 </script>
 </head>
 <body>
 
-<a class="skip-link" href="#main">Skip to content</a>
+<!-- ============================ HEADER ============================ -->
+<header class="site-header" id="siteHeader">
+  <a class="header-mark" href="/" aria-label="Northsaga home">
+    <svg viewBox="-77 -167 259 334" aria-hidden="true">
+      <g fill="none" stroke="currentColor" stroke-width="16">
+        <path d="M 0 -160 L -70 -32"/><path d="M 0 -160 L 0 160"/>
+        <path d="M 0 -160 L 175 160"/><path d="M 175 -160 L 175 160"/>
+      </g>
+    </svg>
+    <span>orthsaga</span>
+  </a>
 
-<header class="masthead">
-  <div class="shell masthead__inner">
-    <a class="brand" href="/" aria-label="Northsaga, home">
-      <!-- Mark geometry is a PLACEHOLDER. Source of truth:
-           assets/logo/mark-draw.svg. Inline so CSS can animate the strokes. -->
-      <svg class="brand__mark" data-mark viewBox="0 0 100 120" fill="none"
-           stroke="currentColor" stroke-width="11" stroke-linecap="butt"
-           aria-hidden="true" focusable="false">
-        <path class="mark__stroke" style="--i:0" pathLength="1" d="M12 116 V 52" />
-        <path class="mark__stroke" style="--i:1" pathLength="1" d="M12 52 L 50 6" />
-        <path class="mark__stroke" style="--i:2" pathLength="1" d="M50 6 L 88 52" />
-        <path class="mark__stroke" style="--i:3" pathLength="1" d="M88 52 V 116" />
-      </svg>
-      <span class="brand__name">Northsaga</span>
-    </a>
-
-    <button class="menu-toggle" data-menu-toggle type="button"
-            aria-expanded="false" aria-controls="menu" aria-label="Open menu">
-      <span class="menu-toggle__label" aria-hidden="true">Menu</span>
-      <span class="menu-toggle__bars" aria-hidden="true">
-        <span></span><span></span><span></span>
-      </span>
-    </button>
-  </div>
+  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="menu">
+    <span class="menu-label">Menu</span>
+    <i></i><i></i>
+  </button>
 </header>
 
-<div class="menu" id="menu" data-open="false" aria-hidden="true">
-  <div class="shell menu__inner">
-    <nav aria-label="Main">
-      <ul class="menu-nav">
-        <li><a style="--i:0" href="/#work">The work</a></li>
-        <li><a style="--i:1" href="/#how">How it works</a></li>
-        <li><a style="--i:2" href="/case-studies" aria-current="page">Case studies</a></li>
-        <li><a style="--i:3" href="/#ledger">What it costs</a></li>
-        <li><a style="--i:4" href="/#refusals">What we won't do</a></li>
-        <li><a style="--i:5" href="/#contact">Contact</a></li>
-      </ul>
-    </nav>
-    <p class="menu__foot">Dulwich and West Norwood, south London. SE21, SE22, SE24, SE27 and surrounding.</p>
+<!-- ============================ MENU ============================ -->
+<nav class="menu" id="menu" aria-label="Main">
+  <ul class="menu-nav">
+    <li><a href="/#work">The work</a></li>
+    <li><a href="/#process">How it works</a></li>
+    <li><a href="/case-studies" aria-current="page">Case studies</a></li>
+    <li><a href="/#ledger">What it costs</a></li>
+    <li><a href="/#proof">Proof</a></li>
+    <li><a href="/#contact">Talk to us</a></li>
+  </ul>
+  <div class="menu-foot">
+    <span>Northsaga — operations, installed. Dulwich and West Norwood.</span>
+    <a href="mailto:hello@northsaga.ai">hello@northsaga.ai</a>
   </div>
-</div>
+</nav>
 
-<main id="main">
+<main>
 
-  <section class="section hero">
-    <div class="shell">
-      <span class="eyebrow">Case studies</span>
-      <h1 class="hero__title">The work, with the numbers left in.</h1>
-      <p class="hero__lede">
-        Two installs. What the business looked like before, what went in, what
-        changed afterwards, and the figure attached to it. Both companies are
-        confirming their detail before it is printed here — nothing on this
-        page is written until they have signed it off.
-      </p>
-    </div>
-  </section>
+<!-- ============================ INTRO ============================ -->
+<section class="band band--tall" style="padding-top: calc(var(--space-7) + 2rem);">
+  <div class="container">
+    <p class="eyebrow">Case studies</p>
+    <h1 class="display" style="font-size:var(--step-3); max-width:18ch;">
+      The work, with the numbers left in.
+    </h1>
+    <p class="lede" style="margin-top:var(--space-3);">
+      Two installs, described the way we would describe them to you on site: what the
+      business looked like before, what went in, what changed, and the figure attached
+      to it. Both firms are confirming their detail before it is printed here.
+    </p>
+  </div>
+</section>
 
-  <!-- ============================================================================
-       EVERY FACT ON THIS PAGE IS A PLACEHOLDER.
+<!-- ============================================================================
+     EVERY FACT ON THIS PAGE IS A PLACEHOLDER.
 
-       Broadland Products and Telemechry are real companies. No situation,
-       intervention, outcome, figure or quote was supplied for either one.
-       Do not invent any of it — that would breach the "no claim ships without
-       a source" rule in CLAUDE.md, on the page whose entire job is proof.
+     Broadland Products and Telemechry are real companies. No situation,
+     intervention, outcome, figure or quote was supplied for either one. Do not
+     invent any of it — that would breach "no claims you cannot name a client
+     for" (BRAND.md §6) and "proof over promise" (BRAND.md §7), on the page
+     whose entire job is proof.
 
-       Fill each is-placeholder from what the client confirms, then delete the
-       surrounding notes.
-       ============================================================================ -->
+     Fill each block from what the client confirms, then remove the
+     is-placeholder class from that element so the brass tag disappears.
+     ============================================================================ -->
 
-  <section class="section section--paper">
-    <div class="shell">
+<section class="band band--tall" style="background:var(--ink-deep);">
+  <div class="container">
 
-      <!-- ------------------------------------------- Broadland Products -->
-      <article class="case reveal" id="broadland-products">
-        <h2 class="case__title">Broadland Products</h2>
-        <p class="case__meta">
-          <span>Sector — <span class="is-placeholder"></span></span>
-          <span>Installed — <span class="is-placeholder"></span></span>
+    <!-- ---------------------------------------- Broadland Products ---- -->
+    <article class="case reveal" id="broadland-products">
+      <div class="case-head">
+        <h2>Broadland Products</h2>
+        <p class="case-meta">
+          <span class="is-placeholder">Sector</span>
+          <span class="is-placeholder">Installed</span>
         </p>
-        <div class="rule"></div>
+      </div>
 
-        <div class="case__grid">
-          <div class="case__block">
-            <h3>Before</h3>
-            <p class="is-placeholder"></p>
-          </div>
-          <div class="case__block">
-            <h3>What we installed</h3>
-            <p class="is-placeholder"></p>
-          </div>
-          <div class="case__block">
-            <h3>What changed</h3>
-            <p class="is-placeholder"></p>
-          </div>
+      <div class="case-grid">
+        <div class="case-block is-placeholder">
+          <h3>Before</h3>
+          <p>What the business was doing by hand, where the work stalled, and what
+             the stall was costing. Replace with what Broadland confirms.</p>
         </div>
-
-        <div class="case__figure">
-          <h3>The number</h3>
-          <span class="figure__value is-placeholder"></span>
-          <span class="figure__label is-placeholder"></span>
+        <div class="case-block is-placeholder">
+          <h3>What we installed</h3>
+          <p>The agents by name, and the job profiles and scorecard they plug into.
+             Replace with what Broadland confirms.</p>
         </div>
-      </article>
+        <div class="case-block is-placeholder">
+          <h3>What changed</h3>
+          <p>What is different now, in the client's own terms, and who at the firm
+             noticed. Replace with what Broadland confirms.</p>
+        </div>
+      </div>
 
-      <!-- -------------------------------------------------- Telemechry -->
-      <article class="case reveal" id="telemechry">
-        <h2 class="case__title">Telemechry</h2>
-        <p class="case__meta">
+      <div class="case-figure">
+        <article class="proof-card is-placeholder">
+          <span class="figure">00%</span>
+          <p>The one number this install is accountable for. No figure ships until
+             Broadland Products has confirmed it.</p>
+          <cite>Broadland Products</cite>
+        </article>
+      </div>
+    </article>
+
+    <!-- ------------------------------------------------- Telemechry ---- -->
+    <article class="case reveal" id="telemechry">
+      <div class="case-head">
+        <h2>Telemechry</h2>
+        <p class="case-meta">
           <span>Route optimisation</span>
-          <span>Sector — <span class="is-placeholder"></span></span>
-          <span>Installed — <span class="is-placeholder"></span></span>
-        </p>
-        <div class="rule"></div>
-
-        <div class="case__grid">
-          <div class="case__block">
-            <h3>Before</h3>
-            <p class="is-placeholder"></p>
-          </div>
-          <div class="case__block">
-            <h3>What we installed</h3>
-            <p class="is-placeholder"></p>
-          </div>
-          <div class="case__block">
-            <h3>What changed</h3>
-            <p class="is-placeholder"></p>
-          </div>
-        </div>
-
-        <div class="case__figure">
-          <h3>The number</h3>
-          <span class="figure__value is-placeholder"></span>
-          <span class="figure__label is-placeholder"></span>
-        </div>
-      </article>
-
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="shell split reveal">
-      <div>
-        <span class="eyebrow">Next</span>
-        <h2 class="section__title">Yours would start with a survey</h2>
-      </div>
-      <div class="prose">
-        <p>
-          Half a day, paid, mapping how work moves through your business. You
-          keep the map either way. The price for that and for everything after
-          it is printed on the homepage.
-        </p>
-        <p style="margin-top: var(--space-l)">
-          <a class="btn" href="/#ledger">What it costs</a>
+          <span class="is-placeholder">Sector</span>
+          <span class="is-placeholder">Installed</span>
         </p>
       </div>
+
+      <div class="case-grid">
+        <div class="case-block is-placeholder">
+          <h3>Before</h3>
+          <p>How routes were planned before, who planned them, and what the planning
+             cost in hours or fuel. Replace with what Telemechry confirms.</p>
+        </div>
+        <div class="case-block is-placeholder">
+          <h3>What we installed</h3>
+          <p>The route optimisation agent and whatever it connects to. Replace with
+             what Telemechry confirms.</p>
+        </div>
+        <div class="case-block is-placeholder">
+          <h3>What changed</h3>
+          <p>What is different now, in the client's own terms. Replace with what
+             Telemechry confirms.</p>
+        </div>
+      </div>
+
+      <div class="case-figure">
+        <article class="proof-card is-placeholder">
+          <span class="figure">00 hrs</span>
+          <p>The one number this install is accountable for. No figure ships until
+             Telemechry has confirmed it.</p>
+          <cite>Telemechry · Route optimisation</cite>
+        </article>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============================ NEXT ============================ -->
+<section class="band band--paper band--tall">
+  <div class="container">
+    <p class="eyebrow">Next</p>
+    <h2 class="display" style="font-size:var(--step-3); max-width:18ch;">
+      Yours would start with a survey.
+    </h2>
+    <p class="lede" style="margin-top:var(--space-3);">
+      Half a day, a fixed fee, and a map of your operation at the end of it — yours
+      either way. The price for that, and for everything after it, is printed on the
+      homepage.
+    </p>
+    <div class="hero-actions">
+      <a class="btn" href="/#ledger">What it costs</a>
+      <a class="btn btn--quiet" href="/#contact">Talk to us</a>
     </div>
-  </section>
+  </div>
+</section>
 
 </main>
 
+<!-- ============================ FOOTER ============================ -->
 <footer class="site-footer">
-  <div class="shell">
-    <div class="site-footer__grid">
-      <div>
-        <h2>Northsaga</h2>
-        <p class="muted small">
-          AI agents installed and maintained for owner-managed businesses in
-          south London.
-        </p>
-      </div>
-      <div>
-        <h2>Pages</h2>
-        <ul>
-          <li><a href="/#work">The work</a></li>
-          <li><a href="/#how">How it works</a></li>
-          <li><a href="/case-studies">Case studies</a></li>
-          <li><a href="/#ledger">What it costs</a></li>
-          <li><a href="/#contact">Contact</a></li>
-        </ul>
-      </div>
-      <div>
-        <h2>Service area</h2>
-        <p class="muted small">
-          Dulwich and West Norwood, south London.<br>
-          SE21, SE22, SE24, SE27 and surrounding.
-        </p>
-      </div>
-      <div>
-        <h2>Get in touch</h2>
-        <p class="muted small"><span class="is-placeholder"></span></p>
-      </div>
+  <div class="container">
+    <div class="footer-top">
+      <p class="footer-motto">New tools.<br>Old standards.</p>
+      <p class="footer-area">
+        Dulwich and West Norwood, south London.<br>
+        SE21, SE22, SE24, SE27 and surrounding.
+      </p>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="/#work">The work</a>
+        <a href="/#process">How it works</a>
+        <a href="/case-studies">Case studies</a>
+        <a href="/#ledger">What it costs</a>
+        <a href="/#contact">Talk to us</a>
+      </nav>
     </div>
-
-    <div class="site-footer__base">
-      <span class="site-footer__strap">At Northsaga, the technology is new. The way we work isn't.</span>
-      <span>&copy; 2026 Northsaga</span>
+    <div class="footer-bottom">
+      <span>&copy; <span id="year">2026</span> Northsaga. Registered in England.</span>
+      <a href="mailto:hello@northsaga.ai">hello@northsaga.ai</a>
     </div>
   </div>
 </footer>

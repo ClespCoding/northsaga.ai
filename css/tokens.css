@@ -1,102 +1,74 @@
-/* tokens.css — the single source of design values.
-   Nothing outside this file hard-codes a colour, a font stack or a rule width. */
+/* ==========================================================================
+   NORTHSAGA — DESIGN TOKENS
+   Every colour, size and spacing value in the site resolves to something here.
+   Change a value here and it changes everywhere. Do not hard-code hex values
+   anywhere else.
+   ========================================================================== */
 
 :root {
-  /* ---- Colour ------------------------------------------------------------
-     Brass is the earned colour. It marks only things of consequence and
-     never exceeds roughly 5% of a screen. There is no second accent. */
+  /* ---- Palette -----------------------------------------------------------
+     Deep navy base, bone type, muted antique brass accent.
+     Brass is the "earned" colour — engraved plate, ledger rule, brass door
+     number. It is used sparingly: rules, eyebrows, figures, focus states.
+     Never a gradient. Never a glow.                                         */
 
-  --ink:        #0E1A24;  /* base                */
-  --ink-deep:   #08111A;  /* overlays, footer    */
-  --ink-raised: #16242F;  /* panels              */
+  --ink:        #0E1A24;   /* base background — deep navy-black          */
+  --ink-deep:   #08111A;   /* menu overlay, footer — one step darker     */
+  --ink-raised: #16242F;   /* cards, ledger rows — one step lighter      */
 
-  --bone:       #E9E4D9;  /* primary type        */
-  --bone-dim:   #97A1A9;  /* secondary type      */
+  --bone:       #E9E4D9;   /* primary type on dark                       */
+  --bone-dim:   #97A1A9;   /* secondary type, captions                   */
 
-  --paper:      #EDE9DE;  /* light sections      */
-  --paper-ink:  #12202B;  /* type on light       */
-  --paper-dim:  rgba(18, 32, 43, 0.72); /* secondary type on light.
-                             --bone-dim on --paper is only 2.2:1 — never
-                             use it there. */
+  --paper:      #EDE9DE;   /* light section background                   */
+  --paper-ink:  #12202B;   /* type on light sections                     */
 
-  --brass:      #B08D4F;  /* accent              */
-  --brass-soft: #7C6438;  /* accent on light     */
+  --brass:      #B08D4F;   /* accent — rules, eyebrows, figures          */
+  --brass-soft: #7C6438;   /* accent on light backgrounds / hairlines    */
 
-  /* Hairlines. Derived from the palette at low alpha so rules read as a
-     change in the surface rather than as a drawn border. */
-  --hair:        rgba(233, 228, 217, 0.16);
-  --hair-strong: rgba(233, 228, 217, 0.30);
-  --hair-brass:  rgba(176, 141, 79, 0.42);
-  --hair-light:  rgba(18, 32, 43, 0.18);
-  --hair-light-strong: rgba(18, 32, 43, 0.34);
+  --hairline:        rgba(233, 228, 217, 0.14);  /* rules on dark        */
+  --hairline-strong: rgba(233, 228, 217, 0.28);
+  --hairline-light:  rgba(18, 32, 43, 0.16);     /* rules on light       */
 
-  /* Menu overlay scrim. Fully opaque — at 0.98 the display type behind it
-     still read through and looked like a rendering fault. */
-  --scrim: #08111A;
+  /* ---- Type ---------------------------------------------------------------
+     Display: Cormorant Garamond — heritage, used large and light.
+     Body:    Archivo — plain, slightly industrial grotesque. Honest, legible
+              at small sizes, no personality war with the serif.
+     Swap the display face here if you licence Canela or Freight Display.    */
 
-  /* ---- Type -------------------------------------------------------------- */
+  --font-display: "Cormorant Garamond", Garamond, Georgia, "Times New Roman", serif;
+  --font-body:    "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
-  --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
-  --font-body: "Archivo", -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Helvetica, Arial, sans-serif;
+  /* Fluid type scale — clamp(min, preferred, max) */
+  --step--1: clamp(0.78rem, 0.76rem + 0.10vw, 0.84rem);
+  --step-0:  clamp(1.00rem, 0.96rem + 0.18vw, 1.10rem);
+  --step-1:  clamp(1.20rem, 1.12rem + 0.36vw, 1.44rem);
+  --step-2:  clamp(1.55rem, 1.38rem + 0.75vw, 2.10rem);
+  --step-3:  clamp(2.10rem, 1.72rem + 1.70vw, 3.30rem);
+  --step-4:  clamp(2.80rem, 2.00rem + 3.60vw, 5.40rem);
+  --step-5:  clamp(3.40rem, 2.00rem + 6.00vw, 7.20rem);
 
-  --weight-display: 300;
-  --weight-body: 400;
-  --weight-label: 500;
+  --tracking-eyebrow: 0.22em;   /* small caps labels */
+  --tracking-wordmark: 0.02em;
 
-  /* Eyebrows, buttons and labels only. Never sentences. */
-  --track-label: 0.22em;
-  --track-display: -0.015em;
+  /* ---- Spacing (8px base) ---- */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2.5rem;
+  --space-5: 4rem;
+  --space-6: 6rem;
+  --space-7: 9rem;
 
-  --leading-display: 1.02;
-  --leading-body: 1.62;
+  /* ---- Layout ---- */
+  --measure:   68ch;    /* max reading width  */
+  --container: 1240px;  /* max page width     */
+  --gutter:    clamp(1.25rem, 5vw, 5rem);
 
-  /* Fluid display sizes. Clamped so 390px never overflows. */
-  --size-hero:    clamp(2.75rem, 1.30rem + 6.20vw, 7.25rem);
-  --size-display: clamp(2.10rem, 1.34rem + 3.25vw, 4.25rem);
-  --size-section: clamp(1.85rem, 1.34rem + 2.18vw, 3.25rem);
-  --size-sub:     clamp(1.45rem, 1.20rem + 1.06vw, 2.10rem);
-  --size-menu:    clamp(2.10rem, 1.20rem + 3.85vw, 4.50rem);
-
-  --size-lead:  clamp(1.06rem, 1.00rem + 0.26vw, 1.25rem);
-  --size-body:  1rem;
-  --size-small: 0.875rem;
-  --size-label: 0.72rem;
-  --size-figure: clamp(2.60rem, 1.70rem + 3.85vw, 5.00rem);
-
-  /* ---- Space ------------------------------------------------------------- */
-
-  --space-3xs: 0.25rem;
-  --space-2xs: 0.5rem;
-  --space-xs:  0.75rem;
-  --space-s:   1rem;
-  --space-m:   1.5rem;
-  --space-l:   2.25rem;
-  --space-xl:  3.5rem;
-  --space-2xl: 5rem;
-  --space-3xl: 7.5rem;
-
-  --section-y: clamp(4.5rem, 2.9rem + 6.8vw, 9.5rem);
-  --gutter: clamp(1.25rem, 0.75rem + 2.1vw, 3.5rem);
-
-  --measure: 60ch;
-  --measure-tight: 46ch;
-  --shell: 78rem;
-
-  /* ---- Form -------------------------------------------------------------- */
-
-  --radius: 0;            /* square corners throughout */
-  --rule: 1px;
-
-  /* ---- Motion ------------------------------------------------------------
-     One orchestrated moment (the mark drawing itself). Everything else is a
-     quiet reveal. All of it is disabled under prefers-reduced-motion. */
-
+  /* ---- Motion ---- */
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --ease-wipe: cubic-bezier(0.76, 0, 0.24, 1);
+  --dur-fast: 200ms;
+  --dur-slow: 620ms;
 
-  --dur-fast: 220ms;
-  --dur: 420ms;
-  --dur-slow: 720ms;
-  --dur-draw: 1400ms;
+  /* Nothing in this brand is rounded. Corners are square. */
+  --radius: 0;
 }

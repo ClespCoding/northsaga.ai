@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" role="img" aria-label="Northsaga">
+  <g transform="translate(120,168) scale(0.62)">
+    <g fill="none" stroke="#0E1A24" stroke-width="16" stroke-linecap="butt"><path d="M 0 -160 L -70 -32"/><path d="M 0 -160 L 0 160"/><path d="M 0 -160 L 175 160"/><path d="M 175 -160 L 175 160"/></g>
+  </g>
+  <text x="255" y="222" font-family="Cormorant Garamond, Garamond, Georgia, serif"
+        font-size="200" font-weight="300" letter-spacing="1" fill="#0E1A24">orthsaga</text>
+</svg>
