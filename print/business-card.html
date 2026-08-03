@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Northsaga — business card artwork</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&family=Cormorant+Garamond:wght@300&display=swap" rel="stylesheet">
+
+<!-- Every colour and face comes from the site's tokens. Nothing is re-specified. -->
+<link rel="stylesheet" href="../css/tokens.css">
+
+<style>
+/* ==========================================================================
+   NORTHSAGA — BUSINESS CARD ARTWORK
+   85 x 55 mm trim (UK/EU) + 3 mm bleed = 91 x 61 mm artboard.
+   Content sits 8 mm in from the artboard edge, i.e. 5 mm inside the trim.
+
+   Print to PDF at 100% / "Actual size" — no scaling, no fit-to-page.
+   Corners are square by brand rule: do not let the printer round them.
+   ========================================================================== */
+
+:root {
+  --trim-w: 85mm;
+  --trim-h: 55mm;
+  --bleed: 3mm;
+  --safe: 5mm;
+  --card-w: 91mm;   /* trim + 2 x bleed */
+  --card-h: 61mm;
+  --inset: 8mm;     /* bleed + safe */
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ---------------------------------------------------- screen preview ---- */
+
+body {
+  background: #6E7176;              /* neutral proofing grey, screen only */
+  font-family: var(--font-body);
+  padding: 28px 20px 56px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 34px;
+}
+
+.sheet { display: flex; flex-wrap: wrap; gap: 34px; justify-content: center; }
+
+.spec {
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  text-align: center;
+  max-width: 62ch;
+  line-height: 1.9;
+}
+.spec b { color: var(--brass); font-weight: 500; }
+
+figure { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+figcaption {
+  color: #fff;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------- card ----- */
+
+.card {
+  position: relative;
+  width: var(--card-w);
+  height: var(--card-h);
+  padding: var(--inset);
+  overflow: hidden;
+  border-radius: 0;                 /* square corners — brand rule */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card--front { background: var(--ink);   color: var(--bone); }
+.card--back  { background: var(--paper); color: var(--paper-ink); }
+
+/* Trim and safe-area guides. Screen only — never printed. */
+.guide { position: absolute; pointer-events: none; }
+.guide--trim {
+  inset: var(--bleed);
+  outline: 1px dashed rgba(176, 141, 79, 0.75);
+}
+.guide--safe {
+  inset: var(--inset);
+  outline: 1px dotted rgba(233, 228, 217, 0.30);
+}
+.card--back .guide--safe { outline-color: rgba(18, 32, 43, 0.28); }
+
+/* ------------------------------------------------------- front face ----- */
+/* The mark, given room. Nothing competes with it. */
+
+.lockup { display: flex; align-items: center; gap: 3mm; }
+
+.lockup svg {
+  width: auto;
+  height: 14mm;                     /* 10.86mm wide — well over the 8mm floor */
+  overflow: visible;
+  flex: none;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 13mm;
+  line-height: 0.86;
+  letter-spacing: var(--tracking-wordmark);
+}
+
+.strap {
+  font-size: 6.5pt;
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--brass);
+}
+
+/* -------------------------------------------------------- back face ----- */
+
+/* align-items: flex-start so children shrink to their text. Without it the
+   placeholder underline stretches the full card width and reads as a form
+   field rather than a marker. */
+.who { display: flex; flex-direction: column; align-items: flex-start; gap: 1.4mm; }
+
+.name {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 16pt;
+  line-height: 1.05;
+  letter-spacing: -0.005em;
+}
+
+.role {
+  font-size: 6pt;
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--brass-soft);
+}
+
+/* The single earned mark on this face. */
+.brass-rule {
+  width: 14mm;
+  height: 0.4mm;
+  background: var(--brass-soft);
+  margin: 3.2mm 0;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.3mm;
+  font-size: 7.5pt;
+  line-height: 1.4;
+}
+.details a { color: inherit; text-decoration: none; }
+
+/* Foot of the back: descriptor left, mark right. The mark anchors the empty
+   half and gives the composition a second corner to sit on. */
+.back-foot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 5mm;
+}
+
+.area {
+  font-size: 6pt;
+  line-height: 1.5;
+  color: rgba(18, 32, 43, 0.62);
+  max-width: 46mm;
+}
+
+.back-mark {
+  width: auto;
+  height: 9mm;                      /* 6.98mm wide — still over the 8mm floor */
+  overflow: visible;
+  flex: none;
+  color: var(--paper-ink);
+}
+
+/* ------------------------------------------------------ placeholders ---- */
+/* The site's brass corner tag is far too big at card scale, so unfilled
+   fields get a print-appropriate marker instead: a dashed brass rule under
+   the value. Same intent — an unfilled card cannot be sent to a printer by
+   accident. Delete the class once the value is real. */
+
+.ph {
+  display: inline-block;
+  border-bottom: 0.3mm dashed var(--brass-soft);
+  padding-bottom: 0.5mm;
+}
+.ph::after {
+  content: "replace";
+  display: inline-block;
+  margin-left: 1.6mm;
+  vertical-align: middle;
+  font-family: var(--font-body);
+  font-size: 4.5pt;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--brass-soft);
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------ print ----- */
+
+@page { size: 91mm 61mm; margin: 0; }
+
+@media print {
+  body { background: none; padding: 0; display: block; gap: 0; }
+  .sheet { display: block; gap: 0; }
+  .spec, figcaption { display: none; }
+  figure { display: block; }
+  .guide { display: none; }
+
+  .card {
+    width: 91mm;
+    height: 61mm;
+    break-after: page;
+    page-break-after: always;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .card:last-of-type { break-after: auto; page-break-after: auto; }
+}
+</style>
+</head>
+<body>
+
+<p class="spec">
+  85 × 55 mm trim · 3 mm bleed · <b>square corners</b> · brass = <b>#B08D4F</b><br>
+  Print at 100%, actual size. Brass dashes mark values still to be supplied.
+</p>
+
+<div class="sheet">
+
+  <!-- ============================ FRONT ============================ -->
+  <figure>
+    <div class="card card--front">
+      <span class="guide guide--trim"></span>
+      <span class="guide guide--safe"></span>
+
+      <div class="lockup">
+        <!-- Mark geometry is the supplied artwork, unaltered. Source of truth:
+             assets/logo/northsaga-mark-bone.svg -->
+        <svg viewBox="-77 -167 259 334" aria-label="Northsaga">
+          <g fill="none" stroke="currentColor" stroke-width="14" stroke-linecap="butt">
+            <path d="M 0 -160 L -70 -32"/>
+            <path d="M 0 -160 L 0 160"/>
+            <path d="M 0 -160 L 175 160"/>
+            <path d="M 175 -160 L 175 160"/>
+          </g>
+        </svg>
+        <span class="wordmark">orthsaga</span>
+      </div>
+
+      <p class="strap">New tools. Old standards.</p>
+    </div>
+    <figcaption>Front</figcaption>
+  </figure>
+
+  <!-- ============================= BACK ============================= -->
+  <figure>
+    <div class="card card--back">
+      <span class="guide guide--trim"></span>
+      <span class="guide guide--safe"></span>
+
+      <div>
+        <div class="who">
+          <span class="name ph">Founder name</span>
+          <span class="role">Founder</span>
+        </div>
+
+        <div class="brass-rule"></div>
+
+        <div class="details">
+          <span class="ph">0000 000 0000</span>
+          <a href="mailto:hello@northsaga.ai">hello@northsaga.ai</a>
+          <span>northsaga.ai</span>
+        </div>
+      </div>
+
+      <div class="back-foot">
+        <p class="area">
+          AI agents installed and maintained.<br>
+          Dulwich and West Norwood, south London.
+        </p>
+
+        <!-- Same artwork, ink on paper. Source: assets/logo/northsaga-mark-ink.svg -->
+        <svg class="back-mark" viewBox="-77 -167 259 334" aria-label="Northsaga">
+          <g fill="none" stroke="currentColor" stroke-width="14" stroke-linecap="butt">
+            <path d="M 0 -160 L -70 -32"/>
+            <path d="M 0 -160 L 0 160"/>
+            <path d="M 0 -160 L 175 160"/>
+            <path d="M 175 -160 L 175 160"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <figcaption>Back</figcaption>
+  </figure>
+
+</div>
+
+</body>
+</html>
