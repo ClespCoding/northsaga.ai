@@ -19,25 +19,28 @@ northsaga.ai/
 ├── robots.txt
 ├── sitemap.xml
 │
-├── work/                   GENERATED — do not hand-edit. See "Generated pages".
-│   └── answering-the-phone.html
+├── agents/                 GENERATED — do not hand-edit. See "Generated pages".
+│   ├── answering-the-phone.html
+│   └── quote-follow-up.html
 │
 ├── journal/                GENERATED — do not hand-edit.
 │   └── best-cron-jobs-for-ai-agents.html
 │
 ├── tools/                  The generators. Python 3 standard library only.
 │   ├── chrome.py           Header, menu, footer and <head>, shared by both
-│   ├── build-work-pages.py Workflow pages + the schematic renderer
+│   ├── icons.py            The glyphs that sit in a schematic node
+│   ├── build-agent-pages.py  Agent pages + the schematic renderer
 │   ├── build-journal.py    Journal pages
 │   └── _homepage-list.html Generated — paste into .install-list in index.html
 │
 ├── css/
 │   ├── tokens.css          ← Every colour, size and space value. Change things HERE.
 │   ├── site.css            Layout and components
-│   └── work.css            Workflow and journal pages only
+│   └── work.css            Agent and journal pages only
 │
 ├── js/
-│   └── site.js             Menu, header state, scroll reveal. ~70 lines.
+│   ├── site.js             Menu, header state, scroll reveal. ~70 lines.
+│   └── schematic.js        Zoom and pan for the drawings. Agent pages only.
 │
 └── assets/
     ├── data/
@@ -65,30 +68,45 @@ there and it updates across the whole site. Don't hard-code values in `site.css`
 
 ## Generated pages
 
-`work/*.html` and `journal/*.html` are output. **Do not hand-edit them** — the next
+`agents/*.html` and `journal/*.html` are output. **Do not hand-edit them** — the next
 run overwrites your changes. Both generators are plain Python 3, standard library
 only, and there is still no build step: you run them when you change content, and
 the site deploys as static files either way.
 
 ```bash
 cd tools
-python3 build-work-pages.py     # workflow pages
+python3 build-agent-pages.py    # agent pages
 python3 build-journal.py        # journal pages
 python3 build-installer.py      # setup-northsaga.sh — run this last
 ```
 
-**Workflow pages.** Every page's copy, stages, parts list, build order, prices and
-schematic lives in the `PAGES` list in `tools/build-work-pages.py`. Edit there and
+**Agent pages.** Every page's copy, stages, parts list, build order, prices and
+schematic lives in the `PAGES` list in `tools/build-agent-pages.py`. Edit there and
 re-run. It also writes `tools/_homepage-list.html`, the block to paste into
-`.install-list` in `index.html` when the list of workflows changes — that block only
-contains workflows that actually have a page, so don't paste it until they all do.
+`.install-list` in `index.html` when the list of agents changes — that block only
+contains agents that actually have a page, so don't paste it until they all do.
 
 **The schematics** are drawn by `schematic()` at the top of the same file. A node is
-`(column, row, ROLE, 'line 1|line 2')`, optionally with a fifth element — `'cron'` or
-`'webhook'` — printed as a small brass label in the box's top-right corner. Two label
-lines maximum, roughly 26 characters each. An edge is `('a','b')`, or `('a','b','dash')`
+`(column, row, ROLE, 'line 1|line 2', icon, trigger)`. The last two are optional:
+`icon` is a key in `tools/icons.py` and draws a glyph in the box's top-left corner,
+and `trigger` is `'cron'` or `'webhook'`, printed as a small brass label top-right.
+An unknown icon name is a hard error rather than a silent blank. Two label lines
+maximum, roughly 26 characters each. An edge is `('a','b')`, or `('a','b','dash')`
 for a feedback loop. Columns run left to right and each is centred vertically. `NS-00`,
-the drawing of the box everything runs in, is shared and appears on every workflow page.
+the drawing of the box everything runs in, is shared and appears on every agent page.
+
+**Keep drawings narrow rather than wide.** A drawing is fitted to the viewport width
+so the whole shape is visible on a phone, which means every extra column shrinks the
+type in all of them. Three or four columns and more rows reads far better at 390px
+than the reverse. `js/schematic.js` then adds zoom — buttons, ctrl-scroll, two-finger
+pinch, double-click, and drag to pan — so the reader can get in close. Without
+JavaScript the drawing is still complete and still scrollable, just not zoomable.
+
+**The node glyphs** in `tools/icons.py` are drawn here, not copied: simplified marks
+that identify a product by silhouette rather than reproductions of anyone's
+trademarked artwork. They are deliberately monochrome — `BRAND.md` allows one accent
+and brass is it, so a set of vendor colours would be a second palette arriving
+through the back door.
 
 **Journal pages.** The article's content is *not* in the HTML. It lives in
 `assets/data/cron-jobs.json` so it can be updated on its own — by hand now, by an
@@ -152,10 +170,11 @@ element once you've filled it in, and the tag disappears.
       (`£500`) and maintenance (`£50` per month, per agent) are real. This section is the
       reason the site works; real numbers or cut the section entirely. A fake range is
       worse than none. `is-placeholder` stays on the block until all five are real.
-- [ ] **The warehouse product name** — `<span class="tbd">` on the workflow pages, in
+- [ ] **The warehouse product name** — `<span class="tbd">` on the agent pages, in
       both the parts list and the build order. Nothing has been chosen; don't guess.
-- [ ] **The remaining six workflow pages** — only `answering-the-phone` exists. Add each
-      one to `PAGES` in `tools/build-work-pages.py` and re-run. The workflow price block
+- [ ] **The remaining five agent pages** — only `answering-the-phone` and
+      `quote-follow-up` exist. Add each one to `PAGES` in
+      `tools/build-agent-pages.py` and re-run. The agent price block
       is already real at `£500` / `£50`; the media links on each page are not.
 - [ ] **Proof cards** (`#proof`) — real numbers for Broadland Products and Telemechry.
 - [ ] **Case studies** (`/case-studies`) — every block on that page is a placeholder.

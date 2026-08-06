@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""Northsaga — workflow page generator.
+"""Northsaga — agent page generator.
 
-    cd tools && python3 build-work-pages.py
+    cd tools && python3 build-agent-pages.py
 
-Every workflow page's copy, stages, parts list, build order, prices and
-schematic lives in the PAGES list below. work/*.html is generated output — do
-not hand-edit it; edit the dictionary and re-run.
+Every agent page's copy, stages, parts list, build order, prices and schematic
+lives in the PAGES list below. agents/*.html is generated output — do not
+hand-edit it; edit the dictionary and re-run.
 
 Also writes tools/_homepage-list.html, the block to paste into .install-list in
-index.html if the list of workflows changes.
+index.html if the list of agents changes.
 
 Python 3 standard library only. No dependencies, no build step.
 """
@@ -17,6 +17,7 @@ import html
 import os
 
 import chrome
+import icons
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -29,24 +30,33 @@ ROOT = os.path.dirname(HERE)
 # right and each column is centred vertically against the tallest one.
 #
 #   'nodes': {
-#     'a': (0, 0, 'Trigger', 'Inbound call|to your number'),
-#     'b': (1, 0, 'Routing', 'Rings your mobile|for twenty seconds', 'webhook'),
+#     'a': (0, 0, 'Trigger', 'Inbound call|to your number', 'phone', 'webhook'),
+#     'b': (1, 0, 'Routing', 'Rings your mobile|for twenty seconds', 'mobile'),
 #   }
 #   'edges': [('a','b'), ('b','c'), ('c','a','dash')]
 #
-# A node is (column, row, ROLE, 'line 1|line 2') or the same with a fifth
-# element, 'cron' or 'webhook', printed as a small brass label in the box's
-# top-right corner. Both lengths are accepted so older four-element nodes keep
-# working. Two label lines maximum, roughly 26 characters a line.
+# A node is (column, row, ROLE, 'line 1|line 2', icon, trigger). The last two
+# are optional:
+#
+#   icon      a key in tools/icons.py — the glyph in the box's top-left corner.
+#             An unknown name is a hard error rather than a silent blank.
+#   trigger   'cron' or 'webhook', printed as a small brass label top-right.
+#
+# Two label lines maximum, roughly 26 characters a line.
 #
 # 'dash' marks a feedback loop. An edge that runs right to left is routed in a
 # lane underneath the drawing rather than back through the boxes.
 #
-# No colours, icons, gradients or rounded corners. Every fill and stroke is a
-# CSS class styled in css/work.css, so no value is hard-coded here.
+# No gradients and no rounded corners. Every fill and stroke is a CSS class
+# styled in css/work.css, so no value is hard-coded here.
+#
+# **Keep drawings narrow rather than wide.** A schematic is fitted to the
+# viewport width by default so the whole shape is visible on a phone, which
+# means every extra column shrinks the type in all of them. Prefer three or
+# four columns and more rows.
 # ==========================================================================
 
-BOX_W, BOX_H = 196, 88
+BOX_W, BOX_H = 196, 92
 COL_GAP, ROW_GAP = 66, 30
 MARGIN = 10
 LOOP_LANE = 40
@@ -76,7 +86,8 @@ def schematic(spec, number, caption):
             "row": tup[1],
             "role": tup[2],
             "label": tup[3],
-            "trigger": tup[4] if len(tup) > 4 else None,
+            "icon": tup[4] if len(tup) > 4 else None,
+            "trigger": tup[5] if len(tup) > 5 else None,
         }
 
     columns = {}
@@ -151,45 +162,63 @@ def schematic(spec, number, caption):
                 d = f"M {sx} {acy} H {mid} V {bcy} H {ex}"
             head = _arrow(ex, bcy, "right")
         else:
-            # feedback: down out of the source, along the lane, up into the target
+            # Feedback: down out of the source, left along the lane, up the
+            # gutter to the target's left, then in. The riser goes up the empty
+            # column gap rather than the target's centre line, because a target
+            # with another box below it would otherwise have the wire pass
+            # behind that box and read as two broken lines.
+            riser = max(4, b["x"] - COL_GAP // 2)
             d = (f'M {acx} {a["y"] + BOX_H} V {lane_y} '
-                 f'H {bcx} V {b["y"] + BOX_H}')
-            head = _arrow(bcx, b["y"] + BOX_H, "up")
+                 f'H {riser} V {bcy} H {b["x"]}')
+            head = _arrow(b["x"], bcy, "right")
 
         wires.append(f'<path class="{cls}" d="{d}"/>')
         wires.append(head)
 
     # ---- boxes ----
+    #
+    # The glyph sits top-left and the ROLE label is indented past it. A node
+    # without an icon keeps the old indent, so the two can coexist in one
+    # drawing without the roles going ragged.
     boxes = []
     for key in sorted(n, key=lambda k: (n[k]["col"], n[k]["row"])):
         node = n[key]
         x, y = node["x"], node["y"]
-        boxes.append(f'<g class="sch-node">')
+        boxes.append('<g class="sch-node">')
         boxes.append(
             f'<rect class="sch-box" x="{x}" y="{y}" width="{BOX_W}" height="{BOX_H}"/>')
+        if node["icon"]:
+            boxes.append(icons.render(node["icon"], x + 14, y + 13))
         boxes.append(
-            f'<text class="sch-role" x="{x + 14}" y="{y + 24}">'
-            f'{html.escape(node["role"].upper())}</text>')
+            f'<text class="sch-role" x="{x + 14 + (icons.ICON_SIZE + 8 if node["icon"] else 0)}" '
+            f'y="{y + 26}">{html.escape(node["role"].upper())}</text>')
         if node["trigger"]:
             boxes.append(
-                f'<text class="sch-trigger" x="{x + BOX_W - 14}" y="{y + 24}" '
+                f'<text class="sch-trigger" x="{x + BOX_W - 14}" y="{y + 26}" '
                 f'text-anchor="end">{html.escape(node["trigger"].upper())}</text>')
         for i, line in enumerate(node["label"].split("|")[:2]):
             boxes.append(
-                f'<text class="sch-label" x="{x + 14}" y="{y + 50 + i * 18}">'
+                f'<text class="sch-label" x="{x + 14}" y="{y + 56 + i * 18}">'
                 f'{html.escape(line)}</text>')
         boxes.append("</g>")
 
-    body = "\n      ".join(wires + boxes)
+    body = "\n        ".join(wires + boxes)
     alt = html.escape(f"Drawing {number}. {caption}")
 
+    # The stage is width:min(100%, --sch-w), so the whole drawing is visible at
+    # rest on any screen and never blown up past its own size on a wide one.
+    # js/schematic.js overrides that inline width to zoom, and the viewport
+    # scrolls. Without JS you still get the complete drawing, just no zoom.
     return f"""<figure class="schematic">
-  <div class="schematic-scroll">
-    <svg viewBox="0 0 {width} {height}" width="{width}" height="{height}"
-         role="img" aria-label="{alt}">
-      <title>{alt}</title>
-      {body}
-    </svg>
+  <div class="schematic-viewport" tabindex="0" role="group"
+       aria-label="Drawing {number}, scrollable and zoomable">
+    <div class="schematic-stage" style="--sch-w:{width}px">
+      <svg viewBox="0 0 {width} {height}" preserveAspectRatio="xMidYMid meet"
+           role="img" aria-label="{alt}">
+        <title>{alt}</title>
+        {body}
+      </svg>
+    </div>
   </div>
   <figcaption><span class="sch-no">{number}</span>{html.escape(caption)}</figcaption>
 </figure>"""
@@ -202,14 +231,14 @@ def schematic(spec, number, caption):
 
 BOX_DRAWING = {
     "nodes": {
-        "host":   (0, 1, "Host",        "A spare PC, a NUC in|the office, or a VPS"),
-        "docker": (1, 1, "Docker",      "One compose file,|version-controlled"),
-        "n8n":    (2, 0, "n8n",         "The drawing above,|as nodes you can watch", "webhook"),
-        "py":     (2, 1, "Python 3.12", "Workers for the jobs|n8n should not do"),
-        "cron":   (2, 2, "cron",        "Anything on a clock|rather than a trigger", "cron"),
-        "data":   (3, 0, "Data layer",  "Sheets to read,|warehouse for history"),
-        "tools":  (3, 1, "Your tools",  "Phone, email, diary,|accounts, ads"),
-        "health": (3, 2, "Health check", "Heartbeat out|every two minutes", "cron"),
+        "host":   (0, 1, "Host",        "A spare PC, a NUC in|the office, or a VPS", "server"),
+        "docker": (1, 1, "Docker",      "One compose file,|version-controlled", "docker"),
+        "n8n":    (2, 0, "n8n",         "The drawing above,|as nodes you can watch", "n8n", "webhook"),
+        "py":     (2, 1, "Python 3.12", "Workers for the jobs|n8n should not do", "code"),
+        "cron":   (2, 2, "cron",        "Anything on a clock|rather than a trigger", "clock", "cron"),
+        "data":   (3, 0, "Data layer",  "Sheets to read,|warehouse for history", "database"),
+        "tools":  (3, 1, "Your tools",  "Phone, email, diary,|accounts, ads", "wrench"),
+        "health": (3, 2, "Health check", "Heartbeat out|every two minutes", "pulse", "cron"),
     },
     "edges": [
         ("host", "docker"),
@@ -237,8 +266,8 @@ BOX_CAPTION = ("The box every agent runs in. The same host, the same compose "
 CRON_ARTICLE = "/journal/best-cron-jobs-for-ai-agents"
 
 PRICE = [
-    ("Installed", "Built, connected to your number, tested on your real calls, "
-                  "handed over working.", "£500", "one-off"),
+    ("Installed", "Built, connected to the tools you already use, tested on your "
+                  "real jobs, handed over working.", "£500", "one-off"),
     ("Maintained", "Monitoring, fixes, and changes as the business changes. "
                    "A named person to ring.", "£50", "per month"),
 ]
@@ -277,13 +306,13 @@ PAGES = [
 
         "schematic": {
             "nodes": {
-                "call":  (0, 0, "Trigger",     "Inbound call to|your number", "webhook"),
-                "fork":  (1, 0, "Routing",     "Rings your mobile|for twenty seconds"),
-                "agent": (2, 0, "Voice agent", "Answers if you cannot.|Asks three questions"),
-                "text":  (2, 1, "Text-back",   "Text to the caller|inside a minute"),
-                "sweep": (2, 2, "Sweep",       "Catches anything|the webhook missed", "cron"),
-                "sheet": (3, 0, "Job sheet",   "One row: name, job,|postcode, urgency"),
-                "alert": (3, 1, "Alert",       "The same thing to|your phone and inbox"),
+                "call":  (0, 0, "Trigger",     "Inbound call to|your number", "phone", "webhook"),
+                "fork":  (1, 0, "Routing",     "Rings your mobile|for twenty seconds", "mobile"),
+                "agent": (2, 0, "Voice agent", "Answers if you cannot.|Asks three questions", "mic"),
+                "text":  (2, 1, "Text-back",   "Text to the caller|inside a minute", "whatsapp"),
+                "sweep": (2, 2, "Sweep",       "Catches anything|the webhook missed", "clock", "cron"),
+                "sheet": (3, 0, "Job sheet",   "One row: name, job,|postcode, urgency", "sheets"),
+                "alert": (3, 1, "Alert",       "The same thing to|your phone and inbox", "bell"),
             },
             "edges": [
                 ("call", "fork"),
@@ -415,6 +444,188 @@ PAGES = [
             ("The text as the caller sees it", "A photograph of the phone, not a mock-up."),
         ],
     },
+
+    {
+        "number": "02",
+        "slug": "quote-follow-up",
+        "title": "Quote follow-up",
+        "subject": "Chasing on day three, seven and fourteen",
+        "summary": ("Every quote you send gets chased on day three, day seven and "
+                    "day fourteen, in your name, without you remembering to do it. "
+                    "One reply and the chasing stops that minute."),
+        "meta": ("An agent that chases your quotes on day three, seven and fourteen "
+                 "and stops the moment the customer replies. Installed for £500, "
+                 "maintained for £50 a month."),
+
+        "intro": [
+            "A quote that is never chased is not a quote. It is a document you spent "
+            "an evening writing.",
+
+            "Most small firms chase the first time and then stop, because the second "
+            "chase is the awkward one and there is always something more urgent than "
+            "an awkward message. So the quote sits there. The customer is not saying "
+            "no. They have three quotes, a job that is not on fire, and no reason to "
+            "decide today. Whoever asks last usually gets the work.",
+
+            "This is the agent that asks. It knows what you sent, who you sent it to "
+            "and when, and it comes back three times over a fortnight. Not a "
+            "template that reads like a template — your words, your name, the job "
+            "named. And the moment they reply, by any route, it stops. Nobody has "
+            "ever bought anything from a firm that chased them after they answered.",
+        ],
+
+        # Three columns rather than five. The whole shape has to be legible on a
+        # phone before anybody zooms in — see the note above BOX_W.
+        "schematic": {
+            "nodes": {
+                "quote": (0, 1, "Trigger",  "You send a quote from|the tool you already use",
+                          "doc", "webhook"),
+                "sheet": (1, 0, "Register", "One row: who, what,|how much, what day",
+                          "sheets"),
+                "chase": (1, 1, "Chaser",   "Nine each morning.|Day three, seven, fourteen",
+                          "clock", "cron"),
+                "msg":   (2, 0, "Message",  "WhatsApp or text,|sent in your name",
+                          "whatsapp"),
+                "mail":  (2, 1, "Email",    "The same words, on|the same thread",
+                          "mail"),
+                "reply": (2, 2, "Reply watch", "Checks every ten minutes.|A reply stops it",
+                          "reply", "cron"),
+            },
+            "edges": [
+                ("quote", "sheet"),
+                ("quote", "chase"),
+                ("chase", "msg"),
+                ("chase", "mail"),
+                ("reply", "sheet", "dash"),
+            ],
+        },
+        "caption": ("Quote follow-up. The chaser reads the register every morning; "
+                    "the reply watch writes back to it and the chasing stops."),
+
+        "stages": [
+            ("You send the quote as you always did",
+             "Nothing changes about how you write or send it. The agent picks it up "
+             "from your quoting tool, your sent folder or a row you add yourself, "
+             "whichever you already do. If it means changing how you quote, we have "
+             "built the wrong thing."),
+            ("It gets written down properly",
+             "Who it went to, what the job is, what you quoted, and the date. One row "
+             "on the quote sheet. That row is the whole memory of the thing — "
+             "everything after this reads from it."),
+            ("Day three: the short one",
+             "Two lines. Did it arrive, and is there anything you want going through "
+             "before they decide. Sent on the channel they contacted you on, because "
+             "a customer who rang wants a text and a customer who emailed wants an "
+             "email."),
+            ("Day seven: the useful one",
+             "This one carries something — when you could start, what the price "
+             "includes, or the answer to the question people always ask about that "
+             "kind of job. A chase that adds nothing is just a chase."),
+            ("Day fourteen: the last one",
+             "Plainly the last. It says so. Either the job is still live or it is "
+             "not, and the customer gets to say which without feeling rude. That is "
+             "usually the message that gets an answer."),
+            ("Any reply, and it stops",
+             "By text, by email, by picking up the phone. The reply watch runs every "
+             "ten minutes and closes the sequence the same morning. It cannot chase "
+             "somebody who has already answered you, which is the failure that would "
+             "cost you the job outright."),
+            ("You find out what actually happens",
+             "Won, lost, or no answer, against what you quoted. After three months "
+             "you know your real conversion rate and which of the three messages "
+             "does the work. Most firms have never had that number."),
+        ],
+
+        "stack": [
+            ("Docker",
+             "The same compose file as every other agent. This one is another service "
+             "inside it, not another machine."),
+            ("n8n, self-hosted",
+             "The drawing above, as nodes you can watch run. Same login as the phone "
+             "agent if you already have one."),
+            ("Python 3.12",
+             "The workers: reading the register, deciding who is due a chase today, "
+             "and matching an inbound reply back to the right quote."),
+            ("cron",
+             "Two schedules. The nine o'clock chaser, and the ten-minute reply watch."),
+            ("WhatsApp or SMS",
+             "The WhatsApp Business API where you already use it, otherwise Twilio "
+             "or your existing provider. Messages go out from your number, not a "
+             "short code nobody recognises."),
+            ("Email",
+             "Sent through your own mailbox, on the original thread, so the chase "
+             "lands under the quote rather than as a fresh message with no context."),
+            ("Google Sheets",
+             "The quote register. You can open it, sort it and correct it, and the "
+             "agent reads your corrections on the next run."),
+            ("The warehouse",
+             'Still to be chosen — <span class="tbd">product name to be confirmed</span>. '
+             'Every quote, every chase and every outcome kept with its dates, so the '
+             'conversion rate is a figure rather than a feeling.'),
+        ],
+
+        "build": [
+            ("The box it runs in",
+             "If the phone agent is already installed, this step is done — it is the "
+             "same host and the same <code>docker-compose.yml</code>, with one more "
+             "service in it. If this is your first agent, it is Docker on a spare PC, "
+             "a NUC or a VPS at about five pounds a month, brought up with "
+             "<code>docker compose up -d</code>."),
+
+            ("Deciding where a quote comes from",
+             "This is the step that actually decides whether the agent works, and it "
+             "is the one to be honest about. If your quoting tool has a webhook, we "
+             "use it. If it does not, we watch your sent folder for the template you "
+             "use. If neither is reliable, you add a row yourself — ten seconds, and "
+             "far better than a clever guess that misses one quote in six."),
+
+            ("The register",
+             "A Google Sheet with one row per quote and columns for the channel, the "
+             "value, the date and the outcome. It is deliberately something you can "
+             "read and edit. If you mark a row as won on a Tuesday, nothing chases it "
+             "on the Wednesday."),
+
+            ("The cron jobs",
+             "Two. <code>0 9 * * 1-5</code> runs the chaser on weekday mornings only, "
+             "because a quote chased at eight on a Sunday reads as automated and "
+             "undoes the point of it. <code>*/10 * * * *</code> runs the reply watch. "
+             "The full list we run on an agent, and what breaks when each one is "
+             "missing, is written up in "
+             f'<a href="{CRON_ARTICLE}">the cron jobs worth setting up for an agent</a>.'),
+
+            ("The three messages",
+             "Written with you, in a half-hour sitting, from quotes you have already "
+             "sent. Not generated. They go in version control with everything else, "
+             "so a change to the day-seven message is a change you can see and undo."),
+
+            ("Matching replies back to quotes",
+             "The unglamorous half of the build. An inbound text is matched on the "
+             "number, an email on the thread, and anything the agent cannot place "
+             "with confidence is flagged for you rather than guessed at. A wrong "
+             "match closes the wrong quote, so it fails loudly instead."),
+
+            ("Credentials and accounts",
+             "Every account is opened in your name, on your card, with us added as a "
+             "partner. The WhatsApp Business number and the mailbox are yours. If you "
+             "want us gone, you remove us in one click and the chasing carries on."),
+
+            ("Testing on real quotes before hand-over",
+             "We run it against a fortnight of quotes you have already closed and "
+             "check it would have chased the right ones on the right days and left "
+             "the rest alone. Then we send live ones to our own phones and mailboxes "
+             "and reply on each channel in turn, including replying to the day-three "
+             "message after the day-seven one has been queued. Until it stops every "
+             "time, it is not finished and we do not invoice."),
+        ],
+
+        "media": [
+            ("The three messages", "The actual day three, seven and fourteen text for "
+             "one client, with the job details removed."),
+            ("The register", "A screenshot of a real month, with names removed."),
+            ("A won job, end to end", "The quote, the two chases, the reply, and the "
+             "row closing — one thread, with permission."),
+        ],
+    },
 ]
 
 
@@ -449,7 +660,7 @@ def numbered(items, css_class):
 
 
 def render(page, prev_page, next_page):
-    url = f"https://northsaga.ai/work/{page['slug']}"
+    url = f"https://northsaga.ai/agents/{page['slug']}"
     title = f"{page['title']} — Northsaga"
 
     parts = []
@@ -468,10 +679,10 @@ def render(page, prev_page, next_page):
 
     paging = ['      <a class="work-back" href="/#work">All of the work</a>']
     if prev_page:
-        paging.append(f'      <a class="work-prev" href="/work/{prev_page["slug"]}">'
+        paging.append(f'      <a class="work-prev" href="/agents/{prev_page["slug"]}">'
                       f'<span>Previous</span>{prev_page["title"]}</a>')
     if next_page:
-        paging.append(f'      <a class="work-next" href="/work/{next_page["slug"]}">'
+        paging.append(f'      <a class="work-next" href="/agents/{next_page["slug"]}">'
                       f'<span>Next</span>{next_page["title"]}</a>')
 
     return "".join([
@@ -482,8 +693,8 @@ def render(page, prev_page, next_page):
             og_title=title,
             og_description=page["summary"],
         ),
-        chrome.BANNER.format(source="tools/build-work-pages.py",
-                             script="build-work-pages.py"),
+        chrome.BANNER.format(source="tools/build-agent-pages.py",
+                             script="build-agent-pages.py"),
         chrome.header(),
         chrome.menu(current="work"),
         f"""
@@ -492,7 +703,7 @@ def render(page, prev_page, next_page):
 <!-- ============================ INTRO ============================ -->
 <section class="band work-head">
   <div class="container">
-    <p class="eyebrow">Workflow {page['number']} · {page['subject']}</p>
+    <p class="eyebrow">Agent {page['number']} · {page['subject']}</p>
     <h1 class="display">{page['title']}</h1>
     <p class="lede" style="margin-top:var(--space-3);">{page['summary']}</p>
 
@@ -580,7 +791,7 @@ def render(page, prev_page, next_page):
 
 </main>
 """,
-        chrome.footer(),
+        chrome.footer(scripts=["/js/schematic.js"]),
     ])
 
 
@@ -589,16 +800,16 @@ def homepage_list():
     items = []
     for page in PAGES:
         items.append(f"""      <li class="reveal">
-        <h3><a href="/work/{page['slug']}">{page['title']}</a></h3>
+        <h3><a href="/agents/{page['slug']}">{page['title']}</a></h3>
         <p>{page['summary']}</p>
       </li>""")
     return ("<!-- GENERATED — paste into .install-list in index.html. Only the\n"
-            "     workflows currently in tools/build-work-pages.py appear here. -->\n"
+            "     agents currently in tools/build-agent-pages.py appear here. -->\n"
             + "\n".join(items) + "\n")
 
 
 def main():
-    out_dir = os.path.join(ROOT, "work")
+    out_dir = os.path.join(ROOT, "agents")
     os.makedirs(out_dir, exist_ok=True)
 
     for i, page in enumerate(PAGES):
@@ -607,7 +818,7 @@ def main():
         path = os.path.join(out_dir, page["slug"] + ".html")
         with open(path, "w", encoding="utf-8") as fh:
             fh.write(render(page, prev_page, next_page))
-        print(f"wrote work/{page['slug']}.html")
+        print(f"wrote agents/{page['slug']}.html")
 
     with open(os.path.join(HERE, "_homepage-list.html"), "w", encoding="utf-8") as fh:
         fh.write(homepage_list())

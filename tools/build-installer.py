@@ -7,7 +7,7 @@ Writes setup-northsaga.sh in the repo root: a single shell script that recreates
 the whole site in a directory of your choosing. One quoted heredoc per text
 file, then the binary assets base64-encoded in a footer.
 
-Run it last, after build-work-pages.py and build-journal.py, or the installer
+Run it last, after build-agent-pages.py and build-journal.py, or the installer
 ships an older copy of the generated pages than the tree does.
 
 Verify it with:

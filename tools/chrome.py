@@ -2,7 +2,7 @@
 
 CLAUDE.md requires the header, menu and footer blocks to be duplicated exactly
 on every page. Rather than duplicate them again in each generator, both
-build-work-pages.py and build-journal.py import them from here, so there is one
+build-agent-pages.py and build-journal.py import them from here, so there is one
 place to change when a menu item is added.
 
 Python 3 standard library only. No dependencies, no build step.
@@ -148,10 +148,14 @@ def menu(current=None):
 """
 
 
-def footer():
+def footer(scripts=()):
+    """The footer. `scripts` are extra sources loaded after site.js — the
+    generated pages use it for js/schematic.js, which the hand-written pages
+    have no drawings for."""
     links = "\n".join(
         f'        <a href="{href}">{label}</a>' for label, href, _ in FOOTER_NAV
     )
+    extra = "".join(f'\n<script src="{src}" defer></script>' for src in scripts)
     return f"""
 <!-- ============================ FOOTER ============================ -->
 <footer class="site-footer">
@@ -173,7 +177,7 @@ def footer():
   </div>
 </footer>
 
-<script src="/js/site.js" defer></script>
+<script src="/js/site.js" defer></script>{extra}
 </body>
 </html>
 """

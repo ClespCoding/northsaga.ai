@@ -27,7 +27,7 @@ DATA = os.path.join(ROOT, "assets", "data", "cron-jobs.json")
 OUT_DIR = os.path.join(ROOT, "journal")
 
 # £500 an agent to install, £50 a month to maintain. Kept next to the price
-# block in tools/build-work-pages.py — if one changes, change both.
+# block in tools/build-agent-pages.py — if one changes, change both.
 INSTALL_PRICE = "£500"
 MAINTAIN_PRICE = "£50"
 
@@ -131,7 +131,7 @@ def render(data):
 
     <div class="hero-actions">
       <a class="btn" href="/#contact">Book the survey</a>
-      <a class="btn btn--quiet" href="/work/answering-the-phone">See one built</a>
+      <a class="btn btn--quiet" href="/agents/answering-the-phone">See one built</a>
     </div>
   </div>
 </section>

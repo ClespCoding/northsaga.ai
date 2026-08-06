@@ -2,6 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://northsaga.ai/</loc><priority>1.0</priority></url>
   <url><loc>https://northsaga.ai/case-studies</loc><priority>0.8</priority></url>
-  <url><loc>https://northsaga.ai/work/answering-the-phone</loc><priority>0.8</priority></url>
+  <url><loc>https://northsaga.ai/agents/answering-the-phone</loc><priority>0.8</priority></url>
+  <url><loc>https://northsaga.ai/agents/quote-follow-up</loc><priority>0.8</priority></url>
   <url><loc>https://northsaga.ai/journal/best-cron-jobs-for-ai-agents</loc><priority>0.7</priority></url>
 </urlset>

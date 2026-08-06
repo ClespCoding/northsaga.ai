@@ -6,7 +6,7 @@
 <title>Answering the phone — Northsaga</title>
 <meta name="description" content="A voice agent that answers the calls you miss, takes the job details, and texts the caller back inside a minute. Installed for £500, maintained for £50 a month.">
 
-<link rel="canonical" href="https://northsaga.ai/work/answering-the-phone">
+<link rel="canonical" href="https://northsaga.ai/agents/answering-the-phone">
 
 <link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/assets/favicon/favicon-32.png" sizes="32x32">
@@ -17,7 +17,7 @@
 <meta property="og:title" content="Answering the phone — Northsaga">
 <meta property="og:description" content="Every call you cannot answer gets picked up. If it is not you, it is an agent that takes the name, the number and the job, and texts them back inside a minute.">
 <meta property="og:type" content="article">
-<meta property="og:url" content="https://northsaga.ai/work/answering-the-phone">
+<meta property="og:url" content="https://northsaga.ai/agents/answering-the-phone">
 <meta property="og:image" content="https://northsaga.ai/assets/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -64,8 +64,8 @@
 </script>
 </head>
 <body>
-<!-- GENERATED FILE — do not hand-edit. Source: tools/build-work-pages.py
-     Edit there, then run: cd tools && python3 build-work-pages.py -->
+<!-- GENERATED FILE — do not hand-edit. Source: tools/build-agent-pages.py
+     Edit there, then run: cd tools && python3 build-agent-pages.py -->
 
 <!-- ============================ HEADER ============================ -->
 <header class="site-header" id="siteHeader">
@@ -107,72 +107,82 @@
 <!-- ============================ INTRO ============================ -->
 <section class="band work-head">
   <div class="container">
-    <p class="eyebrow">Workflow 01 · Voice agent and missed-call text-back</p>
+    <p class="eyebrow">Agent 01 · Voice agent and missed-call text-back</p>
     <h1 class="display">Answering the phone</h1>
     <p class="lede" style="margin-top:var(--space-3);">Every call you cannot answer gets picked up. If it is not you, it is an agent that takes the name, the number and the job, and texts them back inside a minute.</p>
 
     <figure class="schematic">
-  <div class="schematic-scroll">
-    <svg viewBox="0 0 1002 344" width="1002" height="344"
-         role="img" aria-label="Drawing NS-01. Answering the phone. Your mobile rings first; the agent only answers when you do not.">
-      <title>Drawing NS-01. Answering the phone. Your mobile rings first; the agent only answers when you do not.</title>
-      <path class="sch-wire" d="M 206 172 L 272 172"/>
-      <path class="sch-arrow" d="M 272 172 L 265 167.66 L 265 176.34 Z"/>
-      <path class="sch-wire" d="M 468 172 H 501 V 54 H 534"/>
-      <path class="sch-arrow" d="M 534 54 L 527 49.66 L 527 58.34 Z"/>
-      <path class="sch-wire" d="M 632 98 L 632 128"/>
-      <path class="sch-arrow" d="M 632 128 L 627.66 121 L 636.34 121 Z"/>
-      <path class="sch-wire" d="M 730 54 H 749 V 113 H 796"/>
-      <path class="sch-arrow" d="M 796 113 L 789 108.66 L 789 117.34 Z"/>
-      <path class="sch-wire" d="M 730 172 H 763 V 231 H 796"/>
-      <path class="sch-arrow" d="M 796 231 L 789 226.66 L 789 235.34 Z"/>
-      <path class="sch-wire" d="M 730 290 H 777 V 113 H 796"/>
-      <path class="sch-arrow" d="M 796 113 L 789 108.66 L 789 117.34 Z"/>
-      <g class="sch-node">
-      <rect class="sch-box" x="10" y="128" width="196" height="88"/>
-      <text class="sch-role" x="24" y="152">TRIGGER</text>
-      <text class="sch-trigger" x="192" y="152" text-anchor="end">WEBHOOK</text>
-      <text class="sch-label" x="24" y="178">Inbound call to</text>
-      <text class="sch-label" x="24" y="196">your number</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="272" y="128" width="196" height="88"/>
-      <text class="sch-role" x="286" y="152">ROUTING</text>
-      <text class="sch-label" x="286" y="178">Rings your mobile</text>
-      <text class="sch-label" x="286" y="196">for twenty seconds</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="534" y="10" width="196" height="88"/>
-      <text class="sch-role" x="548" y="34">VOICE AGENT</text>
-      <text class="sch-label" x="548" y="60">Answers if you cannot.</text>
-      <text class="sch-label" x="548" y="78">Asks three questions</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="534" y="128" width="196" height="88"/>
-      <text class="sch-role" x="548" y="152">TEXT-BACK</text>
-      <text class="sch-label" x="548" y="178">Text to the caller</text>
-      <text class="sch-label" x="548" y="196">inside a minute</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="534" y="246" width="196" height="88"/>
-      <text class="sch-role" x="548" y="270">SWEEP</text>
-      <text class="sch-trigger" x="716" y="270" text-anchor="end">CRON</text>
-      <text class="sch-label" x="548" y="296">Catches anything</text>
-      <text class="sch-label" x="548" y="314">the webhook missed</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="796" y="69" width="196" height="88"/>
-      <text class="sch-role" x="810" y="93">JOB SHEET</text>
-      <text class="sch-label" x="810" y="119">One row: name, job,</text>
-      <text class="sch-label" x="810" y="137">postcode, urgency</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="796" y="187" width="196" height="88"/>
-      <text class="sch-role" x="810" y="211">ALERT</text>
-      <text class="sch-label" x="810" y="237">The same thing to</text>
-      <text class="sch-label" x="810" y="255">your phone and inbox</text>
-      </g>
-    </svg>
+  <div class="schematic-viewport" tabindex="0" role="group"
+       aria-label="Drawing NS-01, scrollable and zoomable">
+    <div class="schematic-stage" style="--sch-w:1002px">
+      <svg viewBox="0 0 1002 356" preserveAspectRatio="xMidYMid meet"
+           role="img" aria-label="Drawing NS-01. Answering the phone. Your mobile rings first; the agent only answers when you do not.">
+        <title>Drawing NS-01. Answering the phone. Your mobile rings first; the agent only answers when you do not.</title>
+        <path class="sch-wire" d="M 206 178 L 272 178"/>
+        <path class="sch-arrow" d="M 272 178 L 265 173.66 L 265 182.34 Z"/>
+        <path class="sch-wire" d="M 468 178 H 501 V 56 H 534"/>
+        <path class="sch-arrow" d="M 534 56 L 527 51.66 L 527 60.34 Z"/>
+        <path class="sch-wire" d="M 632 102 L 632 132"/>
+        <path class="sch-arrow" d="M 632 132 L 627.66 125 L 636.34 125 Z"/>
+        <path class="sch-wire" d="M 730 56 H 749 V 117 H 796"/>
+        <path class="sch-arrow" d="M 796 117 L 789 112.66 L 789 121.34 Z"/>
+        <path class="sch-wire" d="M 730 178 H 763 V 239 H 796"/>
+        <path class="sch-arrow" d="M 796 239 L 789 234.66 L 789 243.34 Z"/>
+        <path class="sch-wire" d="M 730 300 H 777 V 117 H 796"/>
+        <path class="sch-arrow" d="M 796 117 L 789 112.66 L 789 121.34 Z"/>
+        <g class="sch-node">
+        <rect class="sch-box" x="10" y="132" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(24 145) scale(0.75)"><path class="sch-icon--fill" d="M7.6 2.6 4.2 6a2 2 0 0 0-.4 2.3 26 26 0 0 0 11.9 11.9 2 2 0 0 0 2.3-.4l3.4-3.4a1 1 0 0 0 0-1.4l-3.6-3.6a1 1 0 0 0-1.4 0l-1.7 1.7a19 19 0 0 1-4.5-4.5l1.7-1.7a1 1 0 0 0 0-1.4L9 2.6a1 1 0 0 0-1.4 0Z"/></g>
+        <text class="sch-role" x="50" y="158">TRIGGER</text>
+        <text class="sch-trigger" x="192" y="158" text-anchor="end">WEBHOOK</text>
+        <text class="sch-label" x="24" y="188">Inbound call to</text>
+        <text class="sch-label" x="24" y="206">your number</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="272" y="132" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(286 145) scale(0.75)"><path class="sch-icon--fill" d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><path class="sch-icon--cut" d="M6.8 5.6h10.4v11.8H6.8Z"/></g>
+        <text class="sch-role" x="312" y="158">ROUTING</text>
+        <text class="sch-label" x="286" y="188">Rings your mobile</text>
+        <text class="sch-label" x="286" y="206">for twenty seconds</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="534" y="10" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(548 23) scale(0.75)"><path class="sch-icon--fill" d="M12 2a3.2 3.2 0 0 0-3.2 3.2v6.4a3.2 3.2 0 0 0 6.4 0V5.2A3.2 3.2 0 0 0 12 2Z"/><path class="sch-icon--fill" d="M5.4 10.4H3.6a8.4 8.4 0 0 0 7.4 8.3V22h2v-3.3a8.4 8.4 0 0 0 7.4-8.3h-1.8a6.6 6.6 0 0 1-13.2 0Z"/></g>
+        <text class="sch-role" x="574" y="36">VOICE AGENT</text>
+        <text class="sch-label" x="548" y="66">Answers if you cannot.</text>
+        <text class="sch-label" x="548" y="84">Asks three questions</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="534" y="132" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(548 145) scale(0.75)"><path class="sch-icon--fill" d="M12 2a10 10 0 0 0-8.7 15L2 22l5.2-1.3A10 10 0 1 0 12 2Z"/><path class="sch-icon--cut" d="M8.9 7.5c-.2-.4-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.4-.3.3-.9.8-.9 2s.9 2.4 1 2.6c.1.2 1.7 2.7 4.2 3.7 2 .9 2.5.7 2.9.7.5 0 1.4-.6 1.6-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.5-.3l-1.7-.8c-.2-.1-.4-.1-.6.1l-.7 1c-.1.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5l.4-.5c.1-.1.2-.3.2-.4 0-.2 0-.3-.1-.4l-.6-1.9Z"/></g>
+        <text class="sch-role" x="574" y="158">TEXT-BACK</text>
+        <text class="sch-label" x="548" y="188">Text to the caller</text>
+        <text class="sch-label" x="548" y="206">inside a minute</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="534" y="254" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(548 267) scale(0.75)"><path class="sch-icon--fill" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Z"/><path class="sch-icon--cut" d="M12 4.4a7.6 7.6 0 1 1 0 15.2 7.6 7.6 0 0 1 0-15.2Z"/><path class="sch-icon--fill" d="M11.2 6.4h1.6v6.4h-1.6Z"/><path class="sch-icon--fill" d="M11.2 11.2h5v1.6h-5Z"/></g>
+        <text class="sch-role" x="574" y="280">SWEEP</text>
+        <text class="sch-trigger" x="716" y="280" text-anchor="end">CRON</text>
+        <text class="sch-label" x="548" y="310">Catches anything</text>
+        <text class="sch-label" x="548" y="328">the webhook missed</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="796" y="71" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(810 84) scale(0.75)"><path class="sch-icon--fill" d="M5 2h9l5 5v15H5Z"/><path class="sch-icon--cut" d="M7.4 11h9.2v1.5H7.4Z"/><path class="sch-icon--cut" d="M7.4 14.2h9.2v1.5H7.4Z"/><path class="sch-icon--cut" d="M7.4 17.4h9.2v1.5H7.4Z"/><path class="sch-icon--cut" d="M11.3 10.4h1.5v9.2h-1.5Z"/></g>
+        <text class="sch-role" x="836" y="97">JOB SHEET</text>
+        <text class="sch-label" x="810" y="127">One row: name, job,</text>
+        <text class="sch-label" x="810" y="145">postcode, urgency</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="796" y="193" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(810 206) scale(0.75)"><path class="sch-icon--fill" d="M12 2a5.6 5.6 0 0 0-5.6 5.6v3.6L4 15.4v1.4h16v-1.4l-2.4-4.2V7.6A5.6 5.6 0 0 0 12 2Z"/><path class="sch-icon--fill" d="M9.4 18.4a2.6 2.6 0 0 0 5.2 0Z"/></g>
+        <text class="sch-role" x="836" y="219">ALERT</text>
+        <text class="sch-label" x="810" y="249">The same thing to</text>
+        <text class="sch-label" x="810" y="267">your phone and inbox</text>
+        </g>
+      </svg>
+    </div>
   </div>
   <figcaption><span class="sch-no">NS-01</span>Answering the phone. Your mobile rings first; the agent only answers when you do not.</figcaption>
 </figure>
@@ -291,80 +301,91 @@
     </p>
 
     <figure class="schematic">
-  <div class="schematic-scroll">
-    <svg viewBox="0 0 1002 384" width="1002" height="384"
-         role="img" aria-label="Drawing NS-00. The box every agent runs in. The same host, the same compose file, the same n8n — which is why the fifth agent costs less to run than the first.">
-      <title>Drawing NS-00. The box every agent runs in. The same host, the same compose file, the same n8n — which is why the fifth agent costs less to run than the first.</title>
-      <path class="sch-wire" d="M 206 172 L 272 172"/>
-      <path class="sch-arrow" d="M 272 172 L 265 167.66 L 265 176.34 Z"/>
-      <path class="sch-wire" d="M 468 172 H 501 V 54 H 534"/>
-      <path class="sch-arrow" d="M 534 54 L 527 49.66 L 527 58.34 Z"/>
-      <path class="sch-wire" d="M 468 172 L 534 172"/>
-      <path class="sch-arrow" d="M 534 172 L 527 167.66 L 527 176.34 Z"/>
-      <path class="sch-wire" d="M 468 172 H 501 V 290 H 534"/>
-      <path class="sch-arrow" d="M 534 290 L 527 285.66 L 527 294.34 Z"/>
-      <path class="sch-wire" d="M 730 54 L 796 54"/>
-      <path class="sch-arrow" d="M 796 54 L 789 49.66 L 789 58.34 Z"/>
-      <path class="sch-wire" d="M 730 54 H 756 V 172 H 796"/>
-      <path class="sch-arrow" d="M 796 172 L 789 167.66 L 789 176.34 Z"/>
-      <path class="sch-wire" d="M 730 172 H 770 V 54 H 796"/>
-      <path class="sch-arrow" d="M 796 54 L 789 49.66 L 789 58.34 Z"/>
-      <path class="sch-wire" d="M 730 290 L 796 290"/>
-      <path class="sch-arrow" d="M 796 290 L 789 285.66 L 789 294.34 Z"/>
-      <path class="sch-wire sch-wire--dash" d="M 894 334 V 354 H 370 V 216"/>
-      <path class="sch-arrow" d="M 370 216 L 365.66 223 L 374.34 223 Z"/>
-      <g class="sch-node">
-      <rect class="sch-box" x="10" y="128" width="196" height="88"/>
-      <text class="sch-role" x="24" y="152">HOST</text>
-      <text class="sch-label" x="24" y="178">A spare PC, a NUC in</text>
-      <text class="sch-label" x="24" y="196">the office, or a VPS</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="272" y="128" width="196" height="88"/>
-      <text class="sch-role" x="286" y="152">DOCKER</text>
-      <text class="sch-label" x="286" y="178">One compose file,</text>
-      <text class="sch-label" x="286" y="196">version-controlled</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="534" y="10" width="196" height="88"/>
-      <text class="sch-role" x="548" y="34">N8N</text>
-      <text class="sch-trigger" x="716" y="34" text-anchor="end">WEBHOOK</text>
-      <text class="sch-label" x="548" y="60">The drawing above,</text>
-      <text class="sch-label" x="548" y="78">as nodes you can watch</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="534" y="128" width="196" height="88"/>
-      <text class="sch-role" x="548" y="152">PYTHON 3.12</text>
-      <text class="sch-label" x="548" y="178">Workers for the jobs</text>
-      <text class="sch-label" x="548" y="196">n8n should not do</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="534" y="246" width="196" height="88"/>
-      <text class="sch-role" x="548" y="270">CRON</text>
-      <text class="sch-trigger" x="716" y="270" text-anchor="end">CRON</text>
-      <text class="sch-label" x="548" y="296">Anything on a clock</text>
-      <text class="sch-label" x="548" y="314">rather than a trigger</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="796" y="10" width="196" height="88"/>
-      <text class="sch-role" x="810" y="34">DATA LAYER</text>
-      <text class="sch-label" x="810" y="60">Sheets to read,</text>
-      <text class="sch-label" x="810" y="78">warehouse for history</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="796" y="128" width="196" height="88"/>
-      <text class="sch-role" x="810" y="152">YOUR TOOLS</text>
-      <text class="sch-label" x="810" y="178">Phone, email, diary,</text>
-      <text class="sch-label" x="810" y="196">accounts, ads</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="796" y="246" width="196" height="88"/>
-      <text class="sch-role" x="810" y="270">HEALTH CHECK</text>
-      <text class="sch-trigger" x="978" y="270" text-anchor="end">CRON</text>
-      <text class="sch-label" x="810" y="296">Heartbeat out</text>
-      <text class="sch-label" x="810" y="314">every two minutes</text>
-      </g>
-    </svg>
+  <div class="schematic-viewport" tabindex="0" role="group"
+       aria-label="Drawing NS-00, scrollable and zoomable">
+    <div class="schematic-stage" style="--sch-w:1002px">
+      <svg viewBox="0 0 1002 396" preserveAspectRatio="xMidYMid meet"
+           role="img" aria-label="Drawing NS-00. The box every agent runs in. The same host, the same compose file, the same n8n — which is why the fifth agent costs less to run than the first.">
+        <title>Drawing NS-00. The box every agent runs in. The same host, the same compose file, the same n8n — which is why the fifth agent costs less to run than the first.</title>
+        <path class="sch-wire" d="M 206 178 L 272 178"/>
+        <path class="sch-arrow" d="M 272 178 L 265 173.66 L 265 182.34 Z"/>
+        <path class="sch-wire" d="M 468 178 H 501 V 56 H 534"/>
+        <path class="sch-arrow" d="M 534 56 L 527 51.66 L 527 60.34 Z"/>
+        <path class="sch-wire" d="M 468 178 L 534 178"/>
+        <path class="sch-arrow" d="M 534 178 L 527 173.66 L 527 182.34 Z"/>
+        <path class="sch-wire" d="M 468 178 H 501 V 300 H 534"/>
+        <path class="sch-arrow" d="M 534 300 L 527 295.66 L 527 304.34 Z"/>
+        <path class="sch-wire" d="M 730 56 L 796 56"/>
+        <path class="sch-arrow" d="M 796 56 L 789 51.66 L 789 60.34 Z"/>
+        <path class="sch-wire" d="M 730 56 H 756 V 178 H 796"/>
+        <path class="sch-arrow" d="M 796 178 L 789 173.66 L 789 182.34 Z"/>
+        <path class="sch-wire" d="M 730 178 H 770 V 56 H 796"/>
+        <path class="sch-arrow" d="M 796 56 L 789 51.66 L 789 60.34 Z"/>
+        <path class="sch-wire" d="M 730 300 L 796 300"/>
+        <path class="sch-arrow" d="M 796 300 L 789 295.66 L 789 304.34 Z"/>
+        <path class="sch-wire sch-wire--dash" d="M 894 346 V 366 H 239 V 178 H 272"/>
+        <path class="sch-arrow" d="M 272 178 L 265 173.66 L 265 182.34 Z"/>
+        <g class="sch-node">
+        <rect class="sch-box" x="10" y="132" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(24 145) scale(0.75)"><path class="sch-icon--fill" d="M2.6 4h18.8v6.4H2.6Z"/><path class="sch-icon--fill" d="M2.6 13.6h18.8V20H2.6Z"/><path class="sch-icon--cut" d="M5.2 6.4h2v1.6h-2Z"/><path class="sch-icon--cut" d="M5.2 16h2v1.6h-2Z"/><path class="sch-icon--cut" d="M8.6 6.4h6v1.6h-6Z"/><path class="sch-icon--cut" d="M8.6 16h6v1.6h-6Z"/></g>
+        <text class="sch-role" x="50" y="158">HOST</text>
+        <text class="sch-label" x="24" y="188">A spare PC, a NUC in</text>
+        <text class="sch-label" x="24" y="206">the office, or a VPS</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="272" y="132" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(286 145) scale(0.75)"><path class="sch-icon--fill" d="M3.2 10.6h3.4V14H3.2Z"/><path class="sch-icon--fill" d="M7.3 10.6h3.4V14H7.3Z"/><path class="sch-icon--fill" d="M11.4 10.6h3.4V14h-3.4Z"/><path class="sch-icon--fill" d="M7.3 6.7h3.4v3.4H7.3Z"/><path class="sch-icon--fill" d="M11.4 6.7h3.4v3.4h-3.4Z"/><path class="sch-icon--fill" d="M11.4 2.8h3.4v3.4h-3.4Z"/><path class="sch-icon--fill" d="M1.8 15.2h20.4c-.9 3.6-4.6 5.8-9.6 5.8-5.6 0-9.4-2-10.8-5.8Z"/></g>
+        <text class="sch-role" x="312" y="158">DOCKER</text>
+        <text class="sch-label" x="286" y="188">One compose file,</text>
+        <text class="sch-label" x="286" y="206">version-controlled</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="534" y="10" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(548 23) scale(0.75)"><path class="sch-icon--fill" d="M3.4 12a2.7 2.7 0 1 1 5.4 0 2.7 2.7 0 0 1-5.4 0Z"/><path class="sch-icon--fill" d="M15.2 6.6a2.7 2.7 0 1 1 5.4 0 2.7 2.7 0 0 1-5.4 0Z"/><path class="sch-icon--fill" d="M15.2 17.4a2.7 2.7 0 1 1 5.4 0 2.7 2.7 0 0 1-5.4 0Z"/><path class="sch-icon--line" d="M6.1 12 17.9 6.6"/><path class="sch-icon--line" d="M6.1 12 17.9 17.4"/></g>
+        <text class="sch-role" x="574" y="36">N8N</text>
+        <text class="sch-trigger" x="716" y="36" text-anchor="end">WEBHOOK</text>
+        <text class="sch-label" x="548" y="66">The drawing above,</text>
+        <text class="sch-label" x="548" y="84">as nodes you can watch</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="534" y="132" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(548 145) scale(0.75)"><path class="sch-icon--fill" d="M9.2 4.6 3 12l6.2 7.4 1.7-1.4L5.8 12l5.1-6Z"/><path class="sch-icon--fill" d="M14.8 4.6 21 12l-6.2 7.4-1.7-1.4L18.2 12l-5.1-6Z"/></g>
+        <text class="sch-role" x="574" y="158">PYTHON 3.12</text>
+        <text class="sch-label" x="548" y="188">Workers for the jobs</text>
+        <text class="sch-label" x="548" y="206">n8n should not do</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="534" y="254" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(548 267) scale(0.75)"><path class="sch-icon--fill" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Z"/><path class="sch-icon--cut" d="M12 4.4a7.6 7.6 0 1 1 0 15.2 7.6 7.6 0 0 1 0-15.2Z"/><path class="sch-icon--fill" d="M11.2 6.4h1.6v6.4h-1.6Z"/><path class="sch-icon--fill" d="M11.2 11.2h5v1.6h-5Z"/></g>
+        <text class="sch-role" x="574" y="280">CRON</text>
+        <text class="sch-trigger" x="716" y="280" text-anchor="end">CRON</text>
+        <text class="sch-label" x="548" y="310">Anything on a clock</text>
+        <text class="sch-label" x="548" y="328">rather than a trigger</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="796" y="10" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(810 23) scale(0.75)"><path class="sch-icon--fill" d="M12 2c-4.4 0-8 1.3-8 3v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5c0-1.7-3.6-3-8-3Z"/><path class="sch-icon--cut" d="M4 8.2c1.7 1 4.6 1.6 8 1.6s6.3-.6 8-1.6v1.8c-1.7 1-4.6 1.6-8 1.6s-6.3-.6-8-1.6Z"/><path class="sch-icon--cut" d="M4 13.4c1.7 1 4.6 1.6 8 1.6s6.3-.6 8-1.6v1.8c-1.7 1-4.6 1.6-8 1.6s-6.3-.6-8-1.6Z"/></g>
+        <text class="sch-role" x="836" y="36">DATA LAYER</text>
+        <text class="sch-label" x="810" y="66">Sheets to read,</text>
+        <text class="sch-label" x="810" y="84">warehouse for history</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="796" y="132" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(810 145) scale(0.75)"><path class="sch-icon--fill" d="M20.7 4.6a5.6 5.6 0 0 1-7 7l-7.3 7.3a2.2 2.2 0 1 1-3.1-3.1l7.3-7.3a5.6 5.6 0 0 1 7-7l-3.3 3.3.9 3.2 3.2.9Z"/></g>
+        <text class="sch-role" x="836" y="158">YOUR TOOLS</text>
+        <text class="sch-label" x="810" y="188">Phone, email, diary,</text>
+        <text class="sch-label" x="810" y="206">accounts, ads</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="796" y="254" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(810 267) scale(0.75)"><path class="sch-icon--line" d="M2 12h4.6l2.4-5.8 3.5 11.6 2.4-6.4 1.5 2.6H22"/></g>
+        <text class="sch-role" x="836" y="280">HEALTH CHECK</text>
+        <text class="sch-trigger" x="978" y="280" text-anchor="end">CRON</text>
+        <text class="sch-label" x="810" y="310">Heartbeat out</text>
+        <text class="sch-label" x="810" y="328">every two minutes</text>
+        </g>
+      </svg>
+    </div>
   </div>
   <figcaption><span class="sch-no">NS-00</span>The box every agent runs in. The same host, the same compose file, the same n8n — which is why the fifth agent costs less to run than the first.</figcaption>
 </figure>
@@ -459,7 +480,7 @@
       <div class="price-row">
         <span class="item">
           <strong>Installed</strong>
-          <span>Built, connected to your number, tested on your real calls, handed over working.</span>
+          <span>Built, connected to the tools you already use, tested on your real jobs, handed over working.</span>
         </span>
         <span class="figure">£500 <small>one-off</small></span>
       </div>
@@ -485,6 +506,7 @@
   <div class="container">
     <div class="work-paging-inner">
       <a class="work-back" href="/#work">All of the work</a>
+      <a class="work-next" href="/agents/quote-follow-up"><span>Next</span>Quote follow-up</a>
     </div>
   </div>
 </nav>
@@ -517,5 +539,6 @@
 </footer>
 
 <script src="/js/site.js" defer></script>
+<script src="/js/schematic.js" defer></script>
 </body>
 </html>

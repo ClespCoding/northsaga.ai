@@ -1,6 +1,6 @@
 /* ==========================================================================
    NORTHSAGA — WORKFLOW AND JOURNAL PAGES
-   Loaded only by /work/* and /journal/*. Everything here is built from the
+   Loaded only by /agents/* and /journal/*. Everything here is built from the
    same devices as site.css: hairline rules, square corners, brass used for a
    figure or a label and nothing else. No value is hard-coded — see tokens.css.
    Order: page head → schematic → numbered lists → code → parts → media →
@@ -24,27 +24,111 @@
 
 /* ==========================================================================
    SCHEMATICS
-   Engineering drawing, not an illustration. The SVG keeps its intrinsic width
-   and the wrapper scrolls, so a drawing stays legible on a phone instead of
-   shrinking to nothing. Every colour is a class, never an attribute.
+   Engineering drawing, not an illustration. Every colour is a class, never an
+   attribute.
+
+   The whole drawing is visible at rest on any screen: the stage is
+   min(100%, its own width), so it fits a phone and is never blown up past
+   full size on a desktop. That makes the type small on a narrow screen, which
+   is what js/schematic.js pays for — it widens the stage past 100% and the
+   viewport scrolls. Without JS you get the complete drawing and no zoom,
+   which is the right thing to fail to.
    ========================================================================== */
 .schematic { margin-top: var(--space-5); }
 
-.schematic-scroll {
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding-bottom: var(--space-1);
+.schematic-viewport {
+  overflow: auto;
+  max-height: 78vh;
   -webkit-overflow-scrolling: touch;
+  /* One finger scrolls; two fingers are handed to the pinch handler. */
+  touch-action: pan-x pan-y;
+}
+.schematic-viewport:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 2px;
+}
+.schematic[data-zoomed="true"] .schematic-viewport { cursor: grab; }
+.schematic[data-zoomed="true"] .schematic-viewport:active { cursor: grabbing; }
+
+.schematic-stage { width: min(100%, var(--sch-w)); }
+
+/* site.css sets svg { max-width: 100% } for photographs and the mark. Here the
+   stage owns the width and the drawing fills it. */
+.schematic-stage svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: none;
 }
 
-/* site.css sets svg { max-width: 100% } for photographs and the mark. A
-   drawing must not obey that or it squashes instead of scrolling. */
-.schematic-scroll svg { max-width: none; }
+/* ---------- Zoom controls, injected by js/schematic.js ---------- */
+.schematic-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+}
+
+.sch-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  padding-inline: 0.55rem;
+  background: none;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius);
+  color: var(--bone);
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease);
+}
+.sch-btn:hover:not(:disabled) { border-color: var(--brass); color: var(--brass); }
+.sch-btn:disabled { opacity: 0.35; cursor: default; }
+.sch-btn--text {
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  font-size: var(--step--1);
+}
+
+.sch-level {
+  min-width: 3.5rem;
+  text-align: center;
+  font-size: var(--step--1);
+  color: var(--bone-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.sch-hint {
+  font-size: var(--step--1);
+  color: var(--bone-dim);
+  margin-left: auto;
+  text-align: right;
+}
 
 .sch-box {
   fill: var(--ink-raised);
   stroke: var(--hairline-strong);
   stroke-width: 1;
+}
+
+/* ---------- Node glyphs ----------
+   Drawn in tools/icons.py. Monochrome on purpose: brass is the only accent
+   this brand has, so a wall of vendor colours would be a second palette.
+   --cut must track .sch-box's fill or the punched-out detail stops reading. */
+.sch-icon--fill { fill: var(--bone-dim); }
+.sch-icon--cut  { fill: var(--ink-raised); }
+.sch-icon--line {
+  fill: none;
+  stroke: var(--bone-dim);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .sch-wire {
@@ -407,6 +491,21 @@ code {
 
 /* ---------- Small screens ---------- */
 @media (max-width: 640px) {
+  /* Full-bleed the drawing out through the container gutter. On a 390px phone
+     that is roughly 40px of extra width, which is 11% more drawing. */
+  .schematic-viewport {
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--space-1);
+  }
+  /* Keep the hint — on a phone the drawing is at its smallest and the reader
+     most needs telling that it zooms. It just gets its own line. */
+  .schematic-controls { flex-wrap: wrap; }
+  .sch-hint {
+    margin-left: 0;
+    flex-basis: 100%;
+    text-align: left;
+  }
+
   .price-row { grid-template-columns: 1fr; }
   .price-row .figure,
   .price-row .figure small { text-align: left; }

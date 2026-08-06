@@ -18,13 +18,14 @@ cd "$DEST"
 
 nsbin() { openssl base64 -d -A > "$1"; }
 
-mkdir -p 'assets' 'assets/data' 'assets/favicon' 'assets/logo' 'css' 'journal' 'js' 'tools' 'work'
+mkdir -p 'agents' 'assets' 'assets/data' 'assets/favicon' 'assets/logo' 'css' 'journal' 'js' 'tools'
 
 cat > '.gitignore' <<'NSEOF'
 .DS_Store
 .vercel
 node_modules
 *.log
+__pycache__/
 NSEOF
 
 cat > '2026-08-06_HANDOFF.md' <<'NSEOF'
@@ -40,8 +41,12 @@ what is still open.
 
 The site is `/Users/georgeastin/Claude/Projects/isaga/northsaga-site`. It is its
 own git repository, sitting inside the `isaga` project directory (which is not
-one). Nothing has been committed this session — everything below is uncommitted
-working-tree state.
+one).
+
+**Everything below was committed and pushed on 6 August 2026** as `bb585cd`,
+"Add the missed-call text-back workflow page and the cron jobs article", and is
+live on `main`. `.gitignore` gained `__pycache__/` in the same commit. This
+handoff file itself is deliberately left untracked.
 
 ## The one thing that surprised us
 
@@ -659,25 +664,28 @@ northsaga.ai/
 ├── robots.txt
 ├── sitemap.xml
 │
-├── work/                   GENERATED — do not hand-edit. See "Generated pages".
-│   └── answering-the-phone.html
+├── agents/                 GENERATED — do not hand-edit. See "Generated pages".
+│   ├── answering-the-phone.html
+│   └── quote-follow-up.html
 │
 ├── journal/                GENERATED — do not hand-edit.
 │   └── best-cron-jobs-for-ai-agents.html
 │
 ├── tools/                  The generators. Python 3 standard library only.
 │   ├── chrome.py           Header, menu, footer and <head>, shared by both
-│   ├── build-work-pages.py Workflow pages + the schematic renderer
+│   ├── icons.py            The glyphs that sit in a schematic node
+│   ├── build-agent-pages.py  Agent pages + the schematic renderer
 │   ├── build-journal.py    Journal pages
 │   └── _homepage-list.html Generated — paste into .install-list in index.html
 │
 ├── css/
 │   ├── tokens.css          ← Every colour, size and space value. Change things HERE.
 │   ├── site.css            Layout and components
-│   └── work.css            Workflow and journal pages only
+│   └── work.css            Agent and journal pages only
 │
 ├── js/
-│   └── site.js             Menu, header state, scroll reveal. ~70 lines.
+│   ├── site.js             Menu, header state, scroll reveal. ~70 lines.
+│   └── schematic.js        Zoom and pan for the drawings. Agent pages only.
 │
 └── assets/
     ├── data/
@@ -705,30 +713,45 @@ there and it updates across the whole site. Don't hard-code values in `site.css`
 
 ## Generated pages
 
-`work/*.html` and `journal/*.html` are output. **Do not hand-edit them** — the next
+`agents/*.html` and `journal/*.html` are output. **Do not hand-edit them** — the next
 run overwrites your changes. Both generators are plain Python 3, standard library
 only, and there is still no build step: you run them when you change content, and
 the site deploys as static files either way.
 
 ```bash
 cd tools
-python3 build-work-pages.py     # workflow pages
+python3 build-agent-pages.py    # agent pages
 python3 build-journal.py        # journal pages
 python3 build-installer.py      # setup-northsaga.sh — run this last
 ```
 
-**Workflow pages.** Every page's copy, stages, parts list, build order, prices and
-schematic lives in the `PAGES` list in `tools/build-work-pages.py`. Edit there and
+**Agent pages.** Every page's copy, stages, parts list, build order, prices and
+schematic lives in the `PAGES` list in `tools/build-agent-pages.py`. Edit there and
 re-run. It also writes `tools/_homepage-list.html`, the block to paste into
-`.install-list` in `index.html` when the list of workflows changes — that block only
-contains workflows that actually have a page, so don't paste it until they all do.
+`.install-list` in `index.html` when the list of agents changes — that block only
+contains agents that actually have a page, so don't paste it until they all do.
 
 **The schematics** are drawn by `schematic()` at the top of the same file. A node is
-`(column, row, ROLE, 'line 1|line 2')`, optionally with a fifth element — `'cron'` or
-`'webhook'` — printed as a small brass label in the box's top-right corner. Two label
-lines maximum, roughly 26 characters each. An edge is `('a','b')`, or `('a','b','dash')`
+`(column, row, ROLE, 'line 1|line 2', icon, trigger)`. The last two are optional:
+`icon` is a key in `tools/icons.py` and draws a glyph in the box's top-left corner,
+and `trigger` is `'cron'` or `'webhook'`, printed as a small brass label top-right.
+An unknown icon name is a hard error rather than a silent blank. Two label lines
+maximum, roughly 26 characters each. An edge is `('a','b')`, or `('a','b','dash')`
 for a feedback loop. Columns run left to right and each is centred vertically. `NS-00`,
-the drawing of the box everything runs in, is shared and appears on every workflow page.
+the drawing of the box everything runs in, is shared and appears on every agent page.
+
+**Keep drawings narrow rather than wide.** A drawing is fitted to the viewport width
+so the whole shape is visible on a phone, which means every extra column shrinks the
+type in all of them. Three or four columns and more rows reads far better at 390px
+than the reverse. `js/schematic.js` then adds zoom — buttons, ctrl-scroll, two-finger
+pinch, double-click, and drag to pan — so the reader can get in close. Without
+JavaScript the drawing is still complete and still scrollable, just not zoomable.
+
+**The node glyphs** in `tools/icons.py` are drawn here, not copied: simplified marks
+that identify a product by silhouette rather than reproductions of anyone's
+trademarked artwork. They are deliberately monochrome — `BRAND.md` allows one accent
+and brass is it, so a set of vendor colours would be a second palette arriving
+through the back door.
 
 **Journal pages.** The article's content is *not* in the HTML. It lives in
 `assets/data/cron-jobs.json` so it can be updated on its own — by hand now, by an
@@ -792,10 +815,11 @@ element once you've filled it in, and the tag disappears.
       (`£500`) and maintenance (`£50` per month, per agent) are real. This section is the
       reason the site works; real numbers or cut the section entirely. A fake range is
       worse than none. `is-placeholder` stays on the block until all five are real.
-- [ ] **The warehouse product name** — `<span class="tbd">` on the workflow pages, in
+- [ ] **The warehouse product name** — `<span class="tbd">` on the agent pages, in
       both the parts list and the build order. Nothing has been chosen; don't guess.
-- [ ] **The remaining six workflow pages** — only `answering-the-phone` exists. Add each
-      one to `PAGES` in `tools/build-work-pages.py` and re-run. The workflow price block
+- [ ] **The remaining five agent pages** — only `answering-the-phone` and
+      `quote-follow-up` exist. Add each one to `PAGES` in
+      `tools/build-agent-pages.py` and re-run. The agent price block
       is already real at `£500` / `£50`; the media links on each page are not.
 - [ ] **Proof cards** (`#proof`) — real numbers for Broadland Products and Telemechry.
 - [ ] **Case studies** (`/case-studies`) — every block on that page is a placeholder.
@@ -1241,16 +1265,16 @@ cat > 'index.html' <<'NSEOF'
     </h2>
 
     <ul class="install-list">
-      <!-- Only this one has a workflow page so far. The rest get theirs as they
-           are added to tools/build-work-pages.py; paste tools/_homepage-list.html
+      <!-- Two of these have an agent page so far. The rest get theirs as they
+           are added to tools/build-agent-pages.py; paste tools/_homepage-list.html
            over this list once all of them exist. -->
       <li class="reveal">
-        <h3><a href="/work/answering-the-phone">Missed-call text-back</a></h3>
+        <h3><a href="/agents/answering-the-phone">Missed-call text-back</a></h3>
         <p>Every call you cannot answer gets a text within a minute asking what they need.
            Most of the work you lose, you lose here — usually to whoever picked up second.</p>
       </li>
       <li class="reveal">
-        <h3>Quote follow-up</h3>
+        <h3><a href="/agents/quote-follow-up">Quote follow-up</a></h3>
         <p>Quotes get chased on day three, day seven and day fourteen without you
            remembering to do it. Chasing stops the moment they reply.</p>
       </li>
@@ -1532,7 +1556,8 @@ cat > 'sitemap.xml' <<'NSEOF'
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://northsaga.ai/</loc><priority>1.0</priority></url>
   <url><loc>https://northsaga.ai/case-studies</loc><priority>0.8</priority></url>
-  <url><loc>https://northsaga.ai/work/answering-the-phone</loc><priority>0.8</priority></url>
+  <url><loc>https://northsaga.ai/agents/answering-the-phone</loc><priority>0.8</priority></url>
+  <url><loc>https://northsaga.ai/agents/quote-follow-up</loc><priority>0.8</priority></url>
   <url><loc>https://northsaga.ai/journal/best-cron-jobs-for-ai-agents</loc><priority>0.7</priority></url>
 </urlset>
 NSEOF
@@ -1546,6 +1571,13 @@ cat > 'vercel.json' <<'NSEOF'
   "outputDirectory": ".",
   "cleanUrls": true,
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/work/:slug",
+      "destination": "/agents/:slug",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/assets/(.*)",
@@ -1562,6 +1594,1099 @@ cat > 'vercel.json' <<'NSEOF'
     }
   ]
 }
+NSEOF
+
+cat > 'agents/answering-the-phone.html' <<'NSEOF'
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Answering the phone — Northsaga</title>
+<meta name="description" content="A voice agent that answers the calls you miss, takes the job details, and texts the caller back inside a minute. Installed for £500, maintained for £50 a month.">
+
+<link rel="canonical" href="https://northsaga.ai/agents/answering-the-phone">
+
+<link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/favicon/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#0E1A24">
+
+<meta property="og:title" content="Answering the phone — Northsaga">
+<meta property="og:description" content="Every call you cannot answer gets picked up. If it is not you, it is an agent that takes the name, the number and the job, and texts them back inside a minute.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://northsaga.ai/agents/answering-the-phone">
+<meta property="og:image" content="https://northsaga.ai/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Answering the phone — Northsaga">
+<meta name="twitter:description" content="Every call you cannot answer gets picked up. If it is not you, it is an agent that takes the name, the number and the job, and texts them back inside a minute.">
+<meta name="twitter:image" content="https://northsaga.ai/assets/og-image.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/work.css">
+
+<!-- .reveal starts at opacity 0 and is un-hidden by js/site.js. Without this,
+     a failed or disabled script leaves most of the page invisible. -->
+<noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
+
+<!-- LocalBusiness. address, telephone and openingHours are deliberately absent
+     rather than invented — add them once confirmed. The postcodes in
+     areaServed are UNVERIFIED; check them against the real service area and
+     correct here, in the contact section and in the footer together. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": "https://northsaga.ai/#business",
+  "name": "Northsaga",
+  "url": "https://northsaga.ai/",
+  "email": "hello@northsaga.ai",
+  "description": "Installs and maintains AI agents for owner-managed small businesses and trades in Dulwich and West Norwood, south London.",
+  "slogan": "New tools. Old standards.",
+  "areaServed": [
+    { "@type": "Place", "name": "Dulwich, London" },
+    { "@type": "Place", "name": "West Norwood, London" },
+    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE21", "postalCodeEnd": "SE21" },
+    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE22", "postalCodeEnd": "SE22" },
+    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE24", "postalCodeEnd": "SE24" },
+    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE27", "postalCodeEnd": "SE27" }
+  ]
+}
+</script>
+</head>
+<body>
+<!-- GENERATED FILE — do not hand-edit. Source: tools/build-agent-pages.py
+     Edit there, then run: cd tools && python3 build-agent-pages.py -->
+
+<!-- ============================ HEADER ============================ -->
+<header class="site-header" id="siteHeader">
+  <a class="header-mark" href="/" aria-label="Northsaga home">
+    <svg viewBox="-77 -167 259 334" aria-hidden="true">
+      <g fill="none" stroke="currentColor" stroke-width="16">
+        <path d="M 0 -160 L -70 -32"/><path d="M 0 -160 L 0 160"/>
+        <path d="M 0 -160 L 175 160"/><path d="M 175 -160 L 175 160"/>
+      </g>
+    </svg>
+    <span>orthsaga</span>
+  </a>
+
+  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="menu">
+    <span class="menu-label">Menu</span>
+    <i></i><i></i>
+  </button>
+</header>
+
+<!-- ============================ MENU ============================ -->
+<nav class="menu" id="menu" aria-label="Main">
+  <ul class="menu-nav">
+    <li><a href="/#work" aria-current="page">The work</a></li>
+    <li><a href="/#process">How it works</a></li>
+    <li><a href="/case-studies">Case studies</a></li>
+    <li><a href="/#ledger">What it costs</a></li>
+    <li><a href="/#proof">Proof</a></li>
+    <li><a href="/journal/best-cron-jobs-for-ai-agents">Writing</a></li>
+    <li><a href="/#contact">Talk to us</a></li>
+  </ul>
+  <div class="menu-foot">
+    <span>Northsaga — operations, installed. Dulwich and West Norwood.</span>
+    <a href="mailto:hello@northsaga.ai">hello@northsaga.ai</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============================ INTRO ============================ -->
+<section class="band work-head">
+  <div class="container">
+    <p class="eyebrow">Agent 01 · Voice agent and missed-call text-back</p>
+    <h1 class="display">Answering the phone</h1>
+    <p class="lede" style="margin-top:var(--space-3);">Every call you cannot answer gets picked up. If it is not you, it is an agent that takes the name, the number and the job, and texts them back inside a minute.</p>
+
+    <figure class="schematic">
+  <div class="schematic-viewport" tabindex="0" role="group"
+       aria-label="Drawing NS-01, scrollable and zoomable">
+    <div class="schematic-stage" style="--sch-w:1002px">
+      <svg viewBox="0 0 1002 356" preserveAspectRatio="xMidYMid meet"
+           role="img" aria-label="Drawing NS-01. Answering the phone. Your mobile rings first; the agent only answers when you do not.">
+        <title>Drawing NS-01. Answering the phone. Your mobile rings first; the agent only answers when you do not.</title>
+        <path class="sch-wire" d="M 206 178 L 272 178"/>
+        <path class="sch-arrow" d="M 272 178 L 265 173.66 L 265 182.34 Z"/>
+        <path class="sch-wire" d="M 468 178 H 501 V 56 H 534"/>
+        <path class="sch-arrow" d="M 534 56 L 527 51.66 L 527 60.34 Z"/>
+        <path class="sch-wire" d="M 632 102 L 632 132"/>
+        <path class="sch-arrow" d="M 632 132 L 627.66 125 L 636.34 125 Z"/>
+        <path class="sch-wire" d="M 730 56 H 749 V 117 H 796"/>
+        <path class="sch-arrow" d="M 796 117 L 789 112.66 L 789 121.34 Z"/>
+        <path class="sch-wire" d="M 730 178 H 763 V 239 H 796"/>
+        <path class="sch-arrow" d="M 796 239 L 789 234.66 L 789 243.34 Z"/>
+        <path class="sch-wire" d="M 730 300 H 777 V 117 H 796"/>
+        <path class="sch-arrow" d="M 796 117 L 789 112.66 L 789 121.34 Z"/>
+        <g class="sch-node">
+        <rect class="sch-box" x="10" y="132" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(24 145) scale(0.75)"><path class="sch-icon--fill" d="M7.6 2.6 4.2 6a2 2 0 0 0-.4 2.3 26 26 0 0 0 11.9 11.9 2 2 0 0 0 2.3-.4l3.4-3.4a1 1 0 0 0 0-1.4l-3.6-3.6a1 1 0 0 0-1.4 0l-1.7 1.7a19 19 0 0 1-4.5-4.5l1.7-1.7a1 1 0 0 0 0-1.4L9 2.6a1 1 0 0 0-1.4 0Z"/></g>
+        <text class="sch-role" x="50" y="158">TRIGGER</text>
+        <text class="sch-trigger" x="192" y="158" text-anchor="end">WEBHOOK</text>
+        <text class="sch-label" x="24" y="188">Inbound call to</text>
+        <text class="sch-label" x="24" y="206">your number</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="272" y="132" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(286 145) scale(0.75)"><path class="sch-icon--fill" d="M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z"/><path class="sch-icon--cut" d="M6.8 5.6h10.4v11.8H6.8Z"/></g>
+        <text class="sch-role" x="312" y="158">ROUTING</text>
+        <text class="sch-label" x="286" y="188">Rings your mobile</text>
+        <text class="sch-label" x="286" y="206">for twenty seconds</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="534" y="10" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(548 23) scale(0.75)"><path class="sch-icon--fill" d="M12 2a3.2 3.2 0 0 0-3.2 3.2v6.4a3.2 3.2 0 0 0 6.4 0V5.2A3.2 3.2 0 0 0 12 2Z"/><path class="sch-icon--fill" d="M5.4 10.4H3.6a8.4 8.4 0 0 0 7.4 8.3V22h2v-3.3a8.4 8.4 0 0 0 7.4-8.3h-1.8a6.6 6.6 0 0 1-13.2 0Z"/></g>
+        <text class="sch-role" x="574" y="36">VOICE AGENT</text>
+        <text class="sch-label" x="548" y="66">Answers if you cannot.</text>
+        <text class="sch-label" x="548" y="84">Asks three questions</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="534" y="132" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(548 145) scale(0.75)"><path class="sch-icon--fill" d="M12 2a10 10 0 0 0-8.7 15L2 22l5.2-1.3A10 10 0 1 0 12 2Z"/><path class="sch-icon--cut" d="M8.9 7.5c-.2-.4-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.4-.3.3-.9.8-.9 2s.9 2.4 1 2.6c.1.2 1.7 2.7 4.2 3.7 2 .9 2.5.7 2.9.7.5 0 1.4-.6 1.6-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.5-.3l-1.7-.8c-.2-.1-.4-.1-.6.1l-.7 1c-.1.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5l.4-.5c.1-.1.2-.3.2-.4 0-.2 0-.3-.1-.4l-.6-1.9Z"/></g>
+        <text class="sch-role" x="574" y="158">TEXT-BACK</text>
+        <text class="sch-label" x="548" y="188">Text to the caller</text>
+        <text class="sch-label" x="548" y="206">inside a minute</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="534" y="254" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(548 267) scale(0.75)"><path class="sch-icon--fill" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Z"/><path class="sch-icon--cut" d="M12 4.4a7.6 7.6 0 1 1 0 15.2 7.6 7.6 0 0 1 0-15.2Z"/><path class="sch-icon--fill" d="M11.2 6.4h1.6v6.4h-1.6Z"/><path class="sch-icon--fill" d="M11.2 11.2h5v1.6h-5Z"/></g>
+        <text class="sch-role" x="574" y="280">SWEEP</text>
+        <text class="sch-trigger" x="716" y="280" text-anchor="end">CRON</text>
+        <text class="sch-label" x="548" y="310">Catches anything</text>
+        <text class="sch-label" x="548" y="328">the webhook missed</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="796" y="71" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(810 84) scale(0.75)"><path class="sch-icon--fill" d="M5 2h9l5 5v15H5Z"/><path class="sch-icon--cut" d="M7.4 11h9.2v1.5H7.4Z"/><path class="sch-icon--cut" d="M7.4 14.2h9.2v1.5H7.4Z"/><path class="sch-icon--cut" d="M7.4 17.4h9.2v1.5H7.4Z"/><path class="sch-icon--cut" d="M11.3 10.4h1.5v9.2h-1.5Z"/></g>
+        <text class="sch-role" x="836" y="97">JOB SHEET</text>
+        <text class="sch-label" x="810" y="127">One row: name, job,</text>
+        <text class="sch-label" x="810" y="145">postcode, urgency</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="796" y="193" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(810 206) scale(0.75)"><path class="sch-icon--fill" d="M12 2a5.6 5.6 0 0 0-5.6 5.6v3.6L4 15.4v1.4h16v-1.4l-2.4-4.2V7.6A5.6 5.6 0 0 0 12 2Z"/><path class="sch-icon--fill" d="M9.4 18.4a2.6 2.6 0 0 0 5.2 0Z"/></g>
+        <text class="sch-role" x="836" y="219">ALERT</text>
+        <text class="sch-label" x="810" y="249">The same thing to</text>
+        <text class="sch-label" x="810" y="267">your phone and inbox</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <figcaption><span class="sch-no">NS-01</span>Answering the phone. Your mobile rings first; the agent only answers when you do not.</figcaption>
+</figure>
+
+    <div class="prose" style="margin-top:var(--space-5);">
+      <p>Most of the work a small firm loses, it loses at the phone. Not to a better quote. To whoever picked up second.</p><p>You are on a roof, under a sink, or driving. The phone rings out. The caller has three more numbers on the same search page and no particular reason to prefer yours. By the time you hear the voicemail — if they left one, and most do not — the job belongs to somebody else.</p><p>This is the agent that stops that. It rings your mobile first, because if you can answer, you should. If you cannot, it answers, takes the details in a plain voice, and writes them down where you will see them. The caller has a text from you before they have dialled the next number.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ STAGES ============================ -->
+<section class="band band--tall" id="stages">
+  <div class="container">
+    <p class="eyebrow">What happens, in order</p>
+    <ol class="stages">
+      <li class="reveal">
+        <span class="num">01</span>
+        <div>
+          <h3>The call comes in</h3>
+          <p>It rings your mobile for twenty seconds, exactly as it does now. If you pick up, the agent never runs and you never hear from it. Nothing about your day changes on the calls you can take.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">02</span>
+        <div>
+          <h3>The agent answers</h3>
+          <p>It gives the firm's name and asks three things: what the job is, where it is, and when they need it. It does not pretend to be a person, and it does not quote. Quoting is yours.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">03</span>
+        <div>
+          <h3>The details get written down</h3>
+          <p>Name, number, postcode, job, urgency. One row on the job sheet, one line in your inbox, one text to your phone. The same five facts in all three, so there is nothing to reconcile later.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">04</span>
+        <div>
+          <h3>The caller gets a text</h3>
+          <p>Inside a minute, in your name. We missed you, here is what we do, reply here and we will ring back. Most people answer that text rather than carry on down the list.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">05</span>
+        <div>
+          <h3>You ring back knowing something</h3>
+          <p>You are not returning a blank missed call. You know the job, the address and whether it can wait until Thursday.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">06</span>
+        <div>
+          <h3>Nothing gets quietly lost</h3>
+          <p>A sweep runs every five minutes and picks up anything the telephony provider failed to hand over. A call that neither of you answered appears on the sheet as a miss, rather than not appearing at all.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================ PARTS ============================ -->
+<section class="band band--paper band--tall" id="parts">
+  <div class="container">
+    <p class="eyebrow">What it is built from</p>
+    <h2 class="display" style="font-size:var(--step-3); max-width:20ch;">
+      Named parts, not a black box.
+    </h2>
+    <ul class="parts-list">
+      <li class="reveal">
+        <h3>Docker</h3>
+        <p>One compose file per client, version-controlled. Everything below runs inside it.</p>
+      </li>
+      <li class="reveal">
+        <h3>n8n, self-hosted</h3>
+        <p>The drawing above, as nodes you can watch run. You get a login on day one.</p>
+      </li>
+      <li class="reveal">
+        <h3>Python 3.12</h3>
+        <p>The workers: the five-minute sweep, the tidy-up of what the agent heard, and the writes to the sheet.</p>
+      </li>
+      <li class="reveal">
+        <h3>cron</h3>
+        <p>Two schedules on this workflow. The sweep, and the Monday morning summary.</p>
+      </li>
+      <li class="reveal">
+        <h3>Telephony</h3>
+        <p>Twilio, or your existing provider if it has an API worth the name. The number, the twenty-second fork to your mobile, and the text-back all sit here.</p>
+      </li>
+      <li class="reveal">
+        <h3>A voice model</h3>
+        <p>Answers, listens, asks its three questions, stops. Not a chatbot with a phone line attached.</p>
+      </li>
+      <li class="reveal">
+        <h3>Google Sheets</h3>
+        <p>The job sheet. Anything a person needs to read during the working day lives here, because everyone can already read a spreadsheet.</p>
+      </li>
+      <li class="reveal">
+        <h3>The warehouse</h3>
+        <p>Still to be chosen — <span class="tbd">product name to be confirmed</span>. Every call, every miss, every callback, kept with its history so the monthly figures are countable rather than remembered.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ BUILD ORDER ============================ -->
+<section class="band band--tall" id="build">
+  <div class="container">
+    <p class="eyebrow">How it is built, in order</p>
+    <h2 class="display" style="font-size:var(--step-3); max-width:22ch;">
+      From a bare machine to a live agent.
+    </h2>
+    <p class="lede" style="margin-top:var(--space-3);">
+      First line to last. Someone competent could follow this. That is the point of
+      printing it.
+    </p>
+
+    <figure class="schematic">
+  <div class="schematic-viewport" tabindex="0" role="group"
+       aria-label="Drawing NS-00, scrollable and zoomable">
+    <div class="schematic-stage" style="--sch-w:1002px">
+      <svg viewBox="0 0 1002 396" preserveAspectRatio="xMidYMid meet"
+           role="img" aria-label="Drawing NS-00. The box every agent runs in. The same host, the same compose file, the same n8n — which is why the fifth agent costs less to run than the first.">
+        <title>Drawing NS-00. The box every agent runs in. The same host, the same compose file, the same n8n — which is why the fifth agent costs less to run than the first.</title>
+        <path class="sch-wire" d="M 206 178 L 272 178"/>
+        <path class="sch-arrow" d="M 272 178 L 265 173.66 L 265 182.34 Z"/>
+        <path class="sch-wire" d="M 468 178 H 501 V 56 H 534"/>
+        <path class="sch-arrow" d="M 534 56 L 527 51.66 L 527 60.34 Z"/>
+        <path class="sch-wire" d="M 468 178 L 534 178"/>
+        <path class="sch-arrow" d="M 534 178 L 527 173.66 L 527 182.34 Z"/>
+        <path class="sch-wire" d="M 468 178 H 501 V 300 H 534"/>
+        <path class="sch-arrow" d="M 534 300 L 527 295.66 L 527 304.34 Z"/>
+        <path class="sch-wire" d="M 730 56 L 796 56"/>
+        <path class="sch-arrow" d="M 796 56 L 789 51.66 L 789 60.34 Z"/>
+        <path class="sch-wire" d="M 730 56 H 756 V 178 H 796"/>
+        <path class="sch-arrow" d="M 796 178 L 789 173.66 L 789 182.34 Z"/>
+        <path class="sch-wire" d="M 730 178 H 770 V 56 H 796"/>
+        <path class="sch-arrow" d="M 796 56 L 789 51.66 L 789 60.34 Z"/>
+        <path class="sch-wire" d="M 730 300 L 796 300"/>
+        <path class="sch-arrow" d="M 796 300 L 789 295.66 L 789 304.34 Z"/>
+        <path class="sch-wire sch-wire--dash" d="M 894 346 V 366 H 239 V 178 H 272"/>
+        <path class="sch-arrow" d="M 272 178 L 265 173.66 L 265 182.34 Z"/>
+        <g class="sch-node">
+        <rect class="sch-box" x="10" y="132" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(24 145) scale(0.75)"><path class="sch-icon--fill" d="M2.6 4h18.8v6.4H2.6Z"/><path class="sch-icon--fill" d="M2.6 13.6h18.8V20H2.6Z"/><path class="sch-icon--cut" d="M5.2 6.4h2v1.6h-2Z"/><path class="sch-icon--cut" d="M5.2 16h2v1.6h-2Z"/><path class="sch-icon--cut" d="M8.6 6.4h6v1.6h-6Z"/><path class="sch-icon--cut" d="M8.6 16h6v1.6h-6Z"/></g>
+        <text class="sch-role" x="50" y="158">HOST</text>
+        <text class="sch-label" x="24" y="188">A spare PC, a NUC in</text>
+        <text class="sch-label" x="24" y="206">the office, or a VPS</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="272" y="132" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(286 145) scale(0.75)"><path class="sch-icon--fill" d="M3.2 10.6h3.4V14H3.2Z"/><path class="sch-icon--fill" d="M7.3 10.6h3.4V14H7.3Z"/><path class="sch-icon--fill" d="M11.4 10.6h3.4V14h-3.4Z"/><path class="sch-icon--fill" d="M7.3 6.7h3.4v3.4H7.3Z"/><path class="sch-icon--fill" d="M11.4 6.7h3.4v3.4h-3.4Z"/><path class="sch-icon--fill" d="M11.4 2.8h3.4v3.4h-3.4Z"/><path class="sch-icon--fill" d="M1.8 15.2h20.4c-.9 3.6-4.6 5.8-9.6 5.8-5.6 0-9.4-2-10.8-5.8Z"/></g>
+        <text class="sch-role" x="312" y="158">DOCKER</text>
+        <text class="sch-label" x="286" y="188">One compose file,</text>
+        <text class="sch-label" x="286" y="206">version-controlled</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="534" y="10" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(548 23) scale(0.75)"><path class="sch-icon--fill" d="M3.4 12a2.7 2.7 0 1 1 5.4 0 2.7 2.7 0 0 1-5.4 0Z"/><path class="sch-icon--fill" d="M15.2 6.6a2.7 2.7 0 1 1 5.4 0 2.7 2.7 0 0 1-5.4 0Z"/><path class="sch-icon--fill" d="M15.2 17.4a2.7 2.7 0 1 1 5.4 0 2.7 2.7 0 0 1-5.4 0Z"/><path class="sch-icon--line" d="M6.1 12 17.9 6.6"/><path class="sch-icon--line" d="M6.1 12 17.9 17.4"/></g>
+        <text class="sch-role" x="574" y="36">N8N</text>
+        <text class="sch-trigger" x="716" y="36" text-anchor="end">WEBHOOK</text>
+        <text class="sch-label" x="548" y="66">The drawing above,</text>
+        <text class="sch-label" x="548" y="84">as nodes you can watch</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="534" y="132" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(548 145) scale(0.75)"><path class="sch-icon--fill" d="M9.2 4.6 3 12l6.2 7.4 1.7-1.4L5.8 12l5.1-6Z"/><path class="sch-icon--fill" d="M14.8 4.6 21 12l-6.2 7.4-1.7-1.4L18.2 12l-5.1-6Z"/></g>
+        <text class="sch-role" x="574" y="158">PYTHON 3.12</text>
+        <text class="sch-label" x="548" y="188">Workers for the jobs</text>
+        <text class="sch-label" x="548" y="206">n8n should not do</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="534" y="254" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(548 267) scale(0.75)"><path class="sch-icon--fill" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Z"/><path class="sch-icon--cut" d="M12 4.4a7.6 7.6 0 1 1 0 15.2 7.6 7.6 0 0 1 0-15.2Z"/><path class="sch-icon--fill" d="M11.2 6.4h1.6v6.4h-1.6Z"/><path class="sch-icon--fill" d="M11.2 11.2h5v1.6h-5Z"/></g>
+        <text class="sch-role" x="574" y="280">CRON</text>
+        <text class="sch-trigger" x="716" y="280" text-anchor="end">CRON</text>
+        <text class="sch-label" x="548" y="310">Anything on a clock</text>
+        <text class="sch-label" x="548" y="328">rather than a trigger</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="796" y="10" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(810 23) scale(0.75)"><path class="sch-icon--fill" d="M12 2c-4.4 0-8 1.3-8 3v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5c0-1.7-3.6-3-8-3Z"/><path class="sch-icon--cut" d="M4 8.2c1.7 1 4.6 1.6 8 1.6s6.3-.6 8-1.6v1.8c-1.7 1-4.6 1.6-8 1.6s-6.3-.6-8-1.6Z"/><path class="sch-icon--cut" d="M4 13.4c1.7 1 4.6 1.6 8 1.6s6.3-.6 8-1.6v1.8c-1.7 1-4.6 1.6-8 1.6s-6.3-.6-8-1.6Z"/></g>
+        <text class="sch-role" x="836" y="36">DATA LAYER</text>
+        <text class="sch-label" x="810" y="66">Sheets to read,</text>
+        <text class="sch-label" x="810" y="84">warehouse for history</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="796" y="132" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(810 145) scale(0.75)"><path class="sch-icon--fill" d="M20.7 4.6a5.6 5.6 0 0 1-7 7l-7.3 7.3a2.2 2.2 0 1 1-3.1-3.1l7.3-7.3a5.6 5.6 0 0 1 7-7l-3.3 3.3.9 3.2 3.2.9Z"/></g>
+        <text class="sch-role" x="836" y="158">YOUR TOOLS</text>
+        <text class="sch-label" x="810" y="188">Phone, email, diary,</text>
+        <text class="sch-label" x="810" y="206">accounts, ads</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="796" y="254" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(810 267) scale(0.75)"><path class="sch-icon--line" d="M2 12h4.6l2.4-5.8 3.5 11.6 2.4-6.4 1.5 2.6H22"/></g>
+        <text class="sch-role" x="836" y="280">HEALTH CHECK</text>
+        <text class="sch-trigger" x="978" y="280" text-anchor="end">CRON</text>
+        <text class="sch-label" x="810" y="310">Heartbeat out</text>
+        <text class="sch-label" x="810" y="328">every two minutes</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <figcaption><span class="sch-no">NS-00</span>The box every agent runs in. The same host, the same compose file, the same n8n — which is why the fifth agent costs less to run than the first.</figcaption>
+</figure>
+
+    <ol class="build-steps">
+      <li class="reveal">
+        <span class="num">01</span>
+        <div>
+          <h3>The box it runs in</h3>
+          <p>Docker on the host. That host is a spare PC in the office, a NUC on a shelf, or a VPS at about five pounds a month — whichever you already have. One <code>docker-compose.yml</code> per client, kept in version control, brought up with <code>docker compose up -d</code>. If the machine dies, the same file on a new machine puts everything back.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">02</span>
+        <div>
+          <h3>Inside the container</h3>
+          <p>Python 3.12, and only the libraries this workflow actually needs: <code>requests</code> for the telephony API, <code>gspread</code> for the job sheet, and <code>python-dateutil</code> for the working-hours logic. <code>cron</code> goes in the same image for anything that runs on a clock rather than on a trigger.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">03</span>
+        <div>
+          <h3>The cron jobs</h3>
+          <p>This workflow needs two. <code>*/5 * * * *</code> sweeps for calls the webhook did not deliver, because telephony webhooks fail quietly and a silent failure here is a lost job. <code>0 7 * * 1</code> sends the Monday morning summary: calls taken, calls missed, callbacks made. The full list we run on an agent, and what breaks when each one is missing, is written up in <a href="/journal/best-cron-jobs-for-ai-agents">the cron jobs worth setting up for an agent</a>.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">04</span>
+        <div>
+          <h3>n8n</h3>
+          <p>Self-hosted, in the same compose file. This is where the drawing above stops being a drawing: every box is a node, and every arrow is a connection you can click. You get a login and can watch a call move through it in real time. We would rather you looked than took our word for it.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">05</span>
+        <div>
+          <h3>Credentials and accounts</h3>
+          <p>Every account is opened in your name, on your card, with us added as a partner. Not ours with you as a guest. If you want us gone, you remove us in one click and everything keeps running. That is the arrangement, and it is a selling point rather than a footnote.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">06</span>
+        <div>
+          <h3>The data layer</h3>
+          <p>Google Sheets for the job sheet, because a person has to read it between jobs. The warehouse — <span class="tbd">to be confirmed</span> — for anything with history: every call, every miss, every callback, every recording reference. Sheets is for today. The warehouse is for the question you will ask in March about last October.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">07</span>
+        <div>
+          <h3>Wiring the phone in</h3>
+          <p>In this order, because each step needs the one before it. The number first, ported or new. Then the fork to your mobile with the twenty-second timeout. Then the voice agent on the far side of that timeout. Then the text-back on the same number, so the message comes from the number they rang. Then the write to the sheet. Then the alert to you. Testing the text-back before the number is live tests nothing.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">08</span>
+        <div>
+          <h3>Testing on real calls before hand-over</h3>
+          <p>We ring it ourselves from four or five different phones, including one with a bad line, and we get somebody who is not us to ring it too. It has to answer in under six rings, get the postcode right, write one row rather than two, and text back inside sixty seconds. It has to do all of that on ten consecutive calls. Until it does, it is not finished and we do not invoice.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================ MEDIA ============================ -->
+<section class="band" id="media">
+  <div class="container">
+    <p class="eyebrow">See it working</p>
+    <ul class="media-list is-placeholder">
+      <li>
+        <h3>Recording of a real call</h3>
+        <p>A thirty-second clip of the agent taking a job, with the client's permission and the caller's.</p>
+      </li>
+      <li>
+        <h3>The job sheet</h3>
+        <p>A screenshot of a real week, with names removed.</p>
+      </li>
+      <li>
+        <h3>The text as the caller sees it</h3>
+        <p>A photograph of the phone, not a mock-up.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ PRICE ============================ -->
+<section class="band band--tall" id="price" style="background:var(--ink-deep);">
+  <div class="container">
+    <p class="eyebrow">What this one costs</p>
+    <div class="price-block">
+      <div class="price-row">
+        <span class="item">
+          <strong>Installed</strong>
+          <span>Built, connected to the tools you already use, tested on your real jobs, handed over working.</span>
+        </span>
+        <span class="figure">£500 <small>one-off</small></span>
+      </div>
+      <div class="price-row">
+        <span class="item">
+          <strong>Maintained</strong>
+          <span>Monitoring, fixes, and changes as the business changes. A named person to ring.</span>
+        </span>
+        <span class="figure">£50 <small>per month</small></span>
+      </div>
+    </div>
+    <p class="price-note">You get that number before anything starts, not after. If it is not the number you were expecting, say so then — it is a much cheaper conversation than the one at the end.</p>
+
+    <div class="hero-actions">
+      <a class="btn" href="/#contact">Book the survey</a>
+      <a class="btn btn--quiet" href="/#ledger">Everything else it costs</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PAGING ============================ -->
+<nav class="band work-paging" aria-label="Workflows">
+  <div class="container">
+    <div class="work-paging-inner">
+      <a class="work-back" href="/#work">All of the work</a>
+      <a class="work-next" href="/agents/quote-follow-up"><span>Next</span>Quote follow-up</a>
+    </div>
+  </div>
+</nav>
+
+</main>
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <p class="footer-motto">New tools.<br>Old standards.</p>
+      <p class="footer-area">
+        Dulwich and West Norwood, south London.<br>
+        SE21, SE22, SE24, SE27 and surrounding.
+      </p>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="/#work">The work</a>
+        <a href="/#process">How it works</a>
+        <a href="/case-studies">Case studies</a>
+        <a href="/#ledger">What it costs</a>
+        <a href="/journal/best-cron-jobs-for-ai-agents">Writing</a>
+        <a href="/#contact">Talk to us</a>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="year">2026</span> Northsaga. Registered in England.</span>
+      <a href="mailto:hello@northsaga.ai">hello@northsaga.ai</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/site.js" defer></script>
+<script src="/js/schematic.js" defer></script>
+</body>
+</html>
+NSEOF
+
+cat > 'agents/quote-follow-up.html' <<'NSEOF'
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quote follow-up — Northsaga</title>
+<meta name="description" content="An agent that chases your quotes on day three, seven and fourteen and stops the moment the customer replies. Installed for £500, maintained for £50 a month.">
+
+<link rel="canonical" href="https://northsaga.ai/agents/quote-follow-up">
+
+<link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/favicon/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#0E1A24">
+
+<meta property="og:title" content="Quote follow-up — Northsaga">
+<meta property="og:description" content="Every quote you send gets chased on day three, day seven and day fourteen, in your name, without you remembering to do it. One reply and the chasing stops that minute.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://northsaga.ai/agents/quote-follow-up">
+<meta property="og:image" content="https://northsaga.ai/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Quote follow-up — Northsaga">
+<meta name="twitter:description" content="Every quote you send gets chased on day three, day seven and day fourteen, in your name, without you remembering to do it. One reply and the chasing stops that minute.">
+<meta name="twitter:image" content="https://northsaga.ai/assets/og-image.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/work.css">
+
+<!-- .reveal starts at opacity 0 and is un-hidden by js/site.js. Without this,
+     a failed or disabled script leaves most of the page invisible. -->
+<noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
+
+<!-- LocalBusiness. address, telephone and openingHours are deliberately absent
+     rather than invented — add them once confirmed. The postcodes in
+     areaServed are UNVERIFIED; check them against the real service area and
+     correct here, in the contact section and in the footer together. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": "https://northsaga.ai/#business",
+  "name": "Northsaga",
+  "url": "https://northsaga.ai/",
+  "email": "hello@northsaga.ai",
+  "description": "Installs and maintains AI agents for owner-managed small businesses and trades in Dulwich and West Norwood, south London.",
+  "slogan": "New tools. Old standards.",
+  "areaServed": [
+    { "@type": "Place", "name": "Dulwich, London" },
+    { "@type": "Place", "name": "West Norwood, London" },
+    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE21", "postalCodeEnd": "SE21" },
+    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE22", "postalCodeEnd": "SE22" },
+    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE24", "postalCodeEnd": "SE24" },
+    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE27", "postalCodeEnd": "SE27" }
+  ]
+}
+</script>
+</head>
+<body>
+<!-- GENERATED FILE — do not hand-edit. Source: tools/build-agent-pages.py
+     Edit there, then run: cd tools && python3 build-agent-pages.py -->
+
+<!-- ============================ HEADER ============================ -->
+<header class="site-header" id="siteHeader">
+  <a class="header-mark" href="/" aria-label="Northsaga home">
+    <svg viewBox="-77 -167 259 334" aria-hidden="true">
+      <g fill="none" stroke="currentColor" stroke-width="16">
+        <path d="M 0 -160 L -70 -32"/><path d="M 0 -160 L 0 160"/>
+        <path d="M 0 -160 L 175 160"/><path d="M 175 -160 L 175 160"/>
+      </g>
+    </svg>
+    <span>orthsaga</span>
+  </a>
+
+  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="menu">
+    <span class="menu-label">Menu</span>
+    <i></i><i></i>
+  </button>
+</header>
+
+<!-- ============================ MENU ============================ -->
+<nav class="menu" id="menu" aria-label="Main">
+  <ul class="menu-nav">
+    <li><a href="/#work" aria-current="page">The work</a></li>
+    <li><a href="/#process">How it works</a></li>
+    <li><a href="/case-studies">Case studies</a></li>
+    <li><a href="/#ledger">What it costs</a></li>
+    <li><a href="/#proof">Proof</a></li>
+    <li><a href="/journal/best-cron-jobs-for-ai-agents">Writing</a></li>
+    <li><a href="/#contact">Talk to us</a></li>
+  </ul>
+  <div class="menu-foot">
+    <span>Northsaga — operations, installed. Dulwich and West Norwood.</span>
+    <a href="mailto:hello@northsaga.ai">hello@northsaga.ai</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============================ INTRO ============================ -->
+<section class="band work-head">
+  <div class="container">
+    <p class="eyebrow">Agent 02 · Chasing on day three, seven and fourteen</p>
+    <h1 class="display">Quote follow-up</h1>
+    <p class="lede" style="margin-top:var(--space-3);">Every quote you send gets chased on day three, day seven and day fourteen, in your name, without you remembering to do it. One reply and the chasing stops that minute.</p>
+
+    <figure class="schematic">
+  <div class="schematic-viewport" tabindex="0" role="group"
+       aria-label="Drawing NS-02, scrollable and zoomable">
+    <div class="schematic-stage" style="--sch-w:740px">
+      <svg viewBox="0 0 740 396" preserveAspectRatio="xMidYMid meet"
+           role="img" aria-label="Drawing NS-02. Quote follow-up. The chaser reads the register every morning; the reply watch writes back to it and the chasing stops.">
+        <title>Drawing NS-02. Quote follow-up. The chaser reads the register every morning; the reply watch writes back to it and the chasing stops.</title>
+        <path class="sch-wire" d="M 206 178 H 239 V 117 H 272"/>
+        <path class="sch-arrow" d="M 272 117 L 265 112.66 L 265 121.34 Z"/>
+        <path class="sch-wire" d="M 206 178 H 239 V 239 H 272"/>
+        <path class="sch-arrow" d="M 272 239 L 265 234.66 L 265 243.34 Z"/>
+        <path class="sch-wire" d="M 468 239 H 501 V 56 H 534"/>
+        <path class="sch-arrow" d="M 534 56 L 527 51.66 L 527 60.34 Z"/>
+        <path class="sch-wire" d="M 468 239 H 501 V 178 H 534"/>
+        <path class="sch-arrow" d="M 534 178 L 527 173.66 L 527 182.34 Z"/>
+        <path class="sch-wire sch-wire--dash" d="M 632 346 V 366 H 239 V 117 H 272"/>
+        <path class="sch-arrow" d="M 272 117 L 265 112.66 L 265 121.34 Z"/>
+        <g class="sch-node">
+        <rect class="sch-box" x="10" y="132" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(24 145) scale(0.75)"><path class="sch-icon--fill" d="M5 2h9l5 5v15H5Z"/><path class="sch-icon--cut" d="M7.6 11h8.8v1.5H7.6Z"/><path class="sch-icon--cut" d="M7.6 14.2h8.8v1.5H7.6Z"/><path class="sch-icon--cut" d="M7.6 17.4h5.4v1.5H7.6Z"/></g>
+        <text class="sch-role" x="50" y="158">TRIGGER</text>
+        <text class="sch-trigger" x="192" y="158" text-anchor="end">WEBHOOK</text>
+        <text class="sch-label" x="24" y="188">You send a quote from</text>
+        <text class="sch-label" x="24" y="206">the tool you already use</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="272" y="71" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(286 84) scale(0.75)"><path class="sch-icon--fill" d="M5 2h9l5 5v15H5Z"/><path class="sch-icon--cut" d="M7.4 11h9.2v1.5H7.4Z"/><path class="sch-icon--cut" d="M7.4 14.2h9.2v1.5H7.4Z"/><path class="sch-icon--cut" d="M7.4 17.4h9.2v1.5H7.4Z"/><path class="sch-icon--cut" d="M11.3 10.4h1.5v9.2h-1.5Z"/></g>
+        <text class="sch-role" x="312" y="97">REGISTER</text>
+        <text class="sch-label" x="286" y="127">One row: who, what,</text>
+        <text class="sch-label" x="286" y="145">how much, what day</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="272" y="193" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(286 206) scale(0.75)"><path class="sch-icon--fill" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Z"/><path class="sch-icon--cut" d="M12 4.4a7.6 7.6 0 1 1 0 15.2 7.6 7.6 0 0 1 0-15.2Z"/><path class="sch-icon--fill" d="M11.2 6.4h1.6v6.4h-1.6Z"/><path class="sch-icon--fill" d="M11.2 11.2h5v1.6h-5Z"/></g>
+        <text class="sch-role" x="312" y="219">CHASER</text>
+        <text class="sch-trigger" x="454" y="219" text-anchor="end">CRON</text>
+        <text class="sch-label" x="286" y="249">Nine each morning.</text>
+        <text class="sch-label" x="286" y="267">Day three, seven, fourteen</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="534" y="10" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(548 23) scale(0.75)"><path class="sch-icon--fill" d="M12 2a10 10 0 0 0-8.7 15L2 22l5.2-1.3A10 10 0 1 0 12 2Z"/><path class="sch-icon--cut" d="M8.9 7.5c-.2-.4-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.4-.3.3-.9.8-.9 2s.9 2.4 1 2.6c.1.2 1.7 2.7 4.2 3.7 2 .9 2.5.7 2.9.7.5 0 1.4-.6 1.6-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.5-.3l-1.7-.8c-.2-.1-.4-.1-.6.1l-.7 1c-.1.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5l.4-.5c.1-.1.2-.3.2-.4 0-.2 0-.3-.1-.4l-.6-1.9Z"/></g>
+        <text class="sch-role" x="574" y="36">MESSAGE</text>
+        <text class="sch-label" x="548" y="66">WhatsApp or text,</text>
+        <text class="sch-label" x="548" y="84">sent in your name</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="534" y="132" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(548 145) scale(0.75)"><path class="sch-icon--fill" d="M2 4.6h20v14.8H2Z"/><path class="sch-icon--cut" d="M3.6 6.6 12 12.6l8.4-6v2L12 14.6 3.6 8.6Z"/></g>
+        <text class="sch-role" x="574" y="158">EMAIL</text>
+        <text class="sch-label" x="548" y="188">The same words, on</text>
+        <text class="sch-label" x="548" y="206">the same thread</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="534" y="254" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(548 267) scale(0.75)"><path class="sch-icon--fill" d="M10 5.4 2.4 12l7.6 6.6V14c5 0 8.4 1.6 10.6 5-.9-4.7-3.7-9.3-10.6-10Z"/></g>
+        <text class="sch-role" x="574" y="280">REPLY WATCH</text>
+        <text class="sch-trigger" x="716" y="280" text-anchor="end">CRON</text>
+        <text class="sch-label" x="548" y="310">Checks every ten minutes.</text>
+        <text class="sch-label" x="548" y="328">A reply stops it</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <figcaption><span class="sch-no">NS-02</span>Quote follow-up. The chaser reads the register every morning; the reply watch writes back to it and the chasing stops.</figcaption>
+</figure>
+
+    <div class="prose" style="margin-top:var(--space-5);">
+      <p>A quote that is never chased is not a quote. It is a document you spent an evening writing.</p><p>Most small firms chase the first time and then stop, because the second chase is the awkward one and there is always something more urgent than an awkward message. So the quote sits there. The customer is not saying no. They have three quotes, a job that is not on fire, and no reason to decide today. Whoever asks last usually gets the work.</p><p>This is the agent that asks. It knows what you sent, who you sent it to and when, and it comes back three times over a fortnight. Not a template that reads like a template — your words, your name, the job named. And the moment they reply, by any route, it stops. Nobody has ever bought anything from a firm that chased them after they answered.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ STAGES ============================ -->
+<section class="band band--tall" id="stages">
+  <div class="container">
+    <p class="eyebrow">What happens, in order</p>
+    <ol class="stages">
+      <li class="reveal">
+        <span class="num">01</span>
+        <div>
+          <h3>You send the quote as you always did</h3>
+          <p>Nothing changes about how you write or send it. The agent picks it up from your quoting tool, your sent folder or a row you add yourself, whichever you already do. If it means changing how you quote, we have built the wrong thing.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">02</span>
+        <div>
+          <h3>It gets written down properly</h3>
+          <p>Who it went to, what the job is, what you quoted, and the date. One row on the quote sheet. That row is the whole memory of the thing — everything after this reads from it.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">03</span>
+        <div>
+          <h3>Day three: the short one</h3>
+          <p>Two lines. Did it arrive, and is there anything you want going through before they decide. Sent on the channel they contacted you on, because a customer who rang wants a text and a customer who emailed wants an email.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">04</span>
+        <div>
+          <h3>Day seven: the useful one</h3>
+          <p>This one carries something — when you could start, what the price includes, or the answer to the question people always ask about that kind of job. A chase that adds nothing is just a chase.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">05</span>
+        <div>
+          <h3>Day fourteen: the last one</h3>
+          <p>Plainly the last. It says so. Either the job is still live or it is not, and the customer gets to say which without feeling rude. That is usually the message that gets an answer.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">06</span>
+        <div>
+          <h3>Any reply, and it stops</h3>
+          <p>By text, by email, by picking up the phone. The reply watch runs every ten minutes and closes the sequence the same morning. It cannot chase somebody who has already answered you, which is the failure that would cost you the job outright.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">07</span>
+        <div>
+          <h3>You find out what actually happens</h3>
+          <p>Won, lost, or no answer, against what you quoted. After three months you know your real conversion rate and which of the three messages does the work. Most firms have never had that number.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================ PARTS ============================ -->
+<section class="band band--paper band--tall" id="parts">
+  <div class="container">
+    <p class="eyebrow">What it is built from</p>
+    <h2 class="display" style="font-size:var(--step-3); max-width:20ch;">
+      Named parts, not a black box.
+    </h2>
+    <ul class="parts-list">
+      <li class="reveal">
+        <h3>Docker</h3>
+        <p>The same compose file as every other agent. This one is another service inside it, not another machine.</p>
+      </li>
+      <li class="reveal">
+        <h3>n8n, self-hosted</h3>
+        <p>The drawing above, as nodes you can watch run. Same login as the phone agent if you already have one.</p>
+      </li>
+      <li class="reveal">
+        <h3>Python 3.12</h3>
+        <p>The workers: reading the register, deciding who is due a chase today, and matching an inbound reply back to the right quote.</p>
+      </li>
+      <li class="reveal">
+        <h3>cron</h3>
+        <p>Two schedules. The nine o'clock chaser, and the ten-minute reply watch.</p>
+      </li>
+      <li class="reveal">
+        <h3>WhatsApp or SMS</h3>
+        <p>The WhatsApp Business API where you already use it, otherwise Twilio or your existing provider. Messages go out from your number, not a short code nobody recognises.</p>
+      </li>
+      <li class="reveal">
+        <h3>Email</h3>
+        <p>Sent through your own mailbox, on the original thread, so the chase lands under the quote rather than as a fresh message with no context.</p>
+      </li>
+      <li class="reveal">
+        <h3>Google Sheets</h3>
+        <p>The quote register. You can open it, sort it and correct it, and the agent reads your corrections on the next run.</p>
+      </li>
+      <li class="reveal">
+        <h3>The warehouse</h3>
+        <p>Still to be chosen — <span class="tbd">product name to be confirmed</span>. Every quote, every chase and every outcome kept with its dates, so the conversion rate is a figure rather than a feeling.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ BUILD ORDER ============================ -->
+<section class="band band--tall" id="build">
+  <div class="container">
+    <p class="eyebrow">How it is built, in order</p>
+    <h2 class="display" style="font-size:var(--step-3); max-width:22ch;">
+      From a bare machine to a live agent.
+    </h2>
+    <p class="lede" style="margin-top:var(--space-3);">
+      First line to last. Someone competent could follow this. That is the point of
+      printing it.
+    </p>
+
+    <figure class="schematic">
+  <div class="schematic-viewport" tabindex="0" role="group"
+       aria-label="Drawing NS-00, scrollable and zoomable">
+    <div class="schematic-stage" style="--sch-w:1002px">
+      <svg viewBox="0 0 1002 396" preserveAspectRatio="xMidYMid meet"
+           role="img" aria-label="Drawing NS-00. The box every agent runs in. The same host, the same compose file, the same n8n — which is why the fifth agent costs less to run than the first.">
+        <title>Drawing NS-00. The box every agent runs in. The same host, the same compose file, the same n8n — which is why the fifth agent costs less to run than the first.</title>
+        <path class="sch-wire" d="M 206 178 L 272 178"/>
+        <path class="sch-arrow" d="M 272 178 L 265 173.66 L 265 182.34 Z"/>
+        <path class="sch-wire" d="M 468 178 H 501 V 56 H 534"/>
+        <path class="sch-arrow" d="M 534 56 L 527 51.66 L 527 60.34 Z"/>
+        <path class="sch-wire" d="M 468 178 L 534 178"/>
+        <path class="sch-arrow" d="M 534 178 L 527 173.66 L 527 182.34 Z"/>
+        <path class="sch-wire" d="M 468 178 H 501 V 300 H 534"/>
+        <path class="sch-arrow" d="M 534 300 L 527 295.66 L 527 304.34 Z"/>
+        <path class="sch-wire" d="M 730 56 L 796 56"/>
+        <path class="sch-arrow" d="M 796 56 L 789 51.66 L 789 60.34 Z"/>
+        <path class="sch-wire" d="M 730 56 H 756 V 178 H 796"/>
+        <path class="sch-arrow" d="M 796 178 L 789 173.66 L 789 182.34 Z"/>
+        <path class="sch-wire" d="M 730 178 H 770 V 56 H 796"/>
+        <path class="sch-arrow" d="M 796 56 L 789 51.66 L 789 60.34 Z"/>
+        <path class="sch-wire" d="M 730 300 L 796 300"/>
+        <path class="sch-arrow" d="M 796 300 L 789 295.66 L 789 304.34 Z"/>
+        <path class="sch-wire sch-wire--dash" d="M 894 346 V 366 H 239 V 178 H 272"/>
+        <path class="sch-arrow" d="M 272 178 L 265 173.66 L 265 182.34 Z"/>
+        <g class="sch-node">
+        <rect class="sch-box" x="10" y="132" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(24 145) scale(0.75)"><path class="sch-icon--fill" d="M2.6 4h18.8v6.4H2.6Z"/><path class="sch-icon--fill" d="M2.6 13.6h18.8V20H2.6Z"/><path class="sch-icon--cut" d="M5.2 6.4h2v1.6h-2Z"/><path class="sch-icon--cut" d="M5.2 16h2v1.6h-2Z"/><path class="sch-icon--cut" d="M8.6 6.4h6v1.6h-6Z"/><path class="sch-icon--cut" d="M8.6 16h6v1.6h-6Z"/></g>
+        <text class="sch-role" x="50" y="158">HOST</text>
+        <text class="sch-label" x="24" y="188">A spare PC, a NUC in</text>
+        <text class="sch-label" x="24" y="206">the office, or a VPS</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="272" y="132" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(286 145) scale(0.75)"><path class="sch-icon--fill" d="M3.2 10.6h3.4V14H3.2Z"/><path class="sch-icon--fill" d="M7.3 10.6h3.4V14H7.3Z"/><path class="sch-icon--fill" d="M11.4 10.6h3.4V14h-3.4Z"/><path class="sch-icon--fill" d="M7.3 6.7h3.4v3.4H7.3Z"/><path class="sch-icon--fill" d="M11.4 6.7h3.4v3.4h-3.4Z"/><path class="sch-icon--fill" d="M11.4 2.8h3.4v3.4h-3.4Z"/><path class="sch-icon--fill" d="M1.8 15.2h20.4c-.9 3.6-4.6 5.8-9.6 5.8-5.6 0-9.4-2-10.8-5.8Z"/></g>
+        <text class="sch-role" x="312" y="158">DOCKER</text>
+        <text class="sch-label" x="286" y="188">One compose file,</text>
+        <text class="sch-label" x="286" y="206">version-controlled</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="534" y="10" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(548 23) scale(0.75)"><path class="sch-icon--fill" d="M3.4 12a2.7 2.7 0 1 1 5.4 0 2.7 2.7 0 0 1-5.4 0Z"/><path class="sch-icon--fill" d="M15.2 6.6a2.7 2.7 0 1 1 5.4 0 2.7 2.7 0 0 1-5.4 0Z"/><path class="sch-icon--fill" d="M15.2 17.4a2.7 2.7 0 1 1 5.4 0 2.7 2.7 0 0 1-5.4 0Z"/><path class="sch-icon--line" d="M6.1 12 17.9 6.6"/><path class="sch-icon--line" d="M6.1 12 17.9 17.4"/></g>
+        <text class="sch-role" x="574" y="36">N8N</text>
+        <text class="sch-trigger" x="716" y="36" text-anchor="end">WEBHOOK</text>
+        <text class="sch-label" x="548" y="66">The drawing above,</text>
+        <text class="sch-label" x="548" y="84">as nodes you can watch</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="534" y="132" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(548 145) scale(0.75)"><path class="sch-icon--fill" d="M9.2 4.6 3 12l6.2 7.4 1.7-1.4L5.8 12l5.1-6Z"/><path class="sch-icon--fill" d="M14.8 4.6 21 12l-6.2 7.4-1.7-1.4L18.2 12l-5.1-6Z"/></g>
+        <text class="sch-role" x="574" y="158">PYTHON 3.12</text>
+        <text class="sch-label" x="548" y="188">Workers for the jobs</text>
+        <text class="sch-label" x="548" y="206">n8n should not do</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="534" y="254" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(548 267) scale(0.75)"><path class="sch-icon--fill" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Z"/><path class="sch-icon--cut" d="M12 4.4a7.6 7.6 0 1 1 0 15.2 7.6 7.6 0 0 1 0-15.2Z"/><path class="sch-icon--fill" d="M11.2 6.4h1.6v6.4h-1.6Z"/><path class="sch-icon--fill" d="M11.2 11.2h5v1.6h-5Z"/></g>
+        <text class="sch-role" x="574" y="280">CRON</text>
+        <text class="sch-trigger" x="716" y="280" text-anchor="end">CRON</text>
+        <text class="sch-label" x="548" y="310">Anything on a clock</text>
+        <text class="sch-label" x="548" y="328">rather than a trigger</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="796" y="10" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(810 23) scale(0.75)"><path class="sch-icon--fill" d="M12 2c-4.4 0-8 1.3-8 3v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5c0-1.7-3.6-3-8-3Z"/><path class="sch-icon--cut" d="M4 8.2c1.7 1 4.6 1.6 8 1.6s6.3-.6 8-1.6v1.8c-1.7 1-4.6 1.6-8 1.6s-6.3-.6-8-1.6Z"/><path class="sch-icon--cut" d="M4 13.4c1.7 1 4.6 1.6 8 1.6s6.3-.6 8-1.6v1.8c-1.7 1-4.6 1.6-8 1.6s-6.3-.6-8-1.6Z"/></g>
+        <text class="sch-role" x="836" y="36">DATA LAYER</text>
+        <text class="sch-label" x="810" y="66">Sheets to read,</text>
+        <text class="sch-label" x="810" y="84">warehouse for history</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="796" y="132" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(810 145) scale(0.75)"><path class="sch-icon--fill" d="M20.7 4.6a5.6 5.6 0 0 1-7 7l-7.3 7.3a2.2 2.2 0 1 1-3.1-3.1l7.3-7.3a5.6 5.6 0 0 1 7-7l-3.3 3.3.9 3.2 3.2.9Z"/></g>
+        <text class="sch-role" x="836" y="158">YOUR TOOLS</text>
+        <text class="sch-label" x="810" y="188">Phone, email, diary,</text>
+        <text class="sch-label" x="810" y="206">accounts, ads</text>
+        </g>
+        <g class="sch-node">
+        <rect class="sch-box" x="796" y="254" width="196" height="92"/>
+        <g class="sch-icon-g" transform="translate(810 267) scale(0.75)"><path class="sch-icon--line" d="M2 12h4.6l2.4-5.8 3.5 11.6 2.4-6.4 1.5 2.6H22"/></g>
+        <text class="sch-role" x="836" y="280">HEALTH CHECK</text>
+        <text class="sch-trigger" x="978" y="280" text-anchor="end">CRON</text>
+        <text class="sch-label" x="810" y="310">Heartbeat out</text>
+        <text class="sch-label" x="810" y="328">every two minutes</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+  <figcaption><span class="sch-no">NS-00</span>The box every agent runs in. The same host, the same compose file, the same n8n — which is why the fifth agent costs less to run than the first.</figcaption>
+</figure>
+
+    <ol class="build-steps">
+      <li class="reveal">
+        <span class="num">01</span>
+        <div>
+          <h3>The box it runs in</h3>
+          <p>If the phone agent is already installed, this step is done — it is the same host and the same <code>docker-compose.yml</code>, with one more service in it. If this is your first agent, it is Docker on a spare PC, a NUC or a VPS at about five pounds a month, brought up with <code>docker compose up -d</code>.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">02</span>
+        <div>
+          <h3>Deciding where a quote comes from</h3>
+          <p>This is the step that actually decides whether the agent works, and it is the one to be honest about. If your quoting tool has a webhook, we use it. If it does not, we watch your sent folder for the template you use. If neither is reliable, you add a row yourself — ten seconds, and far better than a clever guess that misses one quote in six.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">03</span>
+        <div>
+          <h3>The register</h3>
+          <p>A Google Sheet with one row per quote and columns for the channel, the value, the date and the outcome. It is deliberately something you can read and edit. If you mark a row as won on a Tuesday, nothing chases it on the Wednesday.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">04</span>
+        <div>
+          <h3>The cron jobs</h3>
+          <p>Two. <code>0 9 * * 1-5</code> runs the chaser on weekday mornings only, because a quote chased at eight on a Sunday reads as automated and undoes the point of it. <code>*/10 * * * *</code> runs the reply watch. The full list we run on an agent, and what breaks when each one is missing, is written up in <a href="/journal/best-cron-jobs-for-ai-agents">the cron jobs worth setting up for an agent</a>.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">05</span>
+        <div>
+          <h3>The three messages</h3>
+          <p>Written with you, in a half-hour sitting, from quotes you have already sent. Not generated. They go in version control with everything else, so a change to the day-seven message is a change you can see and undo.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">06</span>
+        <div>
+          <h3>Matching replies back to quotes</h3>
+          <p>The unglamorous half of the build. An inbound text is matched on the number, an email on the thread, and anything the agent cannot place with confidence is flagged for you rather than guessed at. A wrong match closes the wrong quote, so it fails loudly instead.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">07</span>
+        <div>
+          <h3>Credentials and accounts</h3>
+          <p>Every account is opened in your name, on your card, with us added as a partner. The WhatsApp Business number and the mailbox are yours. If you want us gone, you remove us in one click and the chasing carries on.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">08</span>
+        <div>
+          <h3>Testing on real quotes before hand-over</h3>
+          <p>We run it against a fortnight of quotes you have already closed and check it would have chased the right ones on the right days and left the rest alone. Then we send live ones to our own phones and mailboxes and reply on each channel in turn, including replying to the day-three message after the day-seven one has been queued. Until it stops every time, it is not finished and we do not invoice.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================ MEDIA ============================ -->
+<section class="band" id="media">
+  <div class="container">
+    <p class="eyebrow">See it working</p>
+    <ul class="media-list is-placeholder">
+      <li>
+        <h3>The three messages</h3>
+        <p>The actual day three, seven and fourteen text for one client, with the job details removed.</p>
+      </li>
+      <li>
+        <h3>The register</h3>
+        <p>A screenshot of a real month, with names removed.</p>
+      </li>
+      <li>
+        <h3>A won job, end to end</h3>
+        <p>The quote, the two chases, the reply, and the row closing — one thread, with permission.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ PRICE ============================ -->
+<section class="band band--tall" id="price" style="background:var(--ink-deep);">
+  <div class="container">
+    <p class="eyebrow">What this one costs</p>
+    <div class="price-block">
+      <div class="price-row">
+        <span class="item">
+          <strong>Installed</strong>
+          <span>Built, connected to the tools you already use, tested on your real jobs, handed over working.</span>
+        </span>
+        <span class="figure">£500 <small>one-off</small></span>
+      </div>
+      <div class="price-row">
+        <span class="item">
+          <strong>Maintained</strong>
+          <span>Monitoring, fixes, and changes as the business changes. A named person to ring.</span>
+        </span>
+        <span class="figure">£50 <small>per month</small></span>
+      </div>
+    </div>
+    <p class="price-note">You get that number before anything starts, not after. If it is not the number you were expecting, say so then — it is a much cheaper conversation than the one at the end.</p>
+
+    <div class="hero-actions">
+      <a class="btn" href="/#contact">Book the survey</a>
+      <a class="btn btn--quiet" href="/#ledger">Everything else it costs</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PAGING ============================ -->
+<nav class="band work-paging" aria-label="Workflows">
+  <div class="container">
+    <div class="work-paging-inner">
+      <a class="work-back" href="/#work">All of the work</a>
+      <a class="work-prev" href="/agents/answering-the-phone"><span>Previous</span>Answering the phone</a>
+    </div>
+  </div>
+</nav>
+
+</main>
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <p class="footer-motto">New tools.<br>Old standards.</p>
+      <p class="footer-area">
+        Dulwich and West Norwood, south London.<br>
+        SE21, SE22, SE24, SE27 and surrounding.
+      </p>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="/#work">The work</a>
+        <a href="/#process">How it works</a>
+        <a href="/case-studies">Case studies</a>
+        <a href="/#ledger">What it costs</a>
+        <a href="/journal/best-cron-jobs-for-ai-agents">Writing</a>
+        <a href="/#contact">Talk to us</a>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="year">2026</span> Northsaga. Registered in England.</span>
+      <a href="mailto:hello@northsaga.ai">hello@northsaga.ai</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/site.js" defer></script>
+<script src="/js/schematic.js" defer></script>
+</body>
+</html>
 NSEOF
 
 cat > 'assets/og-image.svg' <<'NSEOF'
@@ -2489,7 +3614,7 @@ NSEOF
 cat > 'css/work.css' <<'NSEOF'
 /* ==========================================================================
    NORTHSAGA — WORKFLOW AND JOURNAL PAGES
-   Loaded only by /work/* and /journal/*. Everything here is built from the
+   Loaded only by /agents/* and /journal/*. Everything here is built from the
    same devices as site.css: hairline rules, square corners, brass used for a
    figure or a label and nothing else. No value is hard-coded — see tokens.css.
    Order: page head → schematic → numbered lists → code → parts → media →
@@ -2513,27 +3638,111 @@ cat > 'css/work.css' <<'NSEOF'
 
 /* ==========================================================================
    SCHEMATICS
-   Engineering drawing, not an illustration. The SVG keeps its intrinsic width
-   and the wrapper scrolls, so a drawing stays legible on a phone instead of
-   shrinking to nothing. Every colour is a class, never an attribute.
+   Engineering drawing, not an illustration. Every colour is a class, never an
+   attribute.
+
+   The whole drawing is visible at rest on any screen: the stage is
+   min(100%, its own width), so it fits a phone and is never blown up past
+   full size on a desktop. That makes the type small on a narrow screen, which
+   is what js/schematic.js pays for — it widens the stage past 100% and the
+   viewport scrolls. Without JS you get the complete drawing and no zoom,
+   which is the right thing to fail to.
    ========================================================================== */
 .schematic { margin-top: var(--space-5); }
 
-.schematic-scroll {
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding-bottom: var(--space-1);
+.schematic-viewport {
+  overflow: auto;
+  max-height: 78vh;
   -webkit-overflow-scrolling: touch;
+  /* One finger scrolls; two fingers are handed to the pinch handler. */
+  touch-action: pan-x pan-y;
+}
+.schematic-viewport:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 2px;
+}
+.schematic[data-zoomed="true"] .schematic-viewport { cursor: grab; }
+.schematic[data-zoomed="true"] .schematic-viewport:active { cursor: grabbing; }
+
+.schematic-stage { width: min(100%, var(--sch-w)); }
+
+/* site.css sets svg { max-width: 100% } for photographs and the mark. Here the
+   stage owns the width and the drawing fills it. */
+.schematic-stage svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: none;
 }
 
-/* site.css sets svg { max-width: 100% } for photographs and the mark. A
-   drawing must not obey that or it squashes instead of scrolling. */
-.schematic-scroll svg { max-width: none; }
+/* ---------- Zoom controls, injected by js/schematic.js ---------- */
+.schematic-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+}
+
+.sch-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  padding-inline: 0.55rem;
+  background: none;
+  border: 1px solid var(--hairline-strong);
+  border-radius: var(--radius);
+  color: var(--bone);
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color var(--dur-fast) var(--ease),
+              color var(--dur-fast) var(--ease);
+}
+.sch-btn:hover:not(:disabled) { border-color: var(--brass); color: var(--brass); }
+.sch-btn:disabled { opacity: 0.35; cursor: default; }
+.sch-btn--text {
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  font-size: var(--step--1);
+}
+
+.sch-level {
+  min-width: 3.5rem;
+  text-align: center;
+  font-size: var(--step--1);
+  color: var(--bone-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.sch-hint {
+  font-size: var(--step--1);
+  color: var(--bone-dim);
+  margin-left: auto;
+  text-align: right;
+}
 
 .sch-box {
   fill: var(--ink-raised);
   stroke: var(--hairline-strong);
   stroke-width: 1;
+}
+
+/* ---------- Node glyphs ----------
+   Drawn in tools/icons.py. Monochrome on purpose: brass is the only accent
+   this brand has, so a wall of vendor colours would be a second palette.
+   --cut must track .sch-box's fill or the punched-out detail stops reading. */
+.sch-icon--fill { fill: var(--bone-dim); }
+.sch-icon--cut  { fill: var(--ink-raised); }
+.sch-icon--line {
+  fill: none;
+  stroke: var(--bone-dim);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .sch-wire {
@@ -2896,6 +4105,21 @@ code {
 
 /* ---------- Small screens ---------- */
 @media (max-width: 640px) {
+  /* Full-bleed the drawing out through the container gutter. On a 390px phone
+     that is roughly 40px of extra width, which is 11% more drawing. */
+  .schematic-viewport {
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--space-1);
+  }
+  /* Keep the hint — on a phone the drawing is at its smallest and the reader
+     most needs telling that it zooms. It just gets its own line. */
+  .schematic-controls { flex-wrap: wrap; }
+  .sch-hint {
+    margin-left: 0;
+    flex-basis: 100%;
+    text-align: left;
+  }
+
   .price-row { grid-template-columns: 1fr; }
   .price-row .figure,
   .price-row .figure small { text-align: left; }
@@ -3315,7 +4539,7 @@ cat > 'journal/best-cron-jobs-for-ai-agents.html' <<'NSEOF'
 
     <div class="hero-actions">
       <a class="btn" href="/#contact">Book the survey</a>
-      <a class="btn btn--quiet" href="/work/answering-the-phone">See one built</a>
+      <a class="btn btn--quiet" href="/agents/answering-the-phone">See one built</a>
     </div>
   </div>
 </section>
@@ -3350,6 +4574,171 @@ cat > 'journal/best-cron-jobs-for-ai-agents.html' <<'NSEOF'
 <script src="/js/site.js" defer></script>
 </body>
 </html>
+NSEOF
+
+cat > 'js/schematic.js' <<'NSEOF'
+/* Northsaga — schematic zoom.
+
+   A drawing is fitted to the viewport width by CSS, so the whole shape is
+   visible at rest on any screen. That makes the type small on a phone, which
+   is the trade this script pays for: fit first, then let the reader zoom in.
+
+   One job only. If this file fails to load, the drawing is still complete and
+   still scrollable — you just do not get the controls.
+
+   Zoom is a width on the stage, not a transform, so the SVG re-renders at the
+   new size and stays sharp. The viewport scrolls, so panning is native on
+   touch and needs no code.  */
+
+(function () {
+  'use strict';
+
+  var STEPS = [1, 1.5, 2, 3, 4];
+  var figures = document.querySelectorAll('.schematic');
+  if (!figures.length) return;
+
+  function nearest(z) {
+    var best = 0;
+    for (var i = 1; i < STEPS.length; i++) {
+      if (Math.abs(STEPS[i] - z) < Math.abs(STEPS[best] - z)) best = i;
+    }
+    return best;
+  }
+
+  figures.forEach(function (fig) {
+    var viewport = fig.querySelector('.schematic-viewport');
+    var stage = fig.querySelector('.schematic-stage');
+    var caption = fig.querySelector('figcaption');
+    if (!viewport || !stage) return;
+
+    /* The drawing's own width, from the inline --sch-w the generator writes. */
+    var intrinsic = parseFloat(stage.style.getPropertyValue('--sch-w')) || 0;
+    var index = 0;
+
+    /* ---- controls ---- */
+    var bar = document.createElement('div');
+    bar.className = 'schematic-controls';
+    bar.innerHTML =
+      '<button type="button" class="sch-btn" data-zoom="out" aria-label="Zoom out">' +
+      '<span aria-hidden="true">−</span></button>' +
+      '<span class="sch-level" role="status">100%</span>' +
+      '<button type="button" class="sch-btn" data-zoom="in" aria-label="Zoom in">' +
+      '<span aria-hidden="true">+</span></button>' +
+      '<button type="button" class="sch-btn sch-btn--text" data-zoom="fit">Fit</button>' +
+      '<span class="sch-hint">Pinch or scroll to move around</span>';
+
+    fig.insertBefore(bar, caption);
+
+    var level = bar.querySelector('.sch-level');
+    var outBtn = bar.querySelector('[data-zoom="out"]');
+    var inBtn = bar.querySelector('[data-zoom="in"]');
+
+    /* Set the zoom, keeping whatever was in the middle of the viewport in the
+       middle of it. Without this, zooming in on a wide drawing throws the
+       reader back to the left-hand edge every time. */
+    function apply(next, originX, originY) {
+      next = Math.max(0, Math.min(STEPS.length - 1, next));
+      if (next === index) return;
+
+      var before = STEPS[index];
+      var after = STEPS[next];
+      var ox = originX === undefined ? viewport.clientWidth / 2 : originX;
+      var oy = originY === undefined ? viewport.clientHeight / 2 : originY;
+      var fx = (viewport.scrollLeft + ox) / before;
+      var fy = (viewport.scrollTop + oy) / before;
+
+      index = next;
+      stage.style.width = after === 1
+        ? ''
+        : 'min(' + (after * 100) + '%, ' + (intrinsic * after) + 'px)';
+
+      viewport.scrollLeft = fx * after - ox;
+      viewport.scrollTop = fy * after - oy;
+
+      level.textContent = Math.round(after * 100) + '%';
+      fig.dataset.zoomed = after > 1 ? 'true' : 'false';
+      outBtn.disabled = index === 0;
+      inBtn.disabled = index === STEPS.length - 1;
+    }
+
+    outBtn.disabled = true;
+
+    bar.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-zoom]');
+      if (!btn) return;
+      var dir = btn.dataset.zoom;
+      apply(dir === 'in' ? index + 1 : dir === 'out' ? index - 1 : 0);
+    });
+
+    /* ---- trackpad pinch and ctrl+wheel ---- */
+    viewport.addEventListener('wheel', function (e) {
+      if (!e.ctrlKey) return;              /* a plain wheel still scrolls */
+      e.preventDefault();
+      var rect = viewport.getBoundingClientRect();
+      apply(index + (e.deltaY < 0 ? 1 : -1),
+            e.clientX - rect.left, e.clientY - rect.top);
+    }, { passive: false });
+
+    /* ---- two-finger pinch ----
+       Only while two fingers are down, so a one-finger drag still scrolls the
+       viewport natively and the page still scrolls past the drawing. */
+    var startDist = 0;
+    var startZoom = 1;
+
+    function spread(t) {
+      var dx = t[0].clientX - t[1].clientX;
+      var dy = t[0].clientY - t[1].clientY;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    viewport.addEventListener('touchstart', function (e) {
+      if (e.touches.length !== 2) return;
+      startDist = spread(e.touches);
+      startZoom = STEPS[index];
+    }, { passive: true });
+
+    viewport.addEventListener('touchmove', function (e) {
+      if (e.touches.length !== 2 || !startDist) return;
+      e.preventDefault();
+      var rect = viewport.getBoundingClientRect();
+      var cx = (e.touches[0].clientX + e.touches[1].clientX) / 2 - rect.left;
+      var cy = (e.touches[0].clientY + e.touches[1].clientY) / 2 - rect.top;
+      apply(nearest(startZoom * (spread(e.touches) / startDist)), cx, cy);
+    }, { passive: false });
+
+    viewport.addEventListener('touchend', function () { startDist = 0; });
+
+    /* ---- drag to pan, mouse only ---- */
+    var dragging = false;
+    var lastX = 0;
+    var lastY = 0;
+
+    viewport.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse' || fig.dataset.zoomed !== 'true') return;
+      dragging = true;
+      lastX = e.clientX;
+      lastY = e.clientY;
+      viewport.setPointerCapture(e.pointerId);
+    });
+
+    viewport.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      viewport.scrollLeft -= e.clientX - lastX;
+      viewport.scrollTop -= e.clientY - lastY;
+      lastX = e.clientX;
+      lastY = e.clientY;
+    });
+
+    viewport.addEventListener('pointerup', function () { dragging = false; });
+    viewport.addEventListener('pointercancel', function () { dragging = false; });
+
+    /* ---- double click or double tap toggles fit and 200% ---- */
+    viewport.addEventListener('dblclick', function (e) {
+      var rect = viewport.getBoundingClientRect();
+      apply(index === 0 ? 2 : 0, e.clientX - rect.left, e.clientY - rect.top);
+    });
+  });
+})();
 NSEOF
 
 cat > 'js/site.js' <<'NSEOF'
@@ -3427,6 +4816,838 @@ cat > 'js/site.js' <<'NSEOF'
 })();
 NSEOF
 
+cat > 'tools/build-agent-pages.py' <<'NSEOF'
+#!/usr/bin/env python3
+"""Northsaga — agent page generator.
+
+    cd tools && python3 build-agent-pages.py
+
+Every agent page's copy, stages, parts list, build order, prices and schematic
+lives in the PAGES list below. agents/*.html is generated output — do not
+hand-edit it; edit the dictionary and re-run.
+
+Also writes tools/_homepage-list.html, the block to paste into .install-list in
+index.html if the list of agents changes.
+
+Python 3 standard library only. No dependencies, no build step.
+"""
+
+import html
+import os
+
+import chrome
+import icons
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
+
+
+# ==========================================================================
+# THE SCHEMATIC RENDERER
+#
+# Boxes in brand colours, orthogonal brass connectors. Columns run left to
+# right and each column is centred vertically against the tallest one.
+#
+#   'nodes': {
+#     'a': (0, 0, 'Trigger', 'Inbound call|to your number', 'phone', 'webhook'),
+#     'b': (1, 0, 'Routing', 'Rings your mobile|for twenty seconds', 'mobile'),
+#   }
+#   'edges': [('a','b'), ('b','c'), ('c','a','dash')]
+#
+# A node is (column, row, ROLE, 'line 1|line 2', icon, trigger). The last two
+# are optional:
+#
+#   icon      a key in tools/icons.py — the glyph in the box's top-left corner.
+#             An unknown name is a hard error rather than a silent blank.
+#   trigger   'cron' or 'webhook', printed as a small brass label top-right.
+#
+# Two label lines maximum, roughly 26 characters a line.
+#
+# 'dash' marks a feedback loop. An edge that runs right to left is routed in a
+# lane underneath the drawing rather than back through the boxes.
+#
+# No gradients and no rounded corners. Every fill and stroke is a CSS class
+# styled in css/work.css, so no value is hard-coded here.
+#
+# **Keep drawings narrow rather than wide.** A schematic is fitted to the
+# viewport width by default so the whole shape is visible on a phone, which
+# means every extra column shrinks the type in all of them. Prefer three or
+# four columns and more rows.
+# ==========================================================================
+
+BOX_W, BOX_H = 196, 92
+COL_GAP, ROW_GAP = 66, 30
+MARGIN = 10
+LOOP_LANE = 40
+ARROW = 7
+
+
+def _arrow(x, y, direction):
+    """A small filled triangle with its tip at (x, y)."""
+    s, w = ARROW, ARROW * 0.62
+    if direction == "right":
+        d = f"M {x} {y} L {x - s} {y - w} L {x - s} {y + w} Z"
+    elif direction == "down":
+        d = f"M {x} {y} L {x - w} {y - s} L {x + w} {y - s} Z"
+    else:  # up
+        d = f"M {x} {y} L {x - w} {y + s} L {x + w} {y + s} Z"
+    return f'<path class="sch-arrow" d="{d}"/>'
+
+
+def schematic(spec, number, caption):
+    """Render one drawing. Returns a <figure> block."""
+    nodes, edges = spec["nodes"], spec["edges"]
+
+    n = {}
+    for key, tup in nodes.items():
+        n[key] = {
+            "col": tup[0],
+            "row": tup[1],
+            "role": tup[2],
+            "label": tup[3],
+            "icon": tup[4] if len(tup) > 4 else None,
+            "trigger": tup[5] if len(tup) > 5 else None,
+        }
+
+    columns = {}
+    for key, node in n.items():
+        columns.setdefault(node["col"], []).append(key)
+
+    def row_y(row):
+        return row * (BOX_H + ROW_GAP)
+
+    extents = {}
+    for col, keys in columns.items():
+        tops = [row_y(n[k]["row"]) for k in keys]
+        extents[col] = (min(tops), max(tops) + BOX_H)
+    tallest = max(bottom - top for top, bottom in extents.values())
+
+    for col, keys in columns.items():
+        top, bottom = extents[col]
+        offset = (tallest - (bottom - top)) / 2 - top
+        for k in keys:
+            n[k]["x"] = round(n[k]["col"] * (BOX_W + COL_GAP)) + MARGIN
+            n[k]["y"] = round(row_y(n[k]["row"]) + offset) + MARGIN
+
+    has_loop = any(n[e[1]]["col"] < n[e[0]]["col"] for e in edges)
+    width = max(node["x"] for node in n.values()) + BOX_W + MARGIN
+    height = tallest + MARGIN * 2 + (LOOP_LANE if has_loop else 0)
+    lane_y = tallest + MARGIN + LOOP_LANE // 2
+
+    # ---- connectors, drawn first so the boxes sit on top ----
+    #
+    # Elbows between the same pair of columns are given their own vertical lane,
+    # keyed on the source node. Edges leaving one node share a lane, so a
+    # fan-out reads as one trunk splitting; edges leaving different nodes get
+    # their own, so two of them can never lie on top of each other and be
+    # mistaken for a single wire.
+    lanes = {}
+    for edge in edges:
+        a, b = n[edge[0]], n[edge[1]]
+        if b["col"] > a["col"] and a["y"] != b["y"]:
+            lanes.setdefault(a["col"], [])
+            if edge[0] not in lanes[a["col"]]:
+                lanes[a["col"]].append(edge[0])
+
+    def lane_offset(col, source):
+        keys = lanes.get(col, [])
+        if len(keys) < 2:
+            return 0
+        step = min(14, (COL_GAP // 2 - 8) * 2 // (len(keys) - 1))
+        return round((keys.index(source) - (len(keys) - 1) / 2) * step)
+
+    wires = []
+    for edge in edges:
+        a, b = n[edge[0]], n[edge[1]]
+        dashed = "dash" in edge[2:]
+        cls = "sch-wire sch-wire--dash" if dashed else "sch-wire"
+
+        acx, bcx = a["x"] + BOX_W // 2, b["x"] + BOX_W // 2
+        acy, bcy = a["y"] + BOX_H // 2, b["y"] + BOX_H // 2
+
+        if a["col"] == b["col"]:
+            if a["y"] < b["y"]:
+                d = f'M {acx} {a["y"] + BOX_H} L {bcx} {b["y"]}'
+                head = _arrow(bcx, b["y"], "down")
+            else:
+                d = f'M {acx} {a["y"]} L {bcx} {b["y"] + BOX_H}'
+                head = _arrow(bcx, b["y"] + BOX_H, "up")
+        elif b["col"] > a["col"]:
+            sx, ex = a["x"] + BOX_W, b["x"]
+            if acy == bcy:
+                d = f"M {sx} {acy} L {ex} {bcy}"
+            else:
+                mid = (sx + ex) // 2 + lane_offset(a["col"], edge[0])
+                d = f"M {sx} {acy} H {mid} V {bcy} H {ex}"
+            head = _arrow(ex, bcy, "right")
+        else:
+            # Feedback: down out of the source, left along the lane, up the
+            # gutter to the target's left, then in. The riser goes up the empty
+            # column gap rather than the target's centre line, because a target
+            # with another box below it would otherwise have the wire pass
+            # behind that box and read as two broken lines.
+            riser = max(4, b["x"] - COL_GAP // 2)
+            d = (f'M {acx} {a["y"] + BOX_H} V {lane_y} '
+                 f'H {riser} V {bcy} H {b["x"]}')
+            head = _arrow(b["x"], bcy, "right")
+
+        wires.append(f'<path class="{cls}" d="{d}"/>')
+        wires.append(head)
+
+    # ---- boxes ----
+    #
+    # The glyph sits top-left and the ROLE label is indented past it. A node
+    # without an icon keeps the old indent, so the two can coexist in one
+    # drawing without the roles going ragged.
+    boxes = []
+    for key in sorted(n, key=lambda k: (n[k]["col"], n[k]["row"])):
+        node = n[key]
+        x, y = node["x"], node["y"]
+        boxes.append('<g class="sch-node">')
+        boxes.append(
+            f'<rect class="sch-box" x="{x}" y="{y}" width="{BOX_W}" height="{BOX_H}"/>')
+        if node["icon"]:
+            boxes.append(icons.render(node["icon"], x + 14, y + 13))
+        boxes.append(
+            f'<text class="sch-role" x="{x + 14 + (icons.ICON_SIZE + 8 if node["icon"] else 0)}" '
+            f'y="{y + 26}">{html.escape(node["role"].upper())}</text>')
+        if node["trigger"]:
+            boxes.append(
+                f'<text class="sch-trigger" x="{x + BOX_W - 14}" y="{y + 26}" '
+                f'text-anchor="end">{html.escape(node["trigger"].upper())}</text>')
+        for i, line in enumerate(node["label"].split("|")[:2]):
+            boxes.append(
+                f'<text class="sch-label" x="{x + 14}" y="{y + 56 + i * 18}">'
+                f'{html.escape(line)}</text>')
+        boxes.append("</g>")
+
+    body = "\n        ".join(wires + boxes)
+    alt = html.escape(f"Drawing {number}. {caption}")
+
+    # The stage is width:min(100%, --sch-w), so the whole drawing is visible at
+    # rest on any screen and never blown up past its own size on a wide one.
+    # js/schematic.js overrides that inline width to zoom, and the viewport
+    # scrolls. Without JS you still get the complete drawing, just no zoom.
+    return f"""<figure class="schematic">
+  <div class="schematic-viewport" tabindex="0" role="group"
+       aria-label="Drawing {number}, scrollable and zoomable">
+    <div class="schematic-stage" style="--sch-w:{width}px">
+      <svg viewBox="0 0 {width} {height}" preserveAspectRatio="xMidYMid meet"
+           role="img" aria-label="{alt}">
+        <title>{alt}</title>
+        {body}
+      </svg>
+    </div>
+  </div>
+  <figcaption><span class="sch-no">{number}</span>{html.escape(caption)}</figcaption>
+</figure>"""
+
+
+# ==========================================================================
+# NS-00 — the shared drawing. The same box runs every agent, which is why the
+# fifth one costs less to run than the first. Rendered on every workflow page.
+# ==========================================================================
+
+BOX_DRAWING = {
+    "nodes": {
+        "host":   (0, 1, "Host",        "A spare PC, a NUC in|the office, or a VPS", "server"),
+        "docker": (1, 1, "Docker",      "One compose file,|version-controlled", "docker"),
+        "n8n":    (2, 0, "n8n",         "The drawing above,|as nodes you can watch", "n8n", "webhook"),
+        "py":     (2, 1, "Python 3.12", "Workers for the jobs|n8n should not do", "code"),
+        "cron":   (2, 2, "cron",        "Anything on a clock|rather than a trigger", "clock", "cron"),
+        "data":   (3, 0, "Data layer",  "Sheets to read,|warehouse for history", "database"),
+        "tools":  (3, 1, "Your tools",  "Phone, email, diary,|accounts, ads", "wrench"),
+        "health": (3, 2, "Health check", "Heartbeat out|every two minutes", "pulse", "cron"),
+    },
+    "edges": [
+        ("host", "docker"),
+        ("docker", "n8n"), ("docker", "py"), ("docker", "cron"),
+        ("n8n", "data"), ("n8n", "tools"),
+        ("py", "data"),
+        ("cron", "health"),
+        ("health", "docker", "dash"),
+    ],
+}
+
+BOX_CAPTION = ("The box every agent runs in. The same host, the same compose "
+               "file, the same n8n — which is why the fifth agent costs less to "
+               "run than the first.")
+
+
+# ==========================================================================
+# THE PAGES
+#
+# Everything on a workflow page is here. Bodies may contain HTML: <code> for
+# commands and crontab lines, <a> for the one article backlink, and
+# <span class="tbd"> for a value nobody has settled yet. Do not guess at a tbd.
+# ==========================================================================
+
+CRON_ARTICLE = "/journal/best-cron-jobs-for-ai-agents"
+
+PRICE = [
+    ("Installed", "Built, connected to the tools you already use, tested on your "
+                  "real jobs, handed over working.", "£500", "one-off"),
+    ("Maintained", "Monitoring, fixes, and changes as the business changes. "
+                   "A named person to ring.", "£50", "per month"),
+]
+
+PRICE_NOTE = ("You get that number before anything starts, not after. If it is "
+              "not the number you were expecting, say so then — it is a much "
+              "cheaper conversation than the one at the end.")
+
+PAGES = [
+    {
+        "number": "01",
+        "slug": "answering-the-phone",
+        "title": "Answering the phone",
+        "subject": "Voice agent and missed-call text-back",
+        "summary": ("Every call you cannot answer gets picked up. If it is not you, "
+                    "it is an agent that takes the name, the number and the job, and "
+                    "texts them back inside a minute."),
+        "meta": ("A voice agent that answers the calls you miss, takes the job "
+                 "details, and texts the caller back inside a minute. Installed for "
+                 "£500, maintained for £50 a month."),
+
+        "intro": [
+            "Most of the work a small firm loses, it loses at the phone. Not to a "
+            "better quote. To whoever picked up second.",
+
+            "You are on a roof, under a sink, or driving. The phone rings out. The "
+            "caller has three more numbers on the same search page and no particular "
+            "reason to prefer yours. By the time you hear the voicemail — if they left "
+            "one, and most do not — the job belongs to somebody else.",
+
+            "This is the agent that stops that. It rings your mobile first, because if "
+            "you can answer, you should. If you cannot, it answers, takes the details "
+            "in a plain voice, and writes them down where you will see them. The caller "
+            "has a text from you before they have dialled the next number.",
+        ],
+
+        "schematic": {
+            "nodes": {
+                "call":  (0, 0, "Trigger",     "Inbound call to|your number", "phone", "webhook"),
+                "fork":  (1, 0, "Routing",     "Rings your mobile|for twenty seconds", "mobile"),
+                "agent": (2, 0, "Voice agent", "Answers if you cannot.|Asks three questions", "mic"),
+                "text":  (2, 1, "Text-back",   "Text to the caller|inside a minute", "whatsapp"),
+                "sweep": (2, 2, "Sweep",       "Catches anything|the webhook missed", "clock", "cron"),
+                "sheet": (3, 0, "Job sheet",   "One row: name, job,|postcode, urgency", "sheets"),
+                "alert": (3, 1, "Alert",       "The same thing to|your phone and inbox", "bell"),
+            },
+            "edges": [
+                ("call", "fork"),
+                ("fork", "agent"),
+                ("agent", "text"),
+                ("agent", "sheet"),
+                ("text", "alert"),
+                ("sweep", "sheet"),
+            ],
+        },
+        "caption": ("Answering the phone. Your mobile rings first; the agent only "
+                    "answers when you do not."),
+
+        "stages": [
+            ("The call comes in",
+             "It rings your mobile for twenty seconds, exactly as it does now. If you "
+             "pick up, the agent never runs and you never hear from it. Nothing about "
+             "your day changes on the calls you can take."),
+            ("The agent answers",
+             "It gives the firm's name and asks three things: what the job is, where it "
+             "is, and when they need it. It does not pretend to be a person, and it does "
+             "not quote. Quoting is yours."),
+            ("The details get written down",
+             "Name, number, postcode, job, urgency. One row on the job sheet, one line in "
+             "your inbox, one text to your phone. The same five facts in all three, so "
+             "there is nothing to reconcile later."),
+            ("The caller gets a text",
+             "Inside a minute, in your name. We missed you, here is what we do, reply here "
+             "and we will ring back. Most people answer that text rather than carry on "
+             "down the list."),
+            ("You ring back knowing something",
+             "You are not returning a blank missed call. You know the job, the address and "
+             "whether it can wait until Thursday."),
+            ("Nothing gets quietly lost",
+             "A sweep runs every five minutes and picks up anything the telephony provider "
+             "failed to hand over. A call that neither of you answered appears on the sheet "
+             "as a miss, rather than not appearing at all."),
+        ],
+
+        "stack": [
+            ("Docker",
+             "One compose file per client, version-controlled. Everything below runs "
+             "inside it."),
+            ("n8n, self-hosted",
+             "The drawing above, as nodes you can watch run. You get a login on day one."),
+            ("Python 3.12",
+             "The workers: the five-minute sweep, the tidy-up of what the agent heard, "
+             "and the writes to the sheet."),
+            ("cron",
+             "Two schedules on this workflow. The sweep, and the Monday morning summary."),
+            ("Telephony",
+             "Twilio, or your existing provider if it has an API worth the name. The "
+             "number, the twenty-second fork to your mobile, and the text-back all sit "
+             "here."),
+            ("A voice model",
+             "Answers, listens, asks its three questions, stops. Not a chatbot with a "
+             "phone line attached."),
+            ("Google Sheets",
+             "The job sheet. Anything a person needs to read during the working day "
+             "lives here, because everyone can already read a spreadsheet."),
+            ("The warehouse",
+             'Still to be chosen — <span class="tbd">product name to be confirmed</span>. '
+             'Every call, every miss, every callback, kept with its history so the '
+             'monthly figures are countable rather than remembered.'),
+        ],
+
+        "build": [
+            ("The box it runs in",
+             "Docker on the host. That host is a spare PC in the office, a NUC on a "
+             "shelf, or a VPS at about five pounds a month — whichever you already have. "
+             "One <code>docker-compose.yml</code> per client, kept in version control, "
+             "brought up with <code>docker compose up -d</code>. If the machine dies, the "
+             "same file on a new machine puts everything back."),
+
+            ("Inside the container",
+             "Python 3.12, and only the libraries this workflow actually needs: "
+             "<code>requests</code> for the telephony API, <code>gspread</code> for the "
+             "job sheet, and <code>python-dateutil</code> for the working-hours logic. "
+             "<code>cron</code> goes in the same image for anything that runs on a clock "
+             "rather than on a trigger."),
+
+            ("The cron jobs",
+             "This workflow needs two. <code>*/5 * * * *</code> sweeps for calls the "
+             "webhook did not deliver, because telephony webhooks fail quietly and a "
+             "silent failure here is a lost job. <code>0 7 * * 1</code> sends the Monday "
+             "morning summary: calls taken, calls missed, callbacks made. The full list we "
+             "run on an agent, and what breaks when each one is missing, is written up in "
+             f'<a href="{CRON_ARTICLE}">the cron jobs worth setting up for an agent</a>.'),
+
+            ("n8n",
+             "Self-hosted, in the same compose file. This is where the drawing above stops "
+             "being a drawing: every box is a node, and every arrow is a connection you can "
+             "click. You get a login and can watch a call move through it in real time. We "
+             "would rather you looked than took our word for it."),
+
+            ("Credentials and accounts",
+             "Every account is opened in your name, on your card, with us added as a "
+             "partner. Not ours with you as a guest. If you want us gone, you remove us in "
+             "one click and everything keeps running. That is the arrangement, and it is a "
+             "selling point rather than a footnote."),
+
+            ("The data layer",
+             "Google Sheets for the job sheet, because a person has to read it between "
+             "jobs. The warehouse — <span class=\"tbd\">to be confirmed</span> — for "
+             "anything with history: every call, every miss, every callback, every "
+             "recording reference. Sheets is for today. The warehouse is for the question "
+             "you will ask in March about last October."),
+
+            ("Wiring the phone in",
+             "In this order, because each step needs the one before it. The number first, "
+             "ported or new. Then the fork to your mobile with the twenty-second timeout. "
+             "Then the voice agent on the far side of that timeout. Then the text-back on "
+             "the same number, so the message comes from the number they rang. Then the "
+             "write to the sheet. Then the alert to you. Testing the text-back before the "
+             "number is live tests nothing."),
+
+            ("Testing on real calls before hand-over",
+             "We ring it ourselves from four or five different phones, including one with a "
+             "bad line, and we get somebody who is not us to ring it too. It has to answer "
+             "in under six rings, get the postcode right, write one row rather than two, and "
+             "text back inside sixty seconds. It has to do all of that on ten consecutive "
+             "calls. Until it does, it is not finished and we do not invoice."),
+        ],
+
+        "media": [
+            ("Recording of a real call", "A thirty-second clip of the agent taking a job, "
+             "with the client's permission and the caller's."),
+            ("The job sheet", "A screenshot of a real week, with names removed."),
+            ("The text as the caller sees it", "A photograph of the phone, not a mock-up."),
+        ],
+    },
+
+    {
+        "number": "02",
+        "slug": "quote-follow-up",
+        "title": "Quote follow-up",
+        "subject": "Chasing on day three, seven and fourteen",
+        "summary": ("Every quote you send gets chased on day three, day seven and "
+                    "day fourteen, in your name, without you remembering to do it. "
+                    "One reply and the chasing stops that minute."),
+        "meta": ("An agent that chases your quotes on day three, seven and fourteen "
+                 "and stops the moment the customer replies. Installed for £500, "
+                 "maintained for £50 a month."),
+
+        "intro": [
+            "A quote that is never chased is not a quote. It is a document you spent "
+            "an evening writing.",
+
+            "Most small firms chase the first time and then stop, because the second "
+            "chase is the awkward one and there is always something more urgent than "
+            "an awkward message. So the quote sits there. The customer is not saying "
+            "no. They have three quotes, a job that is not on fire, and no reason to "
+            "decide today. Whoever asks last usually gets the work.",
+
+            "This is the agent that asks. It knows what you sent, who you sent it to "
+            "and when, and it comes back three times over a fortnight. Not a "
+            "template that reads like a template — your words, your name, the job "
+            "named. And the moment they reply, by any route, it stops. Nobody has "
+            "ever bought anything from a firm that chased them after they answered.",
+        ],
+
+        # Three columns rather than five. The whole shape has to be legible on a
+        # phone before anybody zooms in — see the note above BOX_W.
+        "schematic": {
+            "nodes": {
+                "quote": (0, 1, "Trigger",  "You send a quote from|the tool you already use",
+                          "doc", "webhook"),
+                "sheet": (1, 0, "Register", "One row: who, what,|how much, what day",
+                          "sheets"),
+                "chase": (1, 1, "Chaser",   "Nine each morning.|Day three, seven, fourteen",
+                          "clock", "cron"),
+                "msg":   (2, 0, "Message",  "WhatsApp or text,|sent in your name",
+                          "whatsapp"),
+                "mail":  (2, 1, "Email",    "The same words, on|the same thread",
+                          "mail"),
+                "reply": (2, 2, "Reply watch", "Checks every ten minutes.|A reply stops it",
+                          "reply", "cron"),
+            },
+            "edges": [
+                ("quote", "sheet"),
+                ("quote", "chase"),
+                ("chase", "msg"),
+                ("chase", "mail"),
+                ("reply", "sheet", "dash"),
+            ],
+        },
+        "caption": ("Quote follow-up. The chaser reads the register every morning; "
+                    "the reply watch writes back to it and the chasing stops."),
+
+        "stages": [
+            ("You send the quote as you always did",
+             "Nothing changes about how you write or send it. The agent picks it up "
+             "from your quoting tool, your sent folder or a row you add yourself, "
+             "whichever you already do. If it means changing how you quote, we have "
+             "built the wrong thing."),
+            ("It gets written down properly",
+             "Who it went to, what the job is, what you quoted, and the date. One row "
+             "on the quote sheet. That row is the whole memory of the thing — "
+             "everything after this reads from it."),
+            ("Day three: the short one",
+             "Two lines. Did it arrive, and is there anything you want going through "
+             "before they decide. Sent on the channel they contacted you on, because "
+             "a customer who rang wants a text and a customer who emailed wants an "
+             "email."),
+            ("Day seven: the useful one",
+             "This one carries something — when you could start, what the price "
+             "includes, or the answer to the question people always ask about that "
+             "kind of job. A chase that adds nothing is just a chase."),
+            ("Day fourteen: the last one",
+             "Plainly the last. It says so. Either the job is still live or it is "
+             "not, and the customer gets to say which without feeling rude. That is "
+             "usually the message that gets an answer."),
+            ("Any reply, and it stops",
+             "By text, by email, by picking up the phone. The reply watch runs every "
+             "ten minutes and closes the sequence the same morning. It cannot chase "
+             "somebody who has already answered you, which is the failure that would "
+             "cost you the job outright."),
+            ("You find out what actually happens",
+             "Won, lost, or no answer, against what you quoted. After three months "
+             "you know your real conversion rate and which of the three messages "
+             "does the work. Most firms have never had that number."),
+        ],
+
+        "stack": [
+            ("Docker",
+             "The same compose file as every other agent. This one is another service "
+             "inside it, not another machine."),
+            ("n8n, self-hosted",
+             "The drawing above, as nodes you can watch run. Same login as the phone "
+             "agent if you already have one."),
+            ("Python 3.12",
+             "The workers: reading the register, deciding who is due a chase today, "
+             "and matching an inbound reply back to the right quote."),
+            ("cron",
+             "Two schedules. The nine o'clock chaser, and the ten-minute reply watch."),
+            ("WhatsApp or SMS",
+             "The WhatsApp Business API where you already use it, otherwise Twilio "
+             "or your existing provider. Messages go out from your number, not a "
+             "short code nobody recognises."),
+            ("Email",
+             "Sent through your own mailbox, on the original thread, so the chase "
+             "lands under the quote rather than as a fresh message with no context."),
+            ("Google Sheets",
+             "The quote register. You can open it, sort it and correct it, and the "
+             "agent reads your corrections on the next run."),
+            ("The warehouse",
+             'Still to be chosen — <span class="tbd">product name to be confirmed</span>. '
+             'Every quote, every chase and every outcome kept with its dates, so the '
+             'conversion rate is a figure rather than a feeling.'),
+        ],
+
+        "build": [
+            ("The box it runs in",
+             "If the phone agent is already installed, this step is done — it is the "
+             "same host and the same <code>docker-compose.yml</code>, with one more "
+             "service in it. If this is your first agent, it is Docker on a spare PC, "
+             "a NUC or a VPS at about five pounds a month, brought up with "
+             "<code>docker compose up -d</code>."),
+
+            ("Deciding where a quote comes from",
+             "This is the step that actually decides whether the agent works, and it "
+             "is the one to be honest about. If your quoting tool has a webhook, we "
+             "use it. If it does not, we watch your sent folder for the template you "
+             "use. If neither is reliable, you add a row yourself — ten seconds, and "
+             "far better than a clever guess that misses one quote in six."),
+
+            ("The register",
+             "A Google Sheet with one row per quote and columns for the channel, the "
+             "value, the date and the outcome. It is deliberately something you can "
+             "read and edit. If you mark a row as won on a Tuesday, nothing chases it "
+             "on the Wednesday."),
+
+            ("The cron jobs",
+             "Two. <code>0 9 * * 1-5</code> runs the chaser on weekday mornings only, "
+             "because a quote chased at eight on a Sunday reads as automated and "
+             "undoes the point of it. <code>*/10 * * * *</code> runs the reply watch. "
+             "The full list we run on an agent, and what breaks when each one is "
+             "missing, is written up in "
+             f'<a href="{CRON_ARTICLE}">the cron jobs worth setting up for an agent</a>.'),
+
+            ("The three messages",
+             "Written with you, in a half-hour sitting, from quotes you have already "
+             "sent. Not generated. They go in version control with everything else, "
+             "so a change to the day-seven message is a change you can see and undo."),
+
+            ("Matching replies back to quotes",
+             "The unglamorous half of the build. An inbound text is matched on the "
+             "number, an email on the thread, and anything the agent cannot place "
+             "with confidence is flagged for you rather than guessed at. A wrong "
+             "match closes the wrong quote, so it fails loudly instead."),
+
+            ("Credentials and accounts",
+             "Every account is opened in your name, on your card, with us added as a "
+             "partner. The WhatsApp Business number and the mailbox are yours. If you "
+             "want us gone, you remove us in one click and the chasing carries on."),
+
+            ("Testing on real quotes before hand-over",
+             "We run it against a fortnight of quotes you have already closed and "
+             "check it would have chased the right ones on the right days and left "
+             "the rest alone. Then we send live ones to our own phones and mailboxes "
+             "and reply on each channel in turn, including replying to the day-three "
+             "message after the day-seven one has been queued. Until it stops every "
+             "time, it is not finished and we do not invoice."),
+        ],
+
+        "media": [
+            ("The three messages", "The actual day three, seven and fourteen text for "
+             "one client, with the job details removed."),
+            ("The register", "A screenshot of a real month, with names removed."),
+            ("A won job, end to end", "The quote, the two chases, the reply, and the "
+             "row closing — one thread, with permission."),
+        ],
+    },
+]
+
+
+# ==========================================================================
+# RENDERING
+# ==========================================================================
+
+def price_block():
+    rows = []
+    for name, note, figure, unit in PRICE:
+        rows.append(f"""      <div class="price-row">
+        <span class="item">
+          <strong>{name}</strong>
+          <span>{note}</span>
+        </span>
+        <span class="figure">{figure} <small>{unit}</small></span>
+      </div>""")
+    return "\n".join(rows)
+
+
+def numbered(items, css_class):
+    out = []
+    for i, (title, body) in enumerate(items, 1):
+        out.append(f"""      <li class="reveal">
+        <span class="num">{i:02d}</span>
+        <div>
+          <h3>{title}</h3>
+          <p>{body}</p>
+        </div>
+      </li>""")
+    return f'    <ol class="{css_class}">\n' + "\n".join(out) + "\n    </ol>"
+
+
+def render(page, prev_page, next_page):
+    url = f"https://northsaga.ai/agents/{page['slug']}"
+    title = f"{page['title']} — Northsaga"
+
+    parts = []
+    for name, note in page["stack"]:
+        parts.append(f"""      <li class="reveal">
+        <h3>{name}</h3>
+        <p>{note}</p>
+      </li>""")
+
+    media = []
+    for name, note in page["media"]:
+        media.append(f"""      <li>
+        <h3>{name}</h3>
+        <p>{note}</p>
+      </li>""")
+
+    paging = ['      <a class="work-back" href="/#work">All of the work</a>']
+    if prev_page:
+        paging.append(f'      <a class="work-prev" href="/agents/{prev_page["slug"]}">'
+                      f'<span>Previous</span>{prev_page["title"]}</a>')
+    if next_page:
+        paging.append(f'      <a class="work-next" href="/agents/{next_page["slug"]}">'
+                      f'<span>Next</span>{next_page["title"]}</a>')
+
+    return "".join([
+        chrome.head(
+            title=title,
+            description=page["meta"],
+            url=url,
+            og_title=title,
+            og_description=page["summary"],
+        ),
+        chrome.BANNER.format(source="tools/build-agent-pages.py",
+                             script="build-agent-pages.py"),
+        chrome.header(),
+        chrome.menu(current="work"),
+        f"""
+<main>
+
+<!-- ============================ INTRO ============================ -->
+<section class="band work-head">
+  <div class="container">
+    <p class="eyebrow">Agent {page['number']} · {page['subject']}</p>
+    <h1 class="display">{page['title']}</h1>
+    <p class="lede" style="margin-top:var(--space-3);">{page['summary']}</p>
+
+    {schematic(page['schematic'], f"NS-{page['number']}", page['caption'])}
+
+    <div class="prose" style="margin-top:var(--space-5);">
+      {"".join(f"<p>{p}</p>" for p in page['intro'])}
+    </div>
+  </div>
+</section>
+
+<!-- ============================ STAGES ============================ -->
+<section class="band band--tall" id="stages">
+  <div class="container">
+    <p class="eyebrow">What happens, in order</p>
+{numbered(page['stages'], 'stages')}
+  </div>
+</section>
+
+<!-- ============================ PARTS ============================ -->
+<section class="band band--paper band--tall" id="parts">
+  <div class="container">
+    <p class="eyebrow">What it is built from</p>
+    <h2 class="display" style="font-size:var(--step-3); max-width:20ch;">
+      Named parts, not a black box.
+    </h2>
+    <ul class="parts-list">
+{chr(10).join(parts)}
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ BUILD ORDER ============================ -->
+<section class="band band--tall" id="build">
+  <div class="container">
+    <p class="eyebrow">How it is built, in order</p>
+    <h2 class="display" style="font-size:var(--step-3); max-width:22ch;">
+      From a bare machine to a live agent.
+    </h2>
+    <p class="lede" style="margin-top:var(--space-3);">
+      First line to last. Someone competent could follow this. That is the point of
+      printing it.
+    </p>
+
+    {schematic(BOX_DRAWING, "NS-00", BOX_CAPTION)}
+
+{numbered(page['build'], 'build-steps')}
+  </div>
+</section>
+
+<!-- ============================ MEDIA ============================ -->
+<section class="band" id="media">
+  <div class="container">
+    <p class="eyebrow">See it working</p>
+    <ul class="media-list is-placeholder">
+{chr(10).join(media)}
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ PRICE ============================ -->
+<section class="band band--tall" id="price" style="background:var(--ink-deep);">
+  <div class="container">
+    <p class="eyebrow">What this one costs</p>
+    <div class="price-block">
+{price_block()}
+    </div>
+    <p class="price-note">{PRICE_NOTE}</p>
+
+    <div class="hero-actions">
+      <a class="btn" href="/#contact">Book the survey</a>
+      <a class="btn btn--quiet" href="/#ledger">Everything else it costs</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PAGING ============================ -->
+<nav class="band work-paging" aria-label="Workflows">
+  <div class="container">
+    <div class="work-paging-inner">
+{chr(10).join(paging)}
+    </div>
+  </div>
+</nav>
+
+</main>
+""",
+        chrome.footer(scripts=["/js/schematic.js"]),
+    ])
+
+
+def homepage_list():
+    """The block to paste into .install-list in index.html."""
+    items = []
+    for page in PAGES:
+        items.append(f"""      <li class="reveal">
+        <h3><a href="/agents/{page['slug']}">{page['title']}</a></h3>
+        <p>{page['summary']}</p>
+      </li>""")
+    return ("<!-- GENERATED — paste into .install-list in index.html. Only the\n"
+            "     agents currently in tools/build-agent-pages.py appear here. -->\n"
+            + "\n".join(items) + "\n")
+
+
+def main():
+    out_dir = os.path.join(ROOT, "agents")
+    os.makedirs(out_dir, exist_ok=True)
+
+    for i, page in enumerate(PAGES):
+        prev_page = PAGES[i - 1] if i > 0 else None
+        next_page = PAGES[i + 1] if i < len(PAGES) - 1 else None
+        path = os.path.join(out_dir, page["slug"] + ".html")
+        with open(path, "w", encoding="utf-8") as fh:
+            fh.write(render(page, prev_page, next_page))
+        print(f"wrote agents/{page['slug']}.html")
+
+    with open(os.path.join(HERE, "_homepage-list.html"), "w", encoding="utf-8") as fh:
+        fh.write(homepage_list())
+    print("wrote tools/_homepage-list.html")
+
+
+if __name__ == "__main__":
+    main()
+NSEOF
+
 cat > 'tools/build-installer.py' <<'NSEOF'
 #!/usr/bin/env python3
 """Northsaga — build the self-extracting installer.
@@ -3437,7 +5658,7 @@ Writes setup-northsaga.sh in the repo root: a single shell script that recreates
 the whole site in a directory of your choosing. One quoted heredoc per text
 file, then the binary assets base64-encoded in a footer.
 
-Run it last, after build-work-pages.py and build-journal.py, or the installer
+Run it last, after build-agent-pages.py and build-journal.py, or the installer
 ships an older copy of the generated pages than the tree does.
 
 Verify it with:
@@ -3587,7 +5808,7 @@ DATA = os.path.join(ROOT, "assets", "data", "cron-jobs.json")
 OUT_DIR = os.path.join(ROOT, "journal")
 
 # £500 an agent to install, £50 a month to maintain. Kept next to the price
-# block in tools/build-work-pages.py — if one changes, change both.
+# block in tools/build-agent-pages.py — if one changes, change both.
 INSTALL_PRICE = "£500"
 MAINTAIN_PRICE = "£50"
 
@@ -3691,7 +5912,7 @@ def render(data):
 
     <div class="hero-actions">
       <a class="btn" href="/#contact">Book the survey</a>
-      <a class="btn btn--quiet" href="/work/answering-the-phone">See one built</a>
+      <a class="btn btn--quiet" href="/agents/answering-the-phone">See one built</a>
     </div>
   </div>
 </section>
@@ -3717,633 +5938,12 @@ if __name__ == "__main__":
     main()
 NSEOF
 
-cat > 'tools/build-work-pages.py' <<'NSEOF'
-#!/usr/bin/env python3
-"""Northsaga — workflow page generator.
-
-    cd tools && python3 build-work-pages.py
-
-Every workflow page's copy, stages, parts list, build order, prices and
-schematic lives in the PAGES list below. work/*.html is generated output — do
-not hand-edit it; edit the dictionary and re-run.
-
-Also writes tools/_homepage-list.html, the block to paste into .install-list in
-index.html if the list of workflows changes.
-
-Python 3 standard library only. No dependencies, no build step.
-"""
-
-import html
-import os
-
-import chrome
-
-HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.dirname(HERE)
-
-
-# ==========================================================================
-# THE SCHEMATIC RENDERER
-#
-# Boxes in brand colours, orthogonal brass connectors. Columns run left to
-# right and each column is centred vertically against the tallest one.
-#
-#   'nodes': {
-#     'a': (0, 0, 'Trigger', 'Inbound call|to your number'),
-#     'b': (1, 0, 'Routing', 'Rings your mobile|for twenty seconds', 'webhook'),
-#   }
-#   'edges': [('a','b'), ('b','c'), ('c','a','dash')]
-#
-# A node is (column, row, ROLE, 'line 1|line 2') or the same with a fifth
-# element, 'cron' or 'webhook', printed as a small brass label in the box's
-# top-right corner. Both lengths are accepted so older four-element nodes keep
-# working. Two label lines maximum, roughly 26 characters a line.
-#
-# 'dash' marks a feedback loop. An edge that runs right to left is routed in a
-# lane underneath the drawing rather than back through the boxes.
-#
-# No colours, icons, gradients or rounded corners. Every fill and stroke is a
-# CSS class styled in css/work.css, so no value is hard-coded here.
-# ==========================================================================
-
-BOX_W, BOX_H = 196, 88
-COL_GAP, ROW_GAP = 66, 30
-MARGIN = 10
-LOOP_LANE = 40
-ARROW = 7
-
-
-def _arrow(x, y, direction):
-    """A small filled triangle with its tip at (x, y)."""
-    s, w = ARROW, ARROW * 0.62
-    if direction == "right":
-        d = f"M {x} {y} L {x - s} {y - w} L {x - s} {y + w} Z"
-    elif direction == "down":
-        d = f"M {x} {y} L {x - w} {y - s} L {x + w} {y - s} Z"
-    else:  # up
-        d = f"M {x} {y} L {x - w} {y + s} L {x + w} {y + s} Z"
-    return f'<path class="sch-arrow" d="{d}"/>'
-
-
-def schematic(spec, number, caption):
-    """Render one drawing. Returns a <figure> block."""
-    nodes, edges = spec["nodes"], spec["edges"]
-
-    n = {}
-    for key, tup in nodes.items():
-        n[key] = {
-            "col": tup[0],
-            "row": tup[1],
-            "role": tup[2],
-            "label": tup[3],
-            "trigger": tup[4] if len(tup) > 4 else None,
-        }
-
-    columns = {}
-    for key, node in n.items():
-        columns.setdefault(node["col"], []).append(key)
-
-    def row_y(row):
-        return row * (BOX_H + ROW_GAP)
-
-    extents = {}
-    for col, keys in columns.items():
-        tops = [row_y(n[k]["row"]) for k in keys]
-        extents[col] = (min(tops), max(tops) + BOX_H)
-    tallest = max(bottom - top for top, bottom in extents.values())
-
-    for col, keys in columns.items():
-        top, bottom = extents[col]
-        offset = (tallest - (bottom - top)) / 2 - top
-        for k in keys:
-            n[k]["x"] = round(n[k]["col"] * (BOX_W + COL_GAP)) + MARGIN
-            n[k]["y"] = round(row_y(n[k]["row"]) + offset) + MARGIN
-
-    has_loop = any(n[e[1]]["col"] < n[e[0]]["col"] for e in edges)
-    width = max(node["x"] for node in n.values()) + BOX_W + MARGIN
-    height = tallest + MARGIN * 2 + (LOOP_LANE if has_loop else 0)
-    lane_y = tallest + MARGIN + LOOP_LANE // 2
-
-    # ---- connectors, drawn first so the boxes sit on top ----
-    #
-    # Elbows between the same pair of columns are given their own vertical lane,
-    # keyed on the source node. Edges leaving one node share a lane, so a
-    # fan-out reads as one trunk splitting; edges leaving different nodes get
-    # their own, so two of them can never lie on top of each other and be
-    # mistaken for a single wire.
-    lanes = {}
-    for edge in edges:
-        a, b = n[edge[0]], n[edge[1]]
-        if b["col"] > a["col"] and a["y"] != b["y"]:
-            lanes.setdefault(a["col"], [])
-            if edge[0] not in lanes[a["col"]]:
-                lanes[a["col"]].append(edge[0])
-
-    def lane_offset(col, source):
-        keys = lanes.get(col, [])
-        if len(keys) < 2:
-            return 0
-        step = min(14, (COL_GAP // 2 - 8) * 2 // (len(keys) - 1))
-        return round((keys.index(source) - (len(keys) - 1) / 2) * step)
-
-    wires = []
-    for edge in edges:
-        a, b = n[edge[0]], n[edge[1]]
-        dashed = "dash" in edge[2:]
-        cls = "sch-wire sch-wire--dash" if dashed else "sch-wire"
-
-        acx, bcx = a["x"] + BOX_W // 2, b["x"] + BOX_W // 2
-        acy, bcy = a["y"] + BOX_H // 2, b["y"] + BOX_H // 2
-
-        if a["col"] == b["col"]:
-            if a["y"] < b["y"]:
-                d = f'M {acx} {a["y"] + BOX_H} L {bcx} {b["y"]}'
-                head = _arrow(bcx, b["y"], "down")
-            else:
-                d = f'M {acx} {a["y"]} L {bcx} {b["y"] + BOX_H}'
-                head = _arrow(bcx, b["y"] + BOX_H, "up")
-        elif b["col"] > a["col"]:
-            sx, ex = a["x"] + BOX_W, b["x"]
-            if acy == bcy:
-                d = f"M {sx} {acy} L {ex} {bcy}"
-            else:
-                mid = (sx + ex) // 2 + lane_offset(a["col"], edge[0])
-                d = f"M {sx} {acy} H {mid} V {bcy} H {ex}"
-            head = _arrow(ex, bcy, "right")
-        else:
-            # feedback: down out of the source, along the lane, up into the target
-            d = (f'M {acx} {a["y"] + BOX_H} V {lane_y} '
-                 f'H {bcx} V {b["y"] + BOX_H}')
-            head = _arrow(bcx, b["y"] + BOX_H, "up")
-
-        wires.append(f'<path class="{cls}" d="{d}"/>')
-        wires.append(head)
-
-    # ---- boxes ----
-    boxes = []
-    for key in sorted(n, key=lambda k: (n[k]["col"], n[k]["row"])):
-        node = n[key]
-        x, y = node["x"], node["y"]
-        boxes.append(f'<g class="sch-node">')
-        boxes.append(
-            f'<rect class="sch-box" x="{x}" y="{y}" width="{BOX_W}" height="{BOX_H}"/>')
-        boxes.append(
-            f'<text class="sch-role" x="{x + 14}" y="{y + 24}">'
-            f'{html.escape(node["role"].upper())}</text>')
-        if node["trigger"]:
-            boxes.append(
-                f'<text class="sch-trigger" x="{x + BOX_W - 14}" y="{y + 24}" '
-                f'text-anchor="end">{html.escape(node["trigger"].upper())}</text>')
-        for i, line in enumerate(node["label"].split("|")[:2]):
-            boxes.append(
-                f'<text class="sch-label" x="{x + 14}" y="{y + 50 + i * 18}">'
-                f'{html.escape(line)}</text>')
-        boxes.append("</g>")
-
-    body = "\n      ".join(wires + boxes)
-    alt = html.escape(f"Drawing {number}. {caption}")
-
-    return f"""<figure class="schematic">
-  <div class="schematic-scroll">
-    <svg viewBox="0 0 {width} {height}" width="{width}" height="{height}"
-         role="img" aria-label="{alt}">
-      <title>{alt}</title>
-      {body}
-    </svg>
-  </div>
-  <figcaption><span class="sch-no">{number}</span>{html.escape(caption)}</figcaption>
-</figure>"""
-
-
-# ==========================================================================
-# NS-00 — the shared drawing. The same box runs every agent, which is why the
-# fifth one costs less to run than the first. Rendered on every workflow page.
-# ==========================================================================
-
-BOX_DRAWING = {
-    "nodes": {
-        "host":   (0, 1, "Host",        "A spare PC, a NUC in|the office, or a VPS"),
-        "docker": (1, 1, "Docker",      "One compose file,|version-controlled"),
-        "n8n":    (2, 0, "n8n",         "The drawing above,|as nodes you can watch", "webhook"),
-        "py":     (2, 1, "Python 3.12", "Workers for the jobs|n8n should not do"),
-        "cron":   (2, 2, "cron",        "Anything on a clock|rather than a trigger", "cron"),
-        "data":   (3, 0, "Data layer",  "Sheets to read,|warehouse for history"),
-        "tools":  (3, 1, "Your tools",  "Phone, email, diary,|accounts, ads"),
-        "health": (3, 2, "Health check", "Heartbeat out|every two minutes", "cron"),
-    },
-    "edges": [
-        ("host", "docker"),
-        ("docker", "n8n"), ("docker", "py"), ("docker", "cron"),
-        ("n8n", "data"), ("n8n", "tools"),
-        ("py", "data"),
-        ("cron", "health"),
-        ("health", "docker", "dash"),
-    ],
-}
-
-BOX_CAPTION = ("The box every agent runs in. The same host, the same compose "
-               "file, the same n8n — which is why the fifth agent costs less to "
-               "run than the first.")
-
-
-# ==========================================================================
-# THE PAGES
-#
-# Everything on a workflow page is here. Bodies may contain HTML: <code> for
-# commands and crontab lines, <a> for the one article backlink, and
-# <span class="tbd"> for a value nobody has settled yet. Do not guess at a tbd.
-# ==========================================================================
-
-CRON_ARTICLE = "/journal/best-cron-jobs-for-ai-agents"
-
-PRICE = [
-    ("Installed", "Built, connected to your number, tested on your real calls, "
-                  "handed over working.", "£500", "one-off"),
-    ("Maintained", "Monitoring, fixes, and changes as the business changes. "
-                   "A named person to ring.", "£50", "per month"),
-]
-
-PRICE_NOTE = ("You get that number before anything starts, not after. If it is "
-              "not the number you were expecting, say so then — it is a much "
-              "cheaper conversation than the one at the end.")
-
-PAGES = [
-    {
-        "number": "01",
-        "slug": "answering-the-phone",
-        "title": "Answering the phone",
-        "subject": "Voice agent and missed-call text-back",
-        "summary": ("Every call you cannot answer gets picked up. If it is not you, "
-                    "it is an agent that takes the name, the number and the job, and "
-                    "texts them back inside a minute."),
-        "meta": ("A voice agent that answers the calls you miss, takes the job "
-                 "details, and texts the caller back inside a minute. Installed for "
-                 "£500, maintained for £50 a month."),
-
-        "intro": [
-            "Most of the work a small firm loses, it loses at the phone. Not to a "
-            "better quote. To whoever picked up second.",
-
-            "You are on a roof, under a sink, or driving. The phone rings out. The "
-            "caller has three more numbers on the same search page and no particular "
-            "reason to prefer yours. By the time you hear the voicemail — if they left "
-            "one, and most do not — the job belongs to somebody else.",
-
-            "This is the agent that stops that. It rings your mobile first, because if "
-            "you can answer, you should. If you cannot, it answers, takes the details "
-            "in a plain voice, and writes them down where you will see them. The caller "
-            "has a text from you before they have dialled the next number.",
-        ],
-
-        "schematic": {
-            "nodes": {
-                "call":  (0, 0, "Trigger",     "Inbound call to|your number", "webhook"),
-                "fork":  (1, 0, "Routing",     "Rings your mobile|for twenty seconds"),
-                "agent": (2, 0, "Voice agent", "Answers if you cannot.|Asks three questions"),
-                "text":  (2, 1, "Text-back",   "Text to the caller|inside a minute"),
-                "sweep": (2, 2, "Sweep",       "Catches anything|the webhook missed", "cron"),
-                "sheet": (3, 0, "Job sheet",   "One row: name, job,|postcode, urgency"),
-                "alert": (3, 1, "Alert",       "The same thing to|your phone and inbox"),
-            },
-            "edges": [
-                ("call", "fork"),
-                ("fork", "agent"),
-                ("agent", "text"),
-                ("agent", "sheet"),
-                ("text", "alert"),
-                ("sweep", "sheet"),
-            ],
-        },
-        "caption": ("Answering the phone. Your mobile rings first; the agent only "
-                    "answers when you do not."),
-
-        "stages": [
-            ("The call comes in",
-             "It rings your mobile for twenty seconds, exactly as it does now. If you "
-             "pick up, the agent never runs and you never hear from it. Nothing about "
-             "your day changes on the calls you can take."),
-            ("The agent answers",
-             "It gives the firm's name and asks three things: what the job is, where it "
-             "is, and when they need it. It does not pretend to be a person, and it does "
-             "not quote. Quoting is yours."),
-            ("The details get written down",
-             "Name, number, postcode, job, urgency. One row on the job sheet, one line in "
-             "your inbox, one text to your phone. The same five facts in all three, so "
-             "there is nothing to reconcile later."),
-            ("The caller gets a text",
-             "Inside a minute, in your name. We missed you, here is what we do, reply here "
-             "and we will ring back. Most people answer that text rather than carry on "
-             "down the list."),
-            ("You ring back knowing something",
-             "You are not returning a blank missed call. You know the job, the address and "
-             "whether it can wait until Thursday."),
-            ("Nothing gets quietly lost",
-             "A sweep runs every five minutes and picks up anything the telephony provider "
-             "failed to hand over. A call that neither of you answered appears on the sheet "
-             "as a miss, rather than not appearing at all."),
-        ],
-
-        "stack": [
-            ("Docker",
-             "One compose file per client, version-controlled. Everything below runs "
-             "inside it."),
-            ("n8n, self-hosted",
-             "The drawing above, as nodes you can watch run. You get a login on day one."),
-            ("Python 3.12",
-             "The workers: the five-minute sweep, the tidy-up of what the agent heard, "
-             "and the writes to the sheet."),
-            ("cron",
-             "Two schedules on this workflow. The sweep, and the Monday morning summary."),
-            ("Telephony",
-             "Twilio, or your existing provider if it has an API worth the name. The "
-             "number, the twenty-second fork to your mobile, and the text-back all sit "
-             "here."),
-            ("A voice model",
-             "Answers, listens, asks its three questions, stops. Not a chatbot with a "
-             "phone line attached."),
-            ("Google Sheets",
-             "The job sheet. Anything a person needs to read during the working day "
-             "lives here, because everyone can already read a spreadsheet."),
-            ("The warehouse",
-             'Still to be chosen — <span class="tbd">product name to be confirmed</span>. '
-             'Every call, every miss, every callback, kept with its history so the '
-             'monthly figures are countable rather than remembered.'),
-        ],
-
-        "build": [
-            ("The box it runs in",
-             "Docker on the host. That host is a spare PC in the office, a NUC on a "
-             "shelf, or a VPS at about five pounds a month — whichever you already have. "
-             "One <code>docker-compose.yml</code> per client, kept in version control, "
-             "brought up with <code>docker compose up -d</code>. If the machine dies, the "
-             "same file on a new machine puts everything back."),
-
-            ("Inside the container",
-             "Python 3.12, and only the libraries this workflow actually needs: "
-             "<code>requests</code> for the telephony API, <code>gspread</code> for the "
-             "job sheet, and <code>python-dateutil</code> for the working-hours logic. "
-             "<code>cron</code> goes in the same image for anything that runs on a clock "
-             "rather than on a trigger."),
-
-            ("The cron jobs",
-             "This workflow needs two. <code>*/5 * * * *</code> sweeps for calls the "
-             "webhook did not deliver, because telephony webhooks fail quietly and a "
-             "silent failure here is a lost job. <code>0 7 * * 1</code> sends the Monday "
-             "morning summary: calls taken, calls missed, callbacks made. The full list we "
-             "run on an agent, and what breaks when each one is missing, is written up in "
-             f'<a href="{CRON_ARTICLE}">the cron jobs worth setting up for an agent</a>.'),
-
-            ("n8n",
-             "Self-hosted, in the same compose file. This is where the drawing above stops "
-             "being a drawing: every box is a node, and every arrow is a connection you can "
-             "click. You get a login and can watch a call move through it in real time. We "
-             "would rather you looked than took our word for it."),
-
-            ("Credentials and accounts",
-             "Every account is opened in your name, on your card, with us added as a "
-             "partner. Not ours with you as a guest. If you want us gone, you remove us in "
-             "one click and everything keeps running. That is the arrangement, and it is a "
-             "selling point rather than a footnote."),
-
-            ("The data layer",
-             "Google Sheets for the job sheet, because a person has to read it between "
-             "jobs. The warehouse — <span class=\"tbd\">to be confirmed</span> — for "
-             "anything with history: every call, every miss, every callback, every "
-             "recording reference. Sheets is for today. The warehouse is for the question "
-             "you will ask in March about last October."),
-
-            ("Wiring the phone in",
-             "In this order, because each step needs the one before it. The number first, "
-             "ported or new. Then the fork to your mobile with the twenty-second timeout. "
-             "Then the voice agent on the far side of that timeout. Then the text-back on "
-             "the same number, so the message comes from the number they rang. Then the "
-             "write to the sheet. Then the alert to you. Testing the text-back before the "
-             "number is live tests nothing."),
-
-            ("Testing on real calls before hand-over",
-             "We ring it ourselves from four or five different phones, including one with a "
-             "bad line, and we get somebody who is not us to ring it too. It has to answer "
-             "in under six rings, get the postcode right, write one row rather than two, and "
-             "text back inside sixty seconds. It has to do all of that on ten consecutive "
-             "calls. Until it does, it is not finished and we do not invoice."),
-        ],
-
-        "media": [
-            ("Recording of a real call", "A thirty-second clip of the agent taking a job, "
-             "with the client's permission and the caller's."),
-            ("The job sheet", "A screenshot of a real week, with names removed."),
-            ("The text as the caller sees it", "A photograph of the phone, not a mock-up."),
-        ],
-    },
-]
-
-
-# ==========================================================================
-# RENDERING
-# ==========================================================================
-
-def price_block():
-    rows = []
-    for name, note, figure, unit in PRICE:
-        rows.append(f"""      <div class="price-row">
-        <span class="item">
-          <strong>{name}</strong>
-          <span>{note}</span>
-        </span>
-        <span class="figure">{figure} <small>{unit}</small></span>
-      </div>""")
-    return "\n".join(rows)
-
-
-def numbered(items, css_class):
-    out = []
-    for i, (title, body) in enumerate(items, 1):
-        out.append(f"""      <li class="reveal">
-        <span class="num">{i:02d}</span>
-        <div>
-          <h3>{title}</h3>
-          <p>{body}</p>
-        </div>
-      </li>""")
-    return f'    <ol class="{css_class}">\n' + "\n".join(out) + "\n    </ol>"
-
-
-def render(page, prev_page, next_page):
-    url = f"https://northsaga.ai/work/{page['slug']}"
-    title = f"{page['title']} — Northsaga"
-
-    parts = []
-    for name, note in page["stack"]:
-        parts.append(f"""      <li class="reveal">
-        <h3>{name}</h3>
-        <p>{note}</p>
-      </li>""")
-
-    media = []
-    for name, note in page["media"]:
-        media.append(f"""      <li>
-        <h3>{name}</h3>
-        <p>{note}</p>
-      </li>""")
-
-    paging = ['      <a class="work-back" href="/#work">All of the work</a>']
-    if prev_page:
-        paging.append(f'      <a class="work-prev" href="/work/{prev_page["slug"]}">'
-                      f'<span>Previous</span>{prev_page["title"]}</a>')
-    if next_page:
-        paging.append(f'      <a class="work-next" href="/work/{next_page["slug"]}">'
-                      f'<span>Next</span>{next_page["title"]}</a>')
-
-    return "".join([
-        chrome.head(
-            title=title,
-            description=page["meta"],
-            url=url,
-            og_title=title,
-            og_description=page["summary"],
-        ),
-        chrome.BANNER.format(source="tools/build-work-pages.py",
-                             script="build-work-pages.py"),
-        chrome.header(),
-        chrome.menu(current="work"),
-        f"""
-<main>
-
-<!-- ============================ INTRO ============================ -->
-<section class="band work-head">
-  <div class="container">
-    <p class="eyebrow">Workflow {page['number']} · {page['subject']}</p>
-    <h1 class="display">{page['title']}</h1>
-    <p class="lede" style="margin-top:var(--space-3);">{page['summary']}</p>
-
-    {schematic(page['schematic'], f"NS-{page['number']}", page['caption'])}
-
-    <div class="prose" style="margin-top:var(--space-5);">
-      {"".join(f"<p>{p}</p>" for p in page['intro'])}
-    </div>
-  </div>
-</section>
-
-<!-- ============================ STAGES ============================ -->
-<section class="band band--tall" id="stages">
-  <div class="container">
-    <p class="eyebrow">What happens, in order</p>
-{numbered(page['stages'], 'stages')}
-  </div>
-</section>
-
-<!-- ============================ PARTS ============================ -->
-<section class="band band--paper band--tall" id="parts">
-  <div class="container">
-    <p class="eyebrow">What it is built from</p>
-    <h2 class="display" style="font-size:var(--step-3); max-width:20ch;">
-      Named parts, not a black box.
-    </h2>
-    <ul class="parts-list">
-{chr(10).join(parts)}
-    </ul>
-  </div>
-</section>
-
-<!-- ============================ BUILD ORDER ============================ -->
-<section class="band band--tall" id="build">
-  <div class="container">
-    <p class="eyebrow">How it is built, in order</p>
-    <h2 class="display" style="font-size:var(--step-3); max-width:22ch;">
-      From a bare machine to a live agent.
-    </h2>
-    <p class="lede" style="margin-top:var(--space-3);">
-      First line to last. Someone competent could follow this. That is the point of
-      printing it.
-    </p>
-
-    {schematic(BOX_DRAWING, "NS-00", BOX_CAPTION)}
-
-{numbered(page['build'], 'build-steps')}
-  </div>
-</section>
-
-<!-- ============================ MEDIA ============================ -->
-<section class="band" id="media">
-  <div class="container">
-    <p class="eyebrow">See it working</p>
-    <ul class="media-list is-placeholder">
-{chr(10).join(media)}
-    </ul>
-  </div>
-</section>
-
-<!-- ============================ PRICE ============================ -->
-<section class="band band--tall" id="price" style="background:var(--ink-deep);">
-  <div class="container">
-    <p class="eyebrow">What this one costs</p>
-    <div class="price-block">
-{price_block()}
-    </div>
-    <p class="price-note">{PRICE_NOTE}</p>
-
-    <div class="hero-actions">
-      <a class="btn" href="/#contact">Book the survey</a>
-      <a class="btn btn--quiet" href="/#ledger">Everything else it costs</a>
-    </div>
-  </div>
-</section>
-
-<!-- ============================ PAGING ============================ -->
-<nav class="band work-paging" aria-label="Workflows">
-  <div class="container">
-    <div class="work-paging-inner">
-{chr(10).join(paging)}
-    </div>
-  </div>
-</nav>
-
-</main>
-""",
-        chrome.footer(),
-    ])
-
-
-def homepage_list():
-    """The block to paste into .install-list in index.html."""
-    items = []
-    for page in PAGES:
-        items.append(f"""      <li class="reveal">
-        <h3><a href="/work/{page['slug']}">{page['title']}</a></h3>
-        <p>{page['summary']}</p>
-      </li>""")
-    return ("<!-- GENERATED — paste into .install-list in index.html. Only the\n"
-            "     workflows currently in tools/build-work-pages.py appear here. -->\n"
-            + "\n".join(items) + "\n")
-
-
-def main():
-    out_dir = os.path.join(ROOT, "work")
-    os.makedirs(out_dir, exist_ok=True)
-
-    for i, page in enumerate(PAGES):
-        prev_page = PAGES[i - 1] if i > 0 else None
-        next_page = PAGES[i + 1] if i < len(PAGES) - 1 else None
-        path = os.path.join(out_dir, page["slug"] + ".html")
-        with open(path, "w", encoding="utf-8") as fh:
-            fh.write(render(page, prev_page, next_page))
-        print(f"wrote work/{page['slug']}.html")
-
-    with open(os.path.join(HERE, "_homepage-list.html"), "w", encoding="utf-8") as fh:
-        fh.write(homepage_list())
-    print("wrote tools/_homepage-list.html")
-
-
-if __name__ == "__main__":
-    main()
-NSEOF
-
 cat > 'tools/chrome.py' <<'NSEOF'
 """Northsaga — shared page chrome for the generators.
 
 CLAUDE.md requires the header, menu and footer blocks to be duplicated exactly
 on every page. Rather than duplicate them again in each generator, both
-build-work-pages.py and build-journal.py import them from here, so there is one
+build-agent-pages.py and build-journal.py import them from here, so there is one
 place to change when a menu item is added.
 
 Python 3 standard library only. No dependencies, no build step.
@@ -4489,10 +6089,14 @@ def menu(current=None):
 """
 
 
-def footer():
+def footer(scripts=()):
+    """The footer. `scripts` are extra sources loaded after site.js — the
+    generated pages use it for js/schematic.js, which the hand-written pages
+    have no drawings for."""
     links = "\n".join(
         f'        <a href="{href}">{label}</a>' for label, href, _ in FOOTER_NAV
     )
+    extra = "".join(f'\n<script src="{src}" defer></script>' for src in scripts)
     return f"""
 <!-- ============================ FOOTER ============================ -->
 <footer class="site-footer">
@@ -4514,7 +6118,7 @@ def footer():
   </div>
 </footer>
 
-<script src="/js/site.js" defer></script>
+<script src="/js/site.js" defer></script>{extra}
 </body>
 </html>
 """
@@ -4524,528 +6128,180 @@ BANNER = ("<!-- GENERATED FILE — do not hand-edit. Source: {source}\n"
           "     Edit there, then run: cd tools && python3 {script} -->\n")
 NSEOF
 
-cat > 'work/answering-the-phone.html' <<'NSEOF'
-<!DOCTYPE html>
-<html lang="en-GB">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Answering the phone — Northsaga</title>
-<meta name="description" content="A voice agent that answers the calls you miss, takes the job details, and texts the caller back inside a minute. Installed for £500, maintained for £50 a month.">
+cat > 'tools/icons.py' <<'NSEOF'
+"""Northsaga — the glyphs that sit in the corner of a schematic node.
 
-<link rel="canonical" href="https://northsaga.ai/work/answering-the-phone">
+Each entry is a list of (path data, kind) drawn on a 24 x 24 grid, in paint
+order. Three kinds:
 
-<link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="/assets/favicon/favicon-32.png" sizes="32x32">
-<link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png">
-<link rel="manifest" href="/site.webmanifest">
-<meta name="theme-color" content="#0E1A24">
+    'fill'  solid, in --bone-dim
+    'cut'   solid, in --ink-raised, the box's own fill — punches a hole
+    'line'  stroked, round caps, for things that are naturally a line
 
-<meta property="og:title" content="Answering the phone — Northsaga">
-<meta property="og:description" content="Every call you cannot answer gets picked up. If it is not you, it is an agent that takes the name, the number and the job, and texts them back inside a minute.">
-<meta property="og:type" content="article">
-<meta property="og:url" content="https://northsaga.ai/work/answering-the-phone">
-<meta property="og:image" content="https://northsaga.ai/assets/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Answering the phone — Northsaga">
-<meta name="twitter:description" content="Every call you cannot answer gets picked up. If it is not you, it is an agent that takes the name, the number and the job, and texts them back inside a minute.">
-<meta name="twitter:image" content="https://northsaga.ai/assets/og-image.png">
+The renderer scales the grid to ICON_SIZE and translates it into place, so a
+glyph never needs to know where it ends up.
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+**These are drawn here, not copied.** They are simplified marks that identify a
+product by silhouette — a grid for a spreadsheet, a bubble and handset for
+WhatsApp — rather than reproductions of anyone's trademarked artwork. They are
+deliberately monochrome: BRAND.md allows one accent and brass is it, so a wall
+of vendor colours would be a second palette arriving through the back door.
+Keep them that way, and keep them simple: the drawing scrolls and zooms, and a
+glyph has to survive being rendered at six pixels.
 
-<link rel="stylesheet" href="/css/tokens.css">
-<link rel="stylesheet" href="/css/site.css">
-<link rel="stylesheet" href="/css/work.css">
+Python 3 standard library only.
+"""
 
-<!-- .reveal starts at opacity 0 and is un-hidden by js/site.js. Without this,
-     a failed or disabled script leaves most of the page invisible. -->
-<noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
+ICON_SIZE = 18          # rendered size in schematic units
+ICON_GRID = 24          # the grid every path below is drawn on
 
-<!-- LocalBusiness. address, telephone and openingHours are deliberately absent
-     rather than invented — add them once confirmed. The postcodes in
-     areaServed are UNVERIFIED; check them against the real service area and
-     correct here, in the contact section and in the footer together. -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "@id": "https://northsaga.ai/#business",
-  "name": "Northsaga",
-  "url": "https://northsaga.ai/",
-  "email": "hello@northsaga.ai",
-  "description": "Installs and maintains AI agents for owner-managed small businesses and trades in Dulwich and West Norwood, south London.",
-  "slogan": "New tools. Old standards.",
-  "areaServed": [
-    { "@type": "Place", "name": "Dulwich, London" },
-    { "@type": "Place", "name": "West Norwood, London" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE21", "postalCodeEnd": "SE21" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE22", "postalCodeEnd": "SE22" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE24", "postalCodeEnd": "SE24" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE27", "postalCodeEnd": "SE27" }
-  ]
+ICONS = {
+    # ---- telephony and messaging ----
+    "phone": [
+        ("M7.6 2.6 4.2 6a2 2 0 0 0-.4 2.3 26 26 0 0 0 11.9 11.9 2 2 0 0 0 "
+         "2.3-.4l3.4-3.4a1 1 0 0 0 0-1.4l-3.6-3.6a1 1 0 0 0-1.4 0l-1.7 1.7a19 "
+         "19 0 0 1-4.5-4.5l1.7-1.7a1 1 0 0 0 0-1.4L9 2.6a1 1 0 0 0-1.4 0Z",
+         "fill"),
+    ],
+
+    "mobile": [
+        ("M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 "
+         "2-2Z", "fill"),
+        ("M6.8 5.6h10.4v11.8H6.8Z", "cut"),
+    ],
+
+    # Bubble with a tail, handset punched out of it.
+    "whatsapp": [
+        ("M12 2a10 10 0 0 0-8.7 15L2 22l5.2-1.3A10 10 0 1 0 12 2Z", "fill"),
+        ("M8.9 7.5c-.2-.4-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.4-.3.3-.9.8-.9 2s.9 "
+         "2.4 1 2.6c.1.2 1.7 2.7 4.2 3.7 2 .9 2.5.7 2.9.7.5 0 1.4-.6 1.6-1.2"
+         ".2-.6.2-1.1.1-1.2 0-.1-.2-.2-.5-.3l-1.7-.8c-.2-.1-.4-.1-.6.1l-.7 1"
+         "c-.1.2-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-"
+         ".4.1-.5l.4-.5c.1-.1.2-.3.2-.4 0-.2 0-.3-.1-.4l-.6-1.9Z", "cut"),
+    ],
+
+    "message": [
+        ("M3 4h18v13H8l-5 4Z", "fill"),
+        ("M7.6 9.3h2.2v2.2H7.6Z", "cut"),
+        ("M10.9 9.3h2.2v2.2h-2.2Z", "cut"),
+        ("M14.2 9.3h2.2v2.2h-2.2Z", "cut"),
+    ],
+
+    "mail": [
+        ("M2 4.6h20v14.8H2Z", "fill"),
+        ("M3.6 6.6 12 12.6l8.4-6v2L12 14.6 3.6 8.6Z", "cut"),
+    ],
+
+    "mic": [
+        ("M12 2a3.2 3.2 0 0 0-3.2 3.2v6.4a3.2 3.2 0 0 0 6.4 0V5.2A3.2 3.2 0 0 "
+         "0 12 2Z", "fill"),
+        ("M5.4 10.4H3.6a8.4 8.4 0 0 0 7.4 8.3V22h2v-3.3a8.4 8.4 0 0 0 7.4-8.3"
+         "h-1.8a6.6 6.6 0 0 1-13.2 0Z", "fill"),
+    ],
+
+    "bell": [
+        ("M12 2a5.6 5.6 0 0 0-5.6 5.6v3.6L4 15.4v1.4h16v-1.4l-2.4-4.2V7.6A5.6 "
+         "5.6 0 0 0 12 2Z", "fill"),
+        ("M9.4 18.4a2.6 2.6 0 0 0 5.2 0Z", "fill"),
+    ],
+
+    "reply": [
+        ("M10 5.4 2.4 12l7.6 6.6V14c5 0 8.4 1.6 10.6 5-.9-4.7-3.7-9.3-10.6-10Z",
+         "fill"),
+    ],
+
+    # ---- documents and data ----
+    "sheets": [
+        ("M5 2h9l5 5v15H5Z", "fill"),
+        ("M7.4 11h9.2v1.5H7.4Z", "cut"),
+        ("M7.4 14.2h9.2v1.5H7.4Z", "cut"),
+        ("M7.4 17.4h9.2v1.5H7.4Z", "cut"),
+        ("M11.3 10.4h1.5v9.2h-1.5Z", "cut"),
+    ],
+
+    "doc": [
+        ("M5 2h9l5 5v15H5Z", "fill"),
+        ("M7.6 11h8.8v1.5H7.6Z", "cut"),
+        ("M7.6 14.2h8.8v1.5H7.6Z", "cut"),
+        ("M7.6 17.4h5.4v1.5H7.6Z", "cut"),
+    ],
+
+    "database": [
+        ("M12 2c-4.4 0-8 1.3-8 3v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5c0-1.7-3.6-3-8-3Z",
+         "fill"),
+        ("M4 8.2c1.7 1 4.6 1.6 8 1.6s6.3-.6 8-1.6v1.8c-1.7 1-4.6 1.6-8 1.6s-6.3"
+         "-.6-8-1.6Z", "cut"),
+        ("M4 13.4c1.7 1 4.6 1.6 8 1.6s6.3-.6 8-1.6v1.8c-1.7 1-4.6 1.6-8 1.6s-6.3"
+         "-.6-8-1.6Z", "cut"),
+    ],
+
+    # ---- the box it all runs in ----
+    "server": [
+        ("M2.6 4h18.8v6.4H2.6Z", "fill"),
+        ("M2.6 13.6h18.8V20H2.6Z", "fill"),
+        ("M5.2 6.4h2v1.6h-2Z", "cut"),
+        ("M5.2 16h2v1.6h-2Z", "cut"),
+        ("M8.6 6.4h6v1.6h-6Z", "cut"),
+        ("M8.6 16h6v1.6h-6Z", "cut"),
+    ],
+
+    "docker": [
+        ("M3.2 10.6h3.4V14H3.2Z", "fill"),
+        ("M7.3 10.6h3.4V14H7.3Z", "fill"),
+        ("M11.4 10.6h3.4V14h-3.4Z", "fill"),
+        ("M7.3 6.7h3.4v3.4H7.3Z", "fill"),
+        ("M11.4 6.7h3.4v3.4h-3.4Z", "fill"),
+        ("M11.4 2.8h3.4v3.4h-3.4Z", "fill"),
+        ("M1.8 15.2h20.4c-.9 3.6-4.6 5.8-9.6 5.8-5.6 0-9.4-2-10.8-5.8Z", "fill"),
+    ],
+
+    "n8n": [
+        ("M3.4 12a2.7 2.7 0 1 1 5.4 0 2.7 2.7 0 0 1-5.4 0Z", "fill"),
+        ("M15.2 6.6a2.7 2.7 0 1 1 5.4 0 2.7 2.7 0 0 1-5.4 0Z", "fill"),
+        ("M15.2 17.4a2.7 2.7 0 1 1 5.4 0 2.7 2.7 0 0 1-5.4 0Z", "fill"),
+        ("M6.1 12 17.9 6.6", "line"),
+        ("M6.1 12 17.9 17.4", "line"),
+    ],
+
+    # Python's own mark is two interlocking bodies and does not survive being
+    # drawn at six pixels. A pair of chevrons says "code" and stays honest.
+    "code": [
+        ("M9.2 4.6 3 12l6.2 7.4 1.7-1.4L5.8 12l5.1-6Z", "fill"),
+        ("M14.8 4.6 21 12l-6.2 7.4-1.7-1.4L18.2 12l-5.1-6Z", "fill"),
+    ],
+
+    "clock": [
+        ("M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Z", "fill"),
+        ("M12 4.4a7.6 7.6 0 1 1 0 15.2 7.6 7.6 0 0 1 0-15.2Z", "cut"),
+        ("M11.2 6.4h1.6v6.4h-1.6Z", "fill"),
+        ("M11.2 11.2h5v1.6h-5Z", "fill"),
+    ],
+
+    "wrench": [
+        ("M20.7 4.6a5.6 5.6 0 0 1-7 7l-7.3 7.3a2.2 2.2 0 1 1-3.1-3.1l7.3-7.3a5.6 "
+         "5.6 0 0 1 7-7l-3.3 3.3.9 3.2 3.2.9Z", "fill"),
+    ],
+
+    "pulse": [
+        ("M2 12h4.6l2.4-5.8 3.5 11.6 2.4-6.4 1.5 2.6H22", "line"),
+    ],
 }
-</script>
-</head>
-<body>
-<!-- GENERATED FILE — do not hand-edit. Source: tools/build-work-pages.py
-     Edit there, then run: cd tools && python3 build-work-pages.py -->
 
-<!-- ============================ HEADER ============================ -->
-<header class="site-header" id="siteHeader">
-  <a class="header-mark" href="/" aria-label="Northsaga home">
-    <svg viewBox="-77 -167 259 334" aria-hidden="true">
-      <g fill="none" stroke="currentColor" stroke-width="16">
-        <path d="M 0 -160 L -70 -32"/><path d="M 0 -160 L 0 160"/>
-        <path d="M 0 -160 L 175 160"/><path d="M 175 -160 L 175 160"/>
-      </g>
-    </svg>
-    <span>orthsaga</span>
-  </a>
 
-  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="menu">
-    <span class="menu-label">Menu</span>
-    <i></i><i></i>
-  </button>
-</header>
+def render(name, x, y):
+    """One glyph, translated to (x, y) and scaled to ICON_SIZE."""
+    paths = ICONS.get(name)
+    if paths is None:
+        raise SystemExit(f"unknown schematic icon {name!r}. "
+                         f"Add it to tools/icons.py or fix the node.")
 
-<!-- ============================ MENU ============================ -->
-<nav class="menu" id="menu" aria-label="Main">
-  <ul class="menu-nav">
-    <li><a href="/#work" aria-current="page">The work</a></li>
-    <li><a href="/#process">How it works</a></li>
-    <li><a href="/case-studies">Case studies</a></li>
-    <li><a href="/#ledger">What it costs</a></li>
-    <li><a href="/#proof">Proof</a></li>
-    <li><a href="/journal/best-cron-jobs-for-ai-agents">Writing</a></li>
-    <li><a href="/#contact">Talk to us</a></li>
-  </ul>
-  <div class="menu-foot">
-    <span>Northsaga — operations, installed. Dulwich and West Norwood.</span>
-    <a href="mailto:hello@northsaga.ai">hello@northsaga.ai</a>
-  </div>
-</nav>
-
-<main>
-
-<!-- ============================ INTRO ============================ -->
-<section class="band work-head">
-  <div class="container">
-    <p class="eyebrow">Workflow 01 · Voice agent and missed-call text-back</p>
-    <h1 class="display">Answering the phone</h1>
-    <p class="lede" style="margin-top:var(--space-3);">Every call you cannot answer gets picked up. If it is not you, it is an agent that takes the name, the number and the job, and texts them back inside a minute.</p>
-
-    <figure class="schematic">
-  <div class="schematic-scroll">
-    <svg viewBox="0 0 1002 344" width="1002" height="344"
-         role="img" aria-label="Drawing NS-01. Answering the phone. Your mobile rings first; the agent only answers when you do not.">
-      <title>Drawing NS-01. Answering the phone. Your mobile rings first; the agent only answers when you do not.</title>
-      <path class="sch-wire" d="M 206 172 L 272 172"/>
-      <path class="sch-arrow" d="M 272 172 L 265 167.66 L 265 176.34 Z"/>
-      <path class="sch-wire" d="M 468 172 H 501 V 54 H 534"/>
-      <path class="sch-arrow" d="M 534 54 L 527 49.66 L 527 58.34 Z"/>
-      <path class="sch-wire" d="M 632 98 L 632 128"/>
-      <path class="sch-arrow" d="M 632 128 L 627.66 121 L 636.34 121 Z"/>
-      <path class="sch-wire" d="M 730 54 H 749 V 113 H 796"/>
-      <path class="sch-arrow" d="M 796 113 L 789 108.66 L 789 117.34 Z"/>
-      <path class="sch-wire" d="M 730 172 H 763 V 231 H 796"/>
-      <path class="sch-arrow" d="M 796 231 L 789 226.66 L 789 235.34 Z"/>
-      <path class="sch-wire" d="M 730 290 H 777 V 113 H 796"/>
-      <path class="sch-arrow" d="M 796 113 L 789 108.66 L 789 117.34 Z"/>
-      <g class="sch-node">
-      <rect class="sch-box" x="10" y="128" width="196" height="88"/>
-      <text class="sch-role" x="24" y="152">TRIGGER</text>
-      <text class="sch-trigger" x="192" y="152" text-anchor="end">WEBHOOK</text>
-      <text class="sch-label" x="24" y="178">Inbound call to</text>
-      <text class="sch-label" x="24" y="196">your number</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="272" y="128" width="196" height="88"/>
-      <text class="sch-role" x="286" y="152">ROUTING</text>
-      <text class="sch-label" x="286" y="178">Rings your mobile</text>
-      <text class="sch-label" x="286" y="196">for twenty seconds</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="534" y="10" width="196" height="88"/>
-      <text class="sch-role" x="548" y="34">VOICE AGENT</text>
-      <text class="sch-label" x="548" y="60">Answers if you cannot.</text>
-      <text class="sch-label" x="548" y="78">Asks three questions</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="534" y="128" width="196" height="88"/>
-      <text class="sch-role" x="548" y="152">TEXT-BACK</text>
-      <text class="sch-label" x="548" y="178">Text to the caller</text>
-      <text class="sch-label" x="548" y="196">inside a minute</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="534" y="246" width="196" height="88"/>
-      <text class="sch-role" x="548" y="270">SWEEP</text>
-      <text class="sch-trigger" x="716" y="270" text-anchor="end">CRON</text>
-      <text class="sch-label" x="548" y="296">Catches anything</text>
-      <text class="sch-label" x="548" y="314">the webhook missed</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="796" y="69" width="196" height="88"/>
-      <text class="sch-role" x="810" y="93">JOB SHEET</text>
-      <text class="sch-label" x="810" y="119">One row: name, job,</text>
-      <text class="sch-label" x="810" y="137">postcode, urgency</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="796" y="187" width="196" height="88"/>
-      <text class="sch-role" x="810" y="211">ALERT</text>
-      <text class="sch-label" x="810" y="237">The same thing to</text>
-      <text class="sch-label" x="810" y="255">your phone and inbox</text>
-      </g>
-    </svg>
-  </div>
-  <figcaption><span class="sch-no">NS-01</span>Answering the phone. Your mobile rings first; the agent only answers when you do not.</figcaption>
-</figure>
-
-    <div class="prose" style="margin-top:var(--space-5);">
-      <p>Most of the work a small firm loses, it loses at the phone. Not to a better quote. To whoever picked up second.</p><p>You are on a roof, under a sink, or driving. The phone rings out. The caller has three more numbers on the same search page and no particular reason to prefer yours. By the time you hear the voicemail — if they left one, and most do not — the job belongs to somebody else.</p><p>This is the agent that stops that. It rings your mobile first, because if you can answer, you should. If you cannot, it answers, takes the details in a plain voice, and writes them down where you will see them. The caller has a text from you before they have dialled the next number.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ============================ STAGES ============================ -->
-<section class="band band--tall" id="stages">
-  <div class="container">
-    <p class="eyebrow">What happens, in order</p>
-    <ol class="stages">
-      <li class="reveal">
-        <span class="num">01</span>
-        <div>
-          <h3>The call comes in</h3>
-          <p>It rings your mobile for twenty seconds, exactly as it does now. If you pick up, the agent never runs and you never hear from it. Nothing about your day changes on the calls you can take.</p>
-        </div>
-      </li>
-      <li class="reveal">
-        <span class="num">02</span>
-        <div>
-          <h3>The agent answers</h3>
-          <p>It gives the firm's name and asks three things: what the job is, where it is, and when they need it. It does not pretend to be a person, and it does not quote. Quoting is yours.</p>
-        </div>
-      </li>
-      <li class="reveal">
-        <span class="num">03</span>
-        <div>
-          <h3>The details get written down</h3>
-          <p>Name, number, postcode, job, urgency. One row on the job sheet, one line in your inbox, one text to your phone. The same five facts in all three, so there is nothing to reconcile later.</p>
-        </div>
-      </li>
-      <li class="reveal">
-        <span class="num">04</span>
-        <div>
-          <h3>The caller gets a text</h3>
-          <p>Inside a minute, in your name. We missed you, here is what we do, reply here and we will ring back. Most people answer that text rather than carry on down the list.</p>
-        </div>
-      </li>
-      <li class="reveal">
-        <span class="num">05</span>
-        <div>
-          <h3>You ring back knowing something</h3>
-          <p>You are not returning a blank missed call. You know the job, the address and whether it can wait until Thursday.</p>
-        </div>
-      </li>
-      <li class="reveal">
-        <span class="num">06</span>
-        <div>
-          <h3>Nothing gets quietly lost</h3>
-          <p>A sweep runs every five minutes and picks up anything the telephony provider failed to hand over. A call that neither of you answered appears on the sheet as a miss, rather than not appearing at all.</p>
-        </div>
-      </li>
-    </ol>
-  </div>
-</section>
-
-<!-- ============================ PARTS ============================ -->
-<section class="band band--paper band--tall" id="parts">
-  <div class="container">
-    <p class="eyebrow">What it is built from</p>
-    <h2 class="display" style="font-size:var(--step-3); max-width:20ch;">
-      Named parts, not a black box.
-    </h2>
-    <ul class="parts-list">
-      <li class="reveal">
-        <h3>Docker</h3>
-        <p>One compose file per client, version-controlled. Everything below runs inside it.</p>
-      </li>
-      <li class="reveal">
-        <h3>n8n, self-hosted</h3>
-        <p>The drawing above, as nodes you can watch run. You get a login on day one.</p>
-      </li>
-      <li class="reveal">
-        <h3>Python 3.12</h3>
-        <p>The workers: the five-minute sweep, the tidy-up of what the agent heard, and the writes to the sheet.</p>
-      </li>
-      <li class="reveal">
-        <h3>cron</h3>
-        <p>Two schedules on this workflow. The sweep, and the Monday morning summary.</p>
-      </li>
-      <li class="reveal">
-        <h3>Telephony</h3>
-        <p>Twilio, or your existing provider if it has an API worth the name. The number, the twenty-second fork to your mobile, and the text-back all sit here.</p>
-      </li>
-      <li class="reveal">
-        <h3>A voice model</h3>
-        <p>Answers, listens, asks its three questions, stops. Not a chatbot with a phone line attached.</p>
-      </li>
-      <li class="reveal">
-        <h3>Google Sheets</h3>
-        <p>The job sheet. Anything a person needs to read during the working day lives here, because everyone can already read a spreadsheet.</p>
-      </li>
-      <li class="reveal">
-        <h3>The warehouse</h3>
-        <p>Still to be chosen — <span class="tbd">product name to be confirmed</span>. Every call, every miss, every callback, kept with its history so the monthly figures are countable rather than remembered.</p>
-      </li>
-    </ul>
-  </div>
-</section>
-
-<!-- ============================ BUILD ORDER ============================ -->
-<section class="band band--tall" id="build">
-  <div class="container">
-    <p class="eyebrow">How it is built, in order</p>
-    <h2 class="display" style="font-size:var(--step-3); max-width:22ch;">
-      From a bare machine to a live agent.
-    </h2>
-    <p class="lede" style="margin-top:var(--space-3);">
-      First line to last. Someone competent could follow this. That is the point of
-      printing it.
-    </p>
-
-    <figure class="schematic">
-  <div class="schematic-scroll">
-    <svg viewBox="0 0 1002 384" width="1002" height="384"
-         role="img" aria-label="Drawing NS-00. The box every agent runs in. The same host, the same compose file, the same n8n — which is why the fifth agent costs less to run than the first.">
-      <title>Drawing NS-00. The box every agent runs in. The same host, the same compose file, the same n8n — which is why the fifth agent costs less to run than the first.</title>
-      <path class="sch-wire" d="M 206 172 L 272 172"/>
-      <path class="sch-arrow" d="M 272 172 L 265 167.66 L 265 176.34 Z"/>
-      <path class="sch-wire" d="M 468 172 H 501 V 54 H 534"/>
-      <path class="sch-arrow" d="M 534 54 L 527 49.66 L 527 58.34 Z"/>
-      <path class="sch-wire" d="M 468 172 L 534 172"/>
-      <path class="sch-arrow" d="M 534 172 L 527 167.66 L 527 176.34 Z"/>
-      <path class="sch-wire" d="M 468 172 H 501 V 290 H 534"/>
-      <path class="sch-arrow" d="M 534 290 L 527 285.66 L 527 294.34 Z"/>
-      <path class="sch-wire" d="M 730 54 L 796 54"/>
-      <path class="sch-arrow" d="M 796 54 L 789 49.66 L 789 58.34 Z"/>
-      <path class="sch-wire" d="M 730 54 H 756 V 172 H 796"/>
-      <path class="sch-arrow" d="M 796 172 L 789 167.66 L 789 176.34 Z"/>
-      <path class="sch-wire" d="M 730 172 H 770 V 54 H 796"/>
-      <path class="sch-arrow" d="M 796 54 L 789 49.66 L 789 58.34 Z"/>
-      <path class="sch-wire" d="M 730 290 L 796 290"/>
-      <path class="sch-arrow" d="M 796 290 L 789 285.66 L 789 294.34 Z"/>
-      <path class="sch-wire sch-wire--dash" d="M 894 334 V 354 H 370 V 216"/>
-      <path class="sch-arrow" d="M 370 216 L 365.66 223 L 374.34 223 Z"/>
-      <g class="sch-node">
-      <rect class="sch-box" x="10" y="128" width="196" height="88"/>
-      <text class="sch-role" x="24" y="152">HOST</text>
-      <text class="sch-label" x="24" y="178">A spare PC, a NUC in</text>
-      <text class="sch-label" x="24" y="196">the office, or a VPS</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="272" y="128" width="196" height="88"/>
-      <text class="sch-role" x="286" y="152">DOCKER</text>
-      <text class="sch-label" x="286" y="178">One compose file,</text>
-      <text class="sch-label" x="286" y="196">version-controlled</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="534" y="10" width="196" height="88"/>
-      <text class="sch-role" x="548" y="34">N8N</text>
-      <text class="sch-trigger" x="716" y="34" text-anchor="end">WEBHOOK</text>
-      <text class="sch-label" x="548" y="60">The drawing above,</text>
-      <text class="sch-label" x="548" y="78">as nodes you can watch</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="534" y="128" width="196" height="88"/>
-      <text class="sch-role" x="548" y="152">PYTHON 3.12</text>
-      <text class="sch-label" x="548" y="178">Workers for the jobs</text>
-      <text class="sch-label" x="548" y="196">n8n should not do</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="534" y="246" width="196" height="88"/>
-      <text class="sch-role" x="548" y="270">CRON</text>
-      <text class="sch-trigger" x="716" y="270" text-anchor="end">CRON</text>
-      <text class="sch-label" x="548" y="296">Anything on a clock</text>
-      <text class="sch-label" x="548" y="314">rather than a trigger</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="796" y="10" width="196" height="88"/>
-      <text class="sch-role" x="810" y="34">DATA LAYER</text>
-      <text class="sch-label" x="810" y="60">Sheets to read,</text>
-      <text class="sch-label" x="810" y="78">warehouse for history</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="796" y="128" width="196" height="88"/>
-      <text class="sch-role" x="810" y="152">YOUR TOOLS</text>
-      <text class="sch-label" x="810" y="178">Phone, email, diary,</text>
-      <text class="sch-label" x="810" y="196">accounts, ads</text>
-      </g>
-      <g class="sch-node">
-      <rect class="sch-box" x="796" y="246" width="196" height="88"/>
-      <text class="sch-role" x="810" y="270">HEALTH CHECK</text>
-      <text class="sch-trigger" x="978" y="270" text-anchor="end">CRON</text>
-      <text class="sch-label" x="810" y="296">Heartbeat out</text>
-      <text class="sch-label" x="810" y="314">every two minutes</text>
-      </g>
-    </svg>
-  </div>
-  <figcaption><span class="sch-no">NS-00</span>The box every agent runs in. The same host, the same compose file, the same n8n — which is why the fifth agent costs less to run than the first.</figcaption>
-</figure>
-
-    <ol class="build-steps">
-      <li class="reveal">
-        <span class="num">01</span>
-        <div>
-          <h3>The box it runs in</h3>
-          <p>Docker on the host. That host is a spare PC in the office, a NUC on a shelf, or a VPS at about five pounds a month — whichever you already have. One <code>docker-compose.yml</code> per client, kept in version control, brought up with <code>docker compose up -d</code>. If the machine dies, the same file on a new machine puts everything back.</p>
-        </div>
-      </li>
-      <li class="reveal">
-        <span class="num">02</span>
-        <div>
-          <h3>Inside the container</h3>
-          <p>Python 3.12, and only the libraries this workflow actually needs: <code>requests</code> for the telephony API, <code>gspread</code> for the job sheet, and <code>python-dateutil</code> for the working-hours logic. <code>cron</code> goes in the same image for anything that runs on a clock rather than on a trigger.</p>
-        </div>
-      </li>
-      <li class="reveal">
-        <span class="num">03</span>
-        <div>
-          <h3>The cron jobs</h3>
-          <p>This workflow needs two. <code>*/5 * * * *</code> sweeps for calls the webhook did not deliver, because telephony webhooks fail quietly and a silent failure here is a lost job. <code>0 7 * * 1</code> sends the Monday morning summary: calls taken, calls missed, callbacks made. The full list we run on an agent, and what breaks when each one is missing, is written up in <a href="/journal/best-cron-jobs-for-ai-agents">the cron jobs worth setting up for an agent</a>.</p>
-        </div>
-      </li>
-      <li class="reveal">
-        <span class="num">04</span>
-        <div>
-          <h3>n8n</h3>
-          <p>Self-hosted, in the same compose file. This is where the drawing above stops being a drawing: every box is a node, and every arrow is a connection you can click. You get a login and can watch a call move through it in real time. We would rather you looked than took our word for it.</p>
-        </div>
-      </li>
-      <li class="reveal">
-        <span class="num">05</span>
-        <div>
-          <h3>Credentials and accounts</h3>
-          <p>Every account is opened in your name, on your card, with us added as a partner. Not ours with you as a guest. If you want us gone, you remove us in one click and everything keeps running. That is the arrangement, and it is a selling point rather than a footnote.</p>
-        </div>
-      </li>
-      <li class="reveal">
-        <span class="num">06</span>
-        <div>
-          <h3>The data layer</h3>
-          <p>Google Sheets for the job sheet, because a person has to read it between jobs. The warehouse — <span class="tbd">to be confirmed</span> — for anything with history: every call, every miss, every callback, every recording reference. Sheets is for today. The warehouse is for the question you will ask in March about last October.</p>
-        </div>
-      </li>
-      <li class="reveal">
-        <span class="num">07</span>
-        <div>
-          <h3>Wiring the phone in</h3>
-          <p>In this order, because each step needs the one before it. The number first, ported or new. Then the fork to your mobile with the twenty-second timeout. Then the voice agent on the far side of that timeout. Then the text-back on the same number, so the message comes from the number they rang. Then the write to the sheet. Then the alert to you. Testing the text-back before the number is live tests nothing.</p>
-        </div>
-      </li>
-      <li class="reveal">
-        <span class="num">08</span>
-        <div>
-          <h3>Testing on real calls before hand-over</h3>
-          <p>We ring it ourselves from four or five different phones, including one with a bad line, and we get somebody who is not us to ring it too. It has to answer in under six rings, get the postcode right, write one row rather than two, and text back inside sixty seconds. It has to do all of that on ten consecutive calls. Until it does, it is not finished and we do not invoice.</p>
-        </div>
-      </li>
-    </ol>
-  </div>
-</section>
-
-<!-- ============================ MEDIA ============================ -->
-<section class="band" id="media">
-  <div class="container">
-    <p class="eyebrow">See it working</p>
-    <ul class="media-list is-placeholder">
-      <li>
-        <h3>Recording of a real call</h3>
-        <p>A thirty-second clip of the agent taking a job, with the client's permission and the caller's.</p>
-      </li>
-      <li>
-        <h3>The job sheet</h3>
-        <p>A screenshot of a real week, with names removed.</p>
-      </li>
-      <li>
-        <h3>The text as the caller sees it</h3>
-        <p>A photograph of the phone, not a mock-up.</p>
-      </li>
-    </ul>
-  </div>
-</section>
-
-<!-- ============================ PRICE ============================ -->
-<section class="band band--tall" id="price" style="background:var(--ink-deep);">
-  <div class="container">
-    <p class="eyebrow">What this one costs</p>
-    <div class="price-block">
-      <div class="price-row">
-        <span class="item">
-          <strong>Installed</strong>
-          <span>Built, connected to your number, tested on your real calls, handed over working.</span>
-        </span>
-        <span class="figure">£500 <small>one-off</small></span>
-      </div>
-      <div class="price-row">
-        <span class="item">
-          <strong>Maintained</strong>
-          <span>Monitoring, fixes, and changes as the business changes. A named person to ring.</span>
-        </span>
-        <span class="figure">£50 <small>per month</small></span>
-      </div>
-    </div>
-    <p class="price-note">You get that number before anything starts, not after. If it is not the number you were expecting, say so then — it is a much cheaper conversation than the one at the end.</p>
-
-    <div class="hero-actions">
-      <a class="btn" href="/#contact">Book the survey</a>
-      <a class="btn btn--quiet" href="/#ledger">Everything else it costs</a>
-    </div>
-  </div>
-</section>
-
-<!-- ============================ PAGING ============================ -->
-<nav class="band work-paging" aria-label="Workflows">
-  <div class="container">
-    <div class="work-paging-inner">
-      <a class="work-back" href="/#work">All of the work</a>
-    </div>
-  </div>
-</nav>
-
-</main>
-
-<!-- ============================ FOOTER ============================ -->
-<footer class="site-footer">
-  <div class="container">
-    <div class="footer-top">
-      <p class="footer-motto">New tools.<br>Old standards.</p>
-      <p class="footer-area">
-        Dulwich and West Norwood, south London.<br>
-        SE21, SE22, SE24, SE27 and surrounding.
-      </p>
-      <nav class="footer-nav" aria-label="Footer">
-        <a href="/#work">The work</a>
-        <a href="/#process">How it works</a>
-        <a href="/case-studies">Case studies</a>
-        <a href="/#ledger">What it costs</a>
-        <a href="/journal/best-cron-jobs-for-ai-agents">Writing</a>
-        <a href="/#contact">Talk to us</a>
-      </nav>
-    </div>
-    <div class="footer-bottom">
-      <span>&copy; <span id="year">2026</span> Northsaga. Registered in England.</span>
-      <a href="mailto:hello@northsaga.ai">hello@northsaga.ai</a>
-    </div>
-  </div>
-</footer>
-
-<script src="/js/site.js" defer></script>
-</body>
-</html>
+    scale = ICON_SIZE / ICON_GRID
+    out = [f'<g class="sch-icon-g" transform="translate({x} {y}) '
+           f'scale({scale:.6g})">']
+    for d, kind in paths:
+        out.append(f'<path class="sch-icon--{kind}" d="{d}"/>')
+    out.append("</g>")
+    return "".join(out)
 NSEOF
 
 # ---- binary assets: icons and the share card ----
@@ -6246,6 +7502,6 @@ NSEOF
 chmod +x tools/*.py 2>/dev/null || true
 
 echo "Northsaga installed into $DEST"
-echo "  30 text files, 5 binary assets"
+echo "  33 text files, 5 binary assets"
 echo
 echo "  cd $DEST && python3 -m http.server 8000"
