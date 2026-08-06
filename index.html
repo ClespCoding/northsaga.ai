@@ -88,6 +88,7 @@
     <li><a href="/case-studies">Case studies</a></li>
     <li><a href="#ledger">What it costs</a></li>
     <li><a href="#proof">Proof</a></li>
+    <li><a href="/journal/best-cron-jobs-for-ai-agents">Writing</a></li>
     <li><a href="#contact">Talk to us</a></li>
   </ul>
   <div class="menu-foot">
@@ -139,8 +140,11 @@
     </h2>
 
     <ul class="install-list">
+      <!-- Only this one has a workflow page so far. The rest get theirs as they
+           are added to tools/build-work-pages.py; paste tools/_homepage-list.html
+           over this list once all of them exist. -->
       <li class="reveal">
-        <h3>Missed-call text-back</h3>
+        <h3><a href="/work/answering-the-phone">Missed-call text-back</a></h3>
         <p>Every call you cannot answer gets a text within a minute asking what they need.
            Most of the work you lose, you lose here — usually to whoever picked up second.</p>
       </li>
@@ -225,10 +229,13 @@
       we would rather hear it then than later.
     </p>
 
-    <!-- HIGHEST-PRIORITY CONTENT GAP. A heading that says "most agencies will
-         not print this" sitting above a row of £000 undermines the brand at
-         exactly the moment it draws attention to the pricing. Real numbers, or
-         cut the section. See CLAUDE.md. -->
+    <!-- Two of the five lines are real: £500 to install an agent, £50 a month
+         to maintain one. Three are still £000 — the survey, the full three-to-
+         five-agent install, and the systems build. A heading that says "most
+         agencies will not print this" sitting above any £000 undermines the
+         brand at exactly the moment it draws attention to the pricing, so
+         .is-placeholder stays on this block until all five are real. See
+         CLAUDE.md. -->
     <div class="ledger is-placeholder">
       <div class="ledger-row">
         <span class="item">
@@ -242,7 +249,7 @@
           <strong>One agent, installed</strong>
           <span>Built, connected to your tools, tested on your real jobs, handed over working.</span>
         </span>
-        <span class="figure">£0,000 <small>one-off · per agent</small></span>
+        <span class="figure">£500 <small>one-off · per agent</small></span>
       </div>
       <div class="ledger-row">
         <span class="item">
@@ -256,7 +263,7 @@
           <strong>Maintenance and tuning</strong>
           <span>Monitoring, fixes, changes as your business changes. A named person to ring.</span>
         </span>
-        <span class="figure">£000 <small>per month · 30 days' notice</small></span>
+        <span class="figure">£50 <small>per month, per agent · 30 days' notice</small></span>
       </div>
       <div class="ledger-row">
         <span class="item">
@@ -383,6 +390,7 @@
         <a href="#process">How it works</a>
         <a href="/case-studies">Case studies</a>
         <a href="#ledger">What it costs</a>
+        <a href="/journal/best-cron-jobs-for-ai-agents">Writing</a>
         <a href="#contact">Talk to us</a>
       </nav>
     </div>

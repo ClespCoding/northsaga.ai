@@ -21,6 +21,7 @@
 
   --paper:      #EDE9DE;   /* light section background                   */
   --paper-ink:  #12202B;   /* type on light sections                     */
+  --paper-ink-dim: rgba(18, 32, 43, 0.68);  /* secondary type on light   */
 
   --brass:      #B08D4F;   /* accent — rules, eyebrows, figures          */
   --brass-soft: #7C6438;   /* accent on light backgrounds / hairlines    */
@@ -49,6 +50,13 @@
 
   --tracking-eyebrow: 0.22em;   /* small caps labels */
   --tracking-wordmark: 0.02em;
+
+  /* Schematic type. Fixed px rather than the fluid scale: the drawings have a
+     fixed viewBox and scroll rather than reflow, so this text has to stay in
+     proportion to the boxes it sits inside. Used only by css/work.css. */
+  --sch-label:   12px;
+  --sch-role:    8.5px;
+  --sch-trigger: 7.5px;
 
   /* ---- Spacing (8px base) ---- */
   --space-1: 0.5rem;

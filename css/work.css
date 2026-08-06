@@ -1,0 +1,416 @@
+/* ==========================================================================
+   NORTHSAGA — WORKFLOW AND JOURNAL PAGES
+   Loaded only by /work/* and /journal/*. Everything here is built from the
+   same devices as site.css: hairline rules, square corners, brass used for a
+   figure or a label and nothing else. No value is hard-coded — see tokens.css.
+   Order: page head → schematic → numbered lists → code → parts → media →
+   price → paging → journal
+   ========================================================================== */
+
+/* ---------- Page head ----------
+   Extra top padding so the h1 clears the fixed header on a short viewport. */
+.work-head,
+.article-head { padding-top: var(--space-7); }
+
+.work-head h1,
+.article-head h1 {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: var(--step-4);
+  line-height: 1.02;
+  letter-spacing: -0.005em;
+  max-width: 16ch;
+}
+
+/* ==========================================================================
+   SCHEMATICS
+   Engineering drawing, not an illustration. The SVG keeps its intrinsic width
+   and the wrapper scrolls, so a drawing stays legible on a phone instead of
+   shrinking to nothing. Every colour is a class, never an attribute.
+   ========================================================================== */
+.schematic { margin-top: var(--space-5); }
+
+.schematic-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: var(--space-1);
+  -webkit-overflow-scrolling: touch;
+}
+
+/* site.css sets svg { max-width: 100% } for photographs and the mark. A
+   drawing must not obey that or it squashes instead of scrolling. */
+.schematic-scroll svg { max-width: none; }
+
+.sch-box {
+  fill: var(--ink-raised);
+  stroke: var(--hairline-strong);
+  stroke-width: 1;
+}
+
+.sch-wire {
+  fill: none;
+  stroke: var(--brass);
+  stroke-width: 1.25;
+}
+.sch-wire--dash { stroke-dasharray: 5 4; }
+
+.sch-arrow { fill: var(--brass); stroke: none; }
+
+.sch-role {
+  font-family: var(--font-body);
+  font-size: var(--sch-role);
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  fill: var(--brass);
+}
+
+.sch-trigger {
+  font-family: var(--font-body);
+  font-size: var(--sch-trigger);
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  fill: var(--brass);
+  opacity: 0.72;
+}
+
+.sch-label {
+  font-family: var(--font-body);
+  font-size: var(--sch-label);
+  fill: var(--bone);
+}
+
+.schematic figcaption {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--hairline);
+  font-size: var(--step--1);
+  color: var(--bone-dim);
+  max-width: 62ch;
+}
+.sch-no {
+  flex: none;
+  color: var(--brass);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   NUMBERED LISTS — the stages of a workflow, and the order it is built in.
+   One component, two names, so a build step cannot drift out of the visual
+   language the stages already established.
+   ========================================================================== */
+.stages,
+.build-steps { margin-top: var(--space-4); }
+
+.stages > li,
+.build-steps > li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-1) var(--space-3);
+  padding-block: var(--space-3);
+  border-top: 1px solid var(--hairline);
+}
+.stages > li:last-child,
+.build-steps > li:last-child { border-bottom: 1px solid var(--hairline); }
+
+.stages .num,
+.build-steps .num {
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  line-height: 1.2;
+  color: var(--brass);
+  font-variant-numeric: tabular-nums;
+}
+
+.stages h3,
+.build-steps h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--step-2);
+  line-height: 1.2;
+  margin-bottom: var(--space-1);
+}
+
+.stages p,
+.build-steps p {
+  color: var(--bone-dim);
+  max-width: var(--measure);
+}
+
+.build-steps a { border-bottom: 1px solid var(--brass); }
+.build-steps a:hover { color: var(--brass); }
+
+/* Wide screens: heading left, body right, the same split .install-list uses. */
+@media (min-width: 900px) {
+  .stages > li > div,
+  .build-steps > li > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr);
+    gap: var(--space-4);
+    align-items: start;
+  }
+  .stages h3,
+  .build-steps h3 { margin-bottom: 0; }
+}
+
+/* ==========================================================================
+   CODE — a command, a filename, a crontab line. Body font, because this is
+   prose with a command in it rather than a terminal. No highlighting, no
+   window chrome, no copy button.
+   ========================================================================== */
+code {
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  color: var(--brass);
+  background: var(--ink-raised);
+  border-radius: var(--radius);
+  padding: 0.12em 0.42em;
+  white-space: nowrap;
+}
+
+.band--paper code {
+  color: var(--brass-soft);
+  background: var(--paper);
+  border: 1px solid var(--hairline-light);
+}
+
+/* A value nobody has settled yet. Deliberately visible. Do not guess at one. */
+.tbd {
+  color: var(--brass);
+  border-bottom: 1px dotted var(--brass);
+  font-style: italic;
+}
+.band--paper .tbd {
+  color: var(--brass-soft);
+  border-bottom-color: var(--brass-soft);
+}
+
+/* ==========================================================================
+   PARTS LIST — what it is built from, on the paper band
+   ========================================================================== */
+.parts-list { margin-top: var(--space-4); }
+.parts-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-1) var(--space-4);
+  padding-block: var(--space-3);
+  border-top: 1px solid var(--hairline-light);
+}
+.parts-list li:last-child { border-bottom: 1px solid var(--hairline-light); }
+.parts-list h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--step-1);
+  line-height: 1.2;
+}
+.parts-list p {
+  color: var(--paper-ink-dim);
+  max-width: 58ch;
+}
+@media (min-width: 820px) {
+  .parts-list li { grid-template-columns: 1fr 1.6fr; }
+}
+
+/* ==========================================================================
+   MEDIA — still a placeholder. The tag is pinned to the top-right corner, so
+   the list needs room above it or the tag lands on the first heading.
+   ========================================================================== */
+.media-list { margin-top: var(--space-4); }
+.media-list.is-placeholder { padding-top: calc(var(--space-3) + 1.2rem); }
+.media-list li {
+  padding-block: var(--space-3);
+  border-top: 1px solid var(--hairline);
+}
+.media-list li:last-child { border-bottom: 1px solid var(--hairline); }
+.media-list h3 {
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--brass);
+  margin-bottom: var(--space-1);
+}
+.media-list p { color: var(--bone-dim); max-width: 58ch; }
+
+/* ==========================================================================
+   PRICE — the ledger device, two rows, real numbers
+   ========================================================================== */
+.price-block {
+  margin-top: var(--space-4);
+  border-top: 2px solid var(--brass);
+  max-width: 64ch;
+}
+.price-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding-block: var(--space-3);
+  border-bottom: 1px solid var(--hairline);
+}
+.price-row .item strong {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--step-2);
+  display: block;
+  line-height: 1.2;
+}
+.price-row .item span {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: var(--step--1);
+  color: var(--bone-dim);
+  max-width: 46ch;
+}
+.price-row .figure {
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  color: var(--brass);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.price-row .figure small {
+  display: block;
+  text-align: right;
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  color: var(--bone-dim);
+  letter-spacing: 0.04em;
+}
+
+.price-note {
+  margin-top: var(--space-3);
+  font-size: var(--step--1);
+  color: var(--bone-dim);
+  max-width: 56ch;
+}
+
+/* ==========================================================================
+   PAGING
+   ========================================================================== */
+.work-paging {
+  padding-block: var(--space-4);
+  border-top: 1px solid var(--hairline);
+}
+.work-paging-inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-4);
+  justify-content: space-between;
+  align-items: baseline;
+}
+.work-paging a {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+}
+.work-paging a:hover { color: var(--brass); }
+.work-paging a span {
+  display: block;
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--brass);
+  margin-bottom: 0.35rem;
+}
+.work-paging .work-next { text-align: right; }
+.work-paging .work-back {
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--bone-dim);
+}
+
+/* ==========================================================================
+   JOURNAL
+   The list is generated from assets/data/cron-jobs.json. Same devices again:
+   the expression carried in a code element, the three questions as labelled
+   rows, hairlines between entries.
+   ========================================================================== */
+.article-meta {
+  margin-top: var(--space-3);
+  font-size: var(--step--1);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--bone-dim);
+}
+
+.cron-list { margin-top: var(--space-4); }
+
+.cron-entry {
+  padding-block: var(--space-4);
+  border-top: 1px solid var(--hairline);
+}
+.cron-entry:last-child { border-bottom: 1px solid var(--hairline); }
+
+.cron-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-1) var(--space-2);
+}
+.cron-head .num {
+  font-family: var(--font-display);
+  font-size: var(--step-1);
+  color: var(--brass);
+  font-variant-numeric: tabular-nums;
+}
+.cron-head h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: var(--step-2);
+  line-height: 1.2;
+  flex-basis: 100%;
+}
+.cron-expr { font-size: var(--step-0); }
+
+.cron-body { margin-top: var(--space-2); }
+.cron-body > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.25rem var(--space-3);
+  padding-block: var(--space-1);
+}
+.cron-body dt {
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--brass);
+}
+.cron-body dd { color: var(--bone-dim); max-width: var(--measure); }
+
+@media (min-width: 820px) {
+  .cron-body > div { grid-template-columns: 15rem minmax(0, 1fr); }
+}
+
+/* .contact-lines was drawn for the paper band. The journal's closing section
+   sits on --ink-deep, so it needs the dark hairline and the brighter brass. */
+.article-contact { margin-top: var(--space-4); }
+.article-contact li { border-bottom-color: var(--hairline); }
+.article-contact .k { color: var(--brass); }
+
+/* The one caveat worth printing next to a list of schedules. */
+.cron-caveat {
+  margin-top: var(--space-4);
+  padding: var(--space-3);
+  border: 1px solid var(--hairline);
+  background: var(--ink-raised);
+  max-width: 64ch;
+}
+.cron-caveat p { color: var(--bone-dim); font-size: var(--step--1); }
+.cron-caveat p + p { margin-top: var(--space-1); }
+
+/* ---------- Small screens ---------- */
+@media (max-width: 640px) {
+  .price-row { grid-template-columns: 1fr; }
+  .price-row .figure,
+  .price-row .figure small { text-align: left; }
+  .work-paging .work-next { text-align: left; }
+  .stages > li,
+  .build-steps > li { gap: var(--space-1) var(--space-2); }
+}

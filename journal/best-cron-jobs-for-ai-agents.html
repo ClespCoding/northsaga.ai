@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The best cron jobs to set up for AI agents — Northsaga</title>
+<meta name="description" content="An agent that only runs when something pokes it will fail quietly. These are the schedules we put on every install, what each one is for, and what breaks when it is missing.">
+
+<link rel="canonical" href="https://northsaga.ai/journal/best-cron-jobs-for-ai-agents">
+
+<link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/favicon/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#0E1A24">
+
+<meta property="og:title" content="The best cron jobs to set up for AI agents">
+<meta property="og:description" content="An agent that only runs when something pokes it will fail quietly. These are the schedules we put on every install, what each one is for, and what breaks when it is missing.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://northsaga.ai/journal/best-cron-jobs-for-ai-agents">
+<meta property="og:image" content="https://northsaga.ai/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The best cron jobs to set up for AI agents">
+<meta name="twitter:description" content="An agent that only runs when something pokes it will fail quietly. These are the schedules we put on every install, what each one is for, and what breaks when it is missing.">
+<meta name="twitter:image" content="https://northsaga.ai/assets/og-image.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/work.css">
+
+<!-- .reveal starts at opacity 0 and is un-hidden by js/site.js. Without this,
+     a failed or disabled script leaves most of the page invisible. -->
+<noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
+
+<!-- LocalBusiness. address, telephone and openingHours are deliberately absent
+     rather than invented — add them once confirmed. The postcodes in
+     areaServed are UNVERIFIED; check them against the real service area and
+     correct here, in the contact section and in the footer together. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": "https://northsaga.ai/#business",
+  "name": "Northsaga",
+  "url": "https://northsaga.ai/",
+  "email": "hello@northsaga.ai",
+  "description": "Installs and maintains AI agents for owner-managed small businesses and trades in Dulwich and West Norwood, south London.",
+  "slogan": "New tools. Old standards.",
+  "areaServed": [
+    { "@type": "Place", "name": "Dulwich, London" },
+    { "@type": "Place", "name": "West Norwood, London" },
+    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE21", "postalCodeEnd": "SE21" },
+    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE22", "postalCodeEnd": "SE22" },
+    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE24", "postalCodeEnd": "SE24" },
+    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE27", "postalCodeEnd": "SE27" }
+  ]
+}
+</script>
+</head>
+<body>
+<!-- GENERATED FILE — do not hand-edit. Source: assets/data/cron-jobs.json
+     Edit there, then run: cd tools && python3 build-journal.py -->
+
+<!-- ============================ HEADER ============================ -->
+<header class="site-header" id="siteHeader">
+  <a class="header-mark" href="/" aria-label="Northsaga home">
+    <svg viewBox="-77 -167 259 334" aria-hidden="true">
+      <g fill="none" stroke="currentColor" stroke-width="16">
+        <path d="M 0 -160 L -70 -32"/><path d="M 0 -160 L 0 160"/>
+        <path d="M 0 -160 L 175 160"/><path d="M 175 -160 L 175 160"/>
+      </g>
+    </svg>
+    <span>orthsaga</span>
+  </a>
+
+  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="menu">
+    <span class="menu-label">Menu</span>
+    <i></i><i></i>
+  </button>
+</header>
+
+<!-- ============================ MENU ============================ -->
+<nav class="menu" id="menu" aria-label="Main">
+  <ul class="menu-nav">
+    <li><a href="/#work">The work</a></li>
+    <li><a href="/#process">How it works</a></li>
+    <li><a href="/case-studies">Case studies</a></li>
+    <li><a href="/#ledger">What it costs</a></li>
+    <li><a href="/#proof">Proof</a></li>
+    <li><a href="/journal/best-cron-jobs-for-ai-agents" aria-current="page">Writing</a></li>
+    <li><a href="/#contact">Talk to us</a></li>
+  </ul>
+  <div class="menu-foot">
+    <span>Northsaga — operations, installed. Dulwich and West Norwood.</span>
+    <a href="mailto:hello@northsaga.ai">hello@northsaga.ai</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============================ HEAD ============================ -->
+<section class="band article-head">
+  <div class="container">
+    <p class="eyebrow">Writing</p>
+    <h1 class="display">The best cron jobs to set up for AI agents</h1>
+    <p class="lede" style="margin-top:var(--space-3);">An agent that only runs when something pokes it will fail quietly. These are the schedules we put on every install, what each one is for, and what breaks when it is missing.</p>
+    <p class="article-meta">Updated 2026-08-06</p>
+
+    <div class="prose" style="margin-top:var(--space-5);">
+      <p>Most of an agent's work is triggered. A call comes in, a form is filled, an email arrives, and something happens. That part is easy to demonstrate and easy to sell.</p><p>The part that decides whether it is still working in six months is the part nobody demonstrates: the jobs that run on a clock whether or not anything happened. Webhooks get dropped. Tokens expire. Queues stick. Somebody changes a password on a Tuesday. None of that announces itself.</p><p>These are the schedules we put on an agent install, in the order we add them. Every expression is standard five-field cron, and every one of them is there because something went wrong once without it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ THE LIST ============================ -->
+<section class="band band--tall" id="jobs">
+  <div class="container">
+    <p class="eyebrow">The schedules</p>
+    <ol class="cron-list">
+      <li class="cron-entry reveal">
+        <div class="cron-head">
+          <span class="num">01</span>
+          <code class="cron-expr">*/5 * * * *</code>
+          <h3>Webhook-miss sweep</h3>
+        </div>
+        <dl class="cron-body">
+        <div>
+          <dt>What it does</dt>
+          <dd>Asks the source system directly for anything created in the last hour, and compares it against what the agent actually received.</dd>
+        </div>
+        <div>
+          <dt>Why an agent needs it</dt>
+          <dd>Webhooks are delivered on a best-effort basis. Providers drop them during their own incidents, and a retry that arrives while your container is restarting is gone for good.</dd>
+        </div>
+        <div>
+          <dt>What happens if you skip it</dt>
+          <dd>You lose records silently. Nothing errors, nothing alerts, and the first sign is a customer asking why nobody rang them back. This is the single most valuable job on the list.</dd>
+        </div>
+        </dl>
+      </li>
+      <li class="cron-entry reveal">
+        <div class="cron-head">
+          <span class="num">02</span>
+          <code class="cron-expr">*/10 * * * *</code>
+          <h3>Queue drain and retry</h3>
+        </div>
+        <dl class="cron-body">
+        <div>
+          <dt>What it does</dt>
+          <dd>Picks up anything that failed on its first attempt — a timed-out API call, a rate-limited send — and retries it with a longer gap each time. Gives up after five attempts and moves the item to a dead-letter table.</dd>
+        </div>
+        <div>
+          <dt>Why an agent needs it</dt>
+          <dd>Third-party APIs fail for a minute at a time, constantly. Retrying inside the original request just makes the original request slow and then fail anyway.</dd>
+        </div>
+        <div>
+          <dt>What happens if you skip it</dt>
+          <dd>Every transient failure becomes a permanent one. The agent looks unreliable when the network was unreliable.</dd>
+        </div>
+        </dl>
+      </li>
+      <li class="cron-entry reveal">
+        <div class="cron-head">
+          <span class="num">03</span>
+          <code class="cron-expr">17 */6 * * *</code>
+          <h3>Token and credential refresh</h3>
+        </div>
+        <dl class="cron-body">
+        <div>
+          <dt>What it does</dt>
+          <dd>Refreshes OAuth tokens before they expire rather than after, and checks the expiry date on anything that cannot be refreshed automatically.</dd>
+        </div>
+        <div>
+          <dt>Why an agent needs it</dt>
+          <dd>Refresh tokens expire on a schedule you do not control, and some providers invalidate them when a password changes. Refreshing on a clock means the failure happens while somebody is awake.</dd>
+        </div>
+        <div>
+          <dt>What happens if you skip it</dt>
+          <dd>The agent stops mid-week with an authentication error, usually on the integration you check least often. Note the 17: keeping jobs off the top of the hour spreads the load and makes a log easier to read.</dd>
+        </div>
+        </dl>
+      </li>
+      <li class="cron-entry reveal">
+        <div class="cron-head">
+          <span class="num">04</span>
+          <code class="cron-expr">*/2 * * * *</code>
+          <h3>Heartbeat</h3>
+        </div>
+        <dl class="cron-body">
+        <div>
+          <dt>What it does</dt>
+          <dd>Sends a ping to an external monitor. If the monitor stops hearing from it for ten minutes, it alerts a person.</dd>
+        </div>
+        <div>
+          <dt>Why an agent needs it</dt>
+          <dd>This is the one job that has to be watched from outside the box. An agent cannot tell you it is down, because it is down.</dd>
+        </div>
+        <div>
+          <dt>What happens if you skip it</dt>
+          <dd>The container stops on a Friday evening and you find out on Monday from a customer. A heartbeat costs nothing and turns a lost weekend into a text message.</dd>
+        </div>
+        </dl>
+      </li>
+      <li class="cron-entry reveal">
+        <div class="cron-head">
+          <span class="num">05</span>
+          <code class="cron-expr">*/15 * * * *</code>
+          <h3>Health check on the things it depends on</h3>
+        </div>
+        <dl class="cron-body">
+        <div>
+          <dt>What it does</dt>
+          <dd>Checks that the database answers, the sheet is writable, and each API returns something sensible to a cheap read-only call.</dd>
+        </div>
+        <div>
+          <dt>Why an agent needs it</dt>
+          <dd>A heartbeat proves the agent is running. It does not prove the agent can do anything. These are different failures and they need different checks.</dd>
+        </div>
+        <div>
+          <dt>What happens if you skip it</dt>
+          <dd>The agent runs happily for days while writing every record into a spreadsheet somebody moved to the bin.</dd>
+        </div>
+        </dl>
+      </li>
+      <li class="cron-entry reveal">
+        <div class="cron-head">
+          <span class="num">06</span>
+          <code class="cron-expr">0 7 * * 1-5</code>
+          <h3>Daily digest</h3>
+        </div>
+        <dl class="cron-body">
+        <div>
+          <dt>What it does</dt>
+          <dd>Sends one email or text before the working day: what came in, what the agent handled, and what needs a person.</dd>
+        </div>
+        <div>
+          <dt>Why an agent needs it</dt>
+          <dd>It is the owner's daily proof the thing is earning its keep, and it is how they notice a problem the monitoring did not think to look for.</dd>
+        </div>
+        <div>
+          <dt>What happens if you skip it</dt>
+          <dd>Nobody looks at the agent at all, and confidence in it quietly drains away even while it works perfectly.</dd>
+        </div>
+        </dl>
+      </li>
+      <li class="cron-entry reveal">
+        <div class="cron-head">
+          <span class="num">07</span>
+          <code class="cron-expr">0 7 * * 1</code>
+          <h3>Weekly summary</h3>
+        </div>
+        <dl class="cron-body">
+        <div>
+          <dt>What it does</dt>
+          <dd>Monday morning. The week's totals against the week before: calls answered, quotes chased, reviews asked for, jobs booked.</dd>
+        </div>
+        <div>
+          <dt>Why an agent needs it</dt>
+          <dd>Daily numbers are noise. Weekly numbers are a trend, and a trend is what tells you whether the agent still fits how the business works now.</dd>
+        </div>
+        <div>
+          <dt>What happens if you skip it</dt>
+          <dd>You end up arguing about whether it is working from memory rather than from a number.</dd>
+        </div>
+        </dl>
+      </li>
+      <li class="cron-entry reveal">
+        <div class="cron-head">
+          <span class="num">08</span>
+          <code class="cron-expr">30 2 * * *</code>
+          <h3>Backup and export</h3>
+        </div>
+        <dl class="cron-body">
+        <div>
+          <dt>What it does</dt>
+          <dd>Dumps the database and copies it, plus the n8n workflow definitions and the compose file, somewhere that is not the same machine.</dd>
+        </div>
+        <div>
+          <dt>Why an agent needs it</dt>
+          <dd>A backup on the host is not a backup. It is a second copy of the thing that is about to fail.</dd>
+        </div>
+        <div>
+          <dt>What happens if you skip it</dt>
+          <dd>A dead disk or a bad migration takes the history with it. The agent can be rebuilt in an afternoon from the compose file; what happened last March cannot be rebuilt at all.</dd>
+        </div>
+        </dl>
+      </li>
+      <li class="cron-entry reveal">
+        <div class="cron-head">
+          <span class="num">09</span>
+          <code class="cron-expr">0 3 * * 0</code>
+          <h3>Log rotation and pruning</h3>
+        </div>
+        <dl class="cron-body">
+        <div>
+          <dt>What it does</dt>
+          <dd>Compresses last week's logs, deletes anything older than the retention period, and prunes unused Docker images and volumes.</dd>
+        </div>
+        <div>
+          <dt>Why an agent needs it</dt>
+          <dd>Agents are chatty. Verbose logging plus a few months is how a small VPS runs out of disk.</dd>
+        </div>
+        <div>
+          <dt>What happens if you skip it</dt>
+          <dd>The disk fills. Everything stops at once, and the error messages are all about disk space rather than about the actual work, which makes the cause obvious and the hour it takes you to find it annoying.</dd>
+        </div>
+        </dl>
+      </li>
+      <li class="cron-entry reveal">
+        <div class="cron-head">
+          <span class="num">10</span>
+          <code class="cron-expr">0 * * * *</code>
+          <h3>Cost and usage check against the budget</h3>
+        </div>
+        <dl class="cron-body">
+        <div>
+          <dt>What it does</dt>
+          <dd>Adds up the hour's model and API spend, compares it against a daily ceiling, and warns at 80 per cent. At 100 per cent it stops non-urgent work and leaves the live paths running.</dd>
+        </div>
+        <div>
+          <dt>Why an agent needs it</dt>
+          <dd>A loop that retries a failing call is a loop that spends money. Usage-based pricing turns a bug into an invoice.</dd>
+        </div>
+        <div>
+          <dt>What happens if you skip it</dt>
+          <dd>You find out from the bill. The check is cheap, and having the ceiling written down as a number is a useful conversation with the client before it is a useful alert.</dd>
+        </div>
+        </dl>
+      </li>
+      <li class="cron-entry reveal">
+        <div class="cron-head">
+          <span class="num">11</span>
+          <code class="cron-expr">13 4 * * *</code>
+          <h3>Scrapes, with jitter</h3>
+        </div>
+        <dl class="cron-body">
+        <div>
+          <dt>What it does</dt>
+          <dd>Runs the daily competitor and property pull. The job starts with a random pause of up to fifteen minutes — <code>sleep $((RANDOM % 900))</code> in front of the command — so the pull lands somewhere in a window rather than on a stroke.</dd>
+        </div>
+        <div>
+          <dt>Why an agent needs it</dt>
+          <dd>Cron has no jitter of its own, so everybody's overnight job fires at midnight or on the hour, on the second. That is both rude to whoever you are pulling from and the easiest possible pattern to block.</dd>
+        </div>
+        <div>
+          <dt>What happens if you skip it</dt>
+          <dd>You hammer someone's server in lockstep with a thousand other scripts, get rate-limited or blocked, and deserve it. The odd minute and the random pause cost nothing and solve it.</dd>
+        </div>
+        </dl>
+      </li>
+      <li class="cron-entry reveal">
+        <div class="cron-head">
+          <span class="num">12</span>
+          <code class="cron-expr">40 3 * * *</code>
+          <h3>Stale-record cleanup</h3>
+        </div>
+        <dl class="cron-body">
+        <div>
+          <dt>What it does</dt>
+          <dd>Closes off anything the agent left half-finished: quotes still being chased after ninety days, jobs marked pending with no activity for a fortnight, follow-up sequences whose contact replied on another channel.</dd>
+        </div>
+        <div>
+          <dt>Why an agent needs it</dt>
+          <dd>Agents create records and are much worse at deciding when a record is finished. The pile grows until the useful ones are hard to see.</dd>
+        </div>
+        <div>
+          <dt>What happens if you skip it</dt>
+          <dd>Somebody gets a fourth polite chase about a quote they accepted six weeks ago. That is worse than never having chased at all.</dd>
+        </div>
+        </dl>
+      </li>
+    </ol>
+
+    <div class="cron-caveat">
+      <p>Two things to get right before any of these help. First, cron runs in the machine's timezone, and a UK host moves an hour twice a year: run the container in UTC and do the conversion where the message is written, or your 7am digest arrives at 8 for half the year.</p>
+      <p>Second, cron will happily start a job while the last one is still running. Wrap anything that could overlap in a lock — <code>flock -n</code> on the command line is enough — or the sweep that is running slowly because the API is slow will start a second copy, then a third.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ CLOSE ============================ -->
+<section class="band band--tall" id="close" style="background:var(--ink-deep);">
+  <div class="container">
+    <div class="prose">
+      <p>None of this is clever. It is the maintenance schedule, written down, the same way a boiler has one. The reason it is worth printing is that the schedule is the difference between an agent that still works next year and a demonstration that worked once.</p>
+    </div>
+
+    <h2 class="display" style="font-size:var(--step-3); max-width:20ch; margin-top:var(--space-4);">
+      Or we install it for you.
+    </h2>
+    <p class="lede" style="margin-top:var(--space-3);">
+      £500 an agent to install, £50 an agent a month to
+      maintain, and the schedule above comes with it. Every account in your name,
+      and you can take the whole thing in-house whenever you want it.
+    </p>
+
+    <ul class="contact-lines article-contact is-placeholder" style="max-width:34rem;">
+      <li><span class="k">Email</span><span class="v">hello@northsaga.ai</span></li>
+      <li><span class="k">Telephone</span><span class="v">0000 000 0000</span></li>
+    </ul>
+
+    <div class="hero-actions">
+      <a class="btn" href="/#contact">Book the survey</a>
+      <a class="btn btn--quiet" href="/work/answering-the-phone">See one built</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <p class="footer-motto">New tools.<br>Old standards.</p>
+      <p class="footer-area">
+        Dulwich and West Norwood, south London.<br>
+        SE21, SE22, SE24, SE27 and surrounding.
+      </p>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="/#work">The work</a>
+        <a href="/#process">How it works</a>
+        <a href="/case-studies">Case studies</a>
+        <a href="/#ledger">What it costs</a>
+        <a href="/journal/best-cron-jobs-for-ai-agents">Writing</a>
+        <a href="/#contact">Talk to us</a>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="year">2026</span> Northsaga. Registered in England.</span>
+      <a href="mailto:hello@northsaga.ai">hello@northsaga.ai</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/site.js" defer></script>
+</body>
+</html>

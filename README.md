@@ -19,14 +19,29 @@ northsaga.ai/
 ├── robots.txt
 ├── sitemap.xml
 │
+├── work/                   GENERATED — do not hand-edit. See "Generated pages".
+│   └── answering-the-phone.html
+│
+├── journal/                GENERATED — do not hand-edit.
+│   └── best-cron-jobs-for-ai-agents.html
+│
+├── tools/                  The generators. Python 3 standard library only.
+│   ├── chrome.py           Header, menu, footer and <head>, shared by both
+│   ├── build-work-pages.py Workflow pages + the schematic renderer
+│   ├── build-journal.py    Journal pages
+│   └── _homepage-list.html Generated — paste into .install-list in index.html
+│
 ├── css/
 │   ├── tokens.css          ← Every colour, size and space value. Change things HERE.
-│   └── site.css            Layout and components
+│   ├── site.css            Layout and components
+│   └── work.css            Workflow and journal pages only
 │
 ├── js/
 │   └── site.js             Menu, header state, scroll reveal. ~70 lines.
 │
 └── assets/
+    ├── data/
+    │   └── cron-jobs.json  The journal article's content. Edit this, not the HTML.
     ├── og-image.svg         Source for the share card
     ├── og-image.png         Generated — see note below
     ├── logo/
@@ -45,6 +60,56 @@ northsaga.ai/
 
 **The one rule:** all design values live in `css/tokens.css`. Change a hex or a size
 there and it updates across the whole site. Don't hard-code values in `site.css`.
+
+---
+
+## Generated pages
+
+`work/*.html` and `journal/*.html` are output. **Do not hand-edit them** — the next
+run overwrites your changes. Both generators are plain Python 3, standard library
+only, and there is still no build step: you run them when you change content, and
+the site deploys as static files either way.
+
+```bash
+cd tools
+python3 build-work-pages.py     # workflow pages
+python3 build-journal.py        # journal pages
+python3 build-installer.py      # setup-northsaga.sh — run this last
+```
+
+**Workflow pages.** Every page's copy, stages, parts list, build order, prices and
+schematic lives in the `PAGES` list in `tools/build-work-pages.py`. Edit there and
+re-run. It also writes `tools/_homepage-list.html`, the block to paste into
+`.install-list` in `index.html` when the list of workflows changes — that block only
+contains workflows that actually have a page, so don't paste it until they all do.
+
+**The schematics** are drawn by `schematic()` at the top of the same file. A node is
+`(column, row, ROLE, 'line 1|line 2')`, optionally with a fifth element — `'cron'` or
+`'webhook'` — printed as a small brass label in the box's top-right corner. Two label
+lines maximum, roughly 26 characters each. An edge is `('a','b')`, or `('a','b','dash')`
+for a feedback loop. Columns run left to right and each is centred vertically. `NS-00`,
+the drawing of the box everything runs in, is shared and appears on every workflow page.
+
+**Journal pages.** The article's content is *not* in the HTML. It lives in
+`assets/data/cron-jobs.json` so it can be updated on its own — by hand now, by an
+agent later — without anybody touching markup. The prose fields (`intro`, `does`,
+`why`, `fails`, `caveats`, `outro`) may contain inline HTML, `<code>` and `<a>`; every
+other field is escaped.
+
+**The installer.** `setup-northsaga.sh` in the root is a self-extracting copy of the
+whole site — one quoted heredoc per text file, the icons base64 in a footer. It is
+generated too, so run `build-installer.py` **last**, after the other two, or it ships
+stale pages. Check it round-trips:
+
+```bash
+./setup-northsaga.sh /tmp/check && diff -r . /tmp/check -x .git -x __pycache__ -x .DS_Store -x setup-northsaga.sh -x _homepage-list.html
+```
+
+**The header, menu and footer** are in `tools/chrome.py` and shared by both generators,
+so a new menu item is added once rather than twice. `index.html` and `case-studies.html`
+are hand-written and still need updating by hand — and a new menu item needs a matching
+`nth-child` stagger delay in `css/site.css` or it snaps in with no stagger. There are
+currently seven.
 
 ---
 
@@ -82,8 +147,16 @@ Everything still needing your input is flagged **in the browser** with a brass
 `PLACEHOLDER — REPLACE` tag, via the `is-placeholder` class. Remove that class from the
 element once you've filled it in, and the tag disappears.
 
-- [ ] **Ledger prices** (`#ledger`) — the `£000` figures. This section is the reason the
-      site works; real numbers or cut the section entirely. A fake range is worse than none.
+- [ ] **Ledger prices** (`#ledger`) — three of the five are still `£000`: the operations
+      survey, the full three-to-five-agent install, and the systems build. One agent
+      (`£500`) and maintenance (`£50` per month, per agent) are real. This section is the
+      reason the site works; real numbers or cut the section entirely. A fake range is
+      worse than none. `is-placeholder` stays on the block until all five are real.
+- [ ] **The warehouse product name** — `<span class="tbd">` on the workflow pages, in
+      both the parts list and the build order. Nothing has been chosen; don't guess.
+- [ ] **The remaining six workflow pages** — only `answering-the-phone` exists. Add each
+      one to `PAGES` in `tools/build-work-pages.py` and re-run. The workflow price block
+      is already real at `£500` / `£50`; the media links on each page are not.
 - [ ] **Proof cards** (`#proof`) — real numbers for Broadland Products and Telemechry.
 - [ ] **Case studies** (`/case-studies`) — every block on that page is a placeholder.
       Nothing has been invented for either firm.

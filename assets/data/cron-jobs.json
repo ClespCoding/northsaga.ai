@@ -1,0 +1,104 @@
+{
+  "slug": "best-cron-jobs-for-ai-agents",
+  "title": "The best cron jobs to set up for AI agents",
+  "standfirst": "An agent that only runs when something pokes it will fail quietly. These are the schedules we put on every install, what each one is for, and what breaks when it is missing.",
+  "updated": "2026-08-06",
+  "intro": [
+    "Most of an agent's work is triggered. A call comes in, a form is filled, an email arrives, and something happens. That part is easy to demonstrate and easy to sell.",
+    "The part that decides whether it is still working in six months is the part nobody demonstrates: the jobs that run on a clock whether or not anything happened. Webhooks get dropped. Tokens expire. Queues stick. Somebody changes a password on a Tuesday. None of that announces itself.",
+    "These are the schedules we put on an agent install, in the order we add them. Every expression is standard five-field cron, and every one of them is there because something went wrong once without it."
+  ],
+  "jobs": [
+    {
+      "expression": "*/5 * * * *",
+      "name": "Webhook-miss sweep",
+      "does": "Asks the source system directly for anything created in the last hour, and compares it against what the agent actually received.",
+      "why": "Webhooks are delivered on a best-effort basis. Providers drop them during their own incidents, and a retry that arrives while your container is restarting is gone for good.",
+      "fails": "You lose records silently. Nothing errors, nothing alerts, and the first sign is a customer asking why nobody rang them back. This is the single most valuable job on the list."
+    },
+    {
+      "expression": "*/10 * * * *",
+      "name": "Queue drain and retry",
+      "does": "Picks up anything that failed on its first attempt — a timed-out API call, a rate-limited send — and retries it with a longer gap each time. Gives up after five attempts and moves the item to a dead-letter table.",
+      "why": "Third-party APIs fail for a minute at a time, constantly. Retrying inside the original request just makes the original request slow and then fail anyway.",
+      "fails": "Every transient failure becomes a permanent one. The agent looks unreliable when the network was unreliable."
+    },
+    {
+      "expression": "17 */6 * * *",
+      "name": "Token and credential refresh",
+      "does": "Refreshes OAuth tokens before they expire rather than after, and checks the expiry date on anything that cannot be refreshed automatically.",
+      "why": "Refresh tokens expire on a schedule you do not control, and some providers invalidate them when a password changes. Refreshing on a clock means the failure happens while somebody is awake.",
+      "fails": "The agent stops mid-week with an authentication error, usually on the integration you check least often. Note the 17: keeping jobs off the top of the hour spreads the load and makes a log easier to read."
+    },
+    {
+      "expression": "*/2 * * * *",
+      "name": "Heartbeat",
+      "does": "Sends a ping to an external monitor. If the monitor stops hearing from it for ten minutes, it alerts a person.",
+      "why": "This is the one job that has to be watched from outside the box. An agent cannot tell you it is down, because it is down.",
+      "fails": "The container stops on a Friday evening and you find out on Monday from a customer. A heartbeat costs nothing and turns a lost weekend into a text message."
+    },
+    {
+      "expression": "*/15 * * * *",
+      "name": "Health check on the things it depends on",
+      "does": "Checks that the database answers, the sheet is writable, and each API returns something sensible to a cheap read-only call.",
+      "why": "A heartbeat proves the agent is running. It does not prove the agent can do anything. These are different failures and they need different checks.",
+      "fails": "The agent runs happily for days while writing every record into a spreadsheet somebody moved to the bin."
+    },
+    {
+      "expression": "0 7 * * 1-5",
+      "name": "Daily digest",
+      "does": "Sends one email or text before the working day: what came in, what the agent handled, and what needs a person.",
+      "why": "It is the owner's daily proof the thing is earning its keep, and it is how they notice a problem the monitoring did not think to look for.",
+      "fails": "Nobody looks at the agent at all, and confidence in it quietly drains away even while it works perfectly."
+    },
+    {
+      "expression": "0 7 * * 1",
+      "name": "Weekly summary",
+      "does": "Monday morning. The week's totals against the week before: calls answered, quotes chased, reviews asked for, jobs booked.",
+      "why": "Daily numbers are noise. Weekly numbers are a trend, and a trend is what tells you whether the agent still fits how the business works now.",
+      "fails": "You end up arguing about whether it is working from memory rather than from a number."
+    },
+    {
+      "expression": "30 2 * * *",
+      "name": "Backup and export",
+      "does": "Dumps the database and copies it, plus the n8n workflow definitions and the compose file, somewhere that is not the same machine.",
+      "why": "A backup on the host is not a backup. It is a second copy of the thing that is about to fail.",
+      "fails": "A dead disk or a bad migration takes the history with it. The agent can be rebuilt in an afternoon from the compose file; what happened last March cannot be rebuilt at all."
+    },
+    {
+      "expression": "0 3 * * 0",
+      "name": "Log rotation and pruning",
+      "does": "Compresses last week's logs, deletes anything older than the retention period, and prunes unused Docker images and volumes.",
+      "why": "Agents are chatty. Verbose logging plus a few months is how a small VPS runs out of disk.",
+      "fails": "The disk fills. Everything stops at once, and the error messages are all about disk space rather than about the actual work, which makes the cause obvious and the hour it takes you to find it annoying."
+    },
+    {
+      "expression": "0 * * * *",
+      "name": "Cost and usage check against the budget",
+      "does": "Adds up the hour's model and API spend, compares it against a daily ceiling, and warns at 80 per cent. At 100 per cent it stops non-urgent work and leaves the live paths running.",
+      "why": "A loop that retries a failing call is a loop that spends money. Usage-based pricing turns a bug into an invoice.",
+      "fails": "You find out from the bill. The check is cheap, and having the ceiling written down as a number is a useful conversation with the client before it is a useful alert."
+    },
+    {
+      "expression": "13 4 * * *",
+      "name": "Scrapes, with jitter",
+      "does": "Runs the daily competitor and property pull. The job starts with a random pause of up to fifteen minutes — <code>sleep $((RANDOM % 900))</code> in front of the command — so the pull lands somewhere in a window rather than on a stroke.",
+      "why": "Cron has no jitter of its own, so everybody's overnight job fires at midnight or on the hour, on the second. That is both rude to whoever you are pulling from and the easiest possible pattern to block.",
+      "fails": "You hammer someone's server in lockstep with a thousand other scripts, get rate-limited or blocked, and deserve it. The odd minute and the random pause cost nothing and solve it."
+    },
+    {
+      "expression": "40 3 * * *",
+      "name": "Stale-record cleanup",
+      "does": "Closes off anything the agent left half-finished: quotes still being chased after ninety days, jobs marked pending with no activity for a fortnight, follow-up sequences whose contact replied on another channel.",
+      "why": "Agents create records and are much worse at deciding when a record is finished. The pile grows until the useful ones are hard to see.",
+      "fails": "Somebody gets a fourth polite chase about a quote they accepted six weeks ago. That is worse than never having chased at all."
+    }
+  ],
+  "caveats": [
+    "Two things to get right before any of these help. First, cron runs in the machine's timezone, and a UK host moves an hour twice a year: run the container in UTC and do the conversion where the message is written, or your 7am digest arrives at 8 for half the year.",
+    "Second, cron will happily start a job while the last one is still running. Wrap anything that could overlap in a lock — <code>flock -n</code> on the command line is enough — or the sweep that is running slowly because the API is slow will start a second copy, then a third."
+  ],
+  "outro": [
+    "None of this is clever. It is the maintenance schedule, written down, the same way a boiler has one. The reason it is worth printing is that the schedule is the difference between an agent that still works next year and a demonstration that worked once."
+  ]
+}

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Answering the phone — Northsaga</title>
+<meta name="description" content="A voice agent that answers the calls you miss, takes the job details, and texts the caller back inside a minute. Installed for £500, maintained for £50 a month.">
+
+<link rel="canonical" href="https://northsaga.ai/work/answering-the-phone">
+
+<link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/favicon/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#0E1A24">
+
+<meta property="og:title" content="Answering the phone — Northsaga">
+<meta property="og:description" content="Every call you cannot answer gets picked up. If it is not you, it is an agent that takes the name, the number and the job, and texts them back inside a minute.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://northsaga.ai/work/answering-the-phone">
+<meta property="og:image" content="https://northsaga.ai/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Answering the phone — Northsaga">
+<meta name="twitter:description" content="Every call you cannot answer gets picked up. If it is not you, it is an agent that takes the name, the number and the job, and texts them back inside a minute.">
+<meta name="twitter:image" content="https://northsaga.ai/assets/og-image.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="/css/tokens.css">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/work.css">
+
+<!-- .reveal starts at opacity 0 and is un-hidden by js/site.js. Without this,
+     a failed or disabled script leaves most of the page invisible. -->
+<noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
+
+<!-- LocalBusiness. address, telephone and openingHours are deliberately absent
+     rather than invented — add them once confirmed. The postcodes in
+     areaServed are UNVERIFIED; check them against the real service area and
+     correct here, in the contact section and in the footer together. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "@id": "https://northsaga.ai/#business",
+  "name": "Northsaga",
+  "url": "https://northsaga.ai/",
+  "email": "hello@northsaga.ai",
+  "description": "Installs and maintains AI agents for owner-managed small businesses and trades in Dulwich and West Norwood, south London.",
+  "slogan": "New tools. Old standards.",
+  "areaServed": [
+    { "@type": "Place", "name": "Dulwich, London" },
+    { "@type": "Place", "name": "West Norwood, London" },
+    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE21", "postalCodeEnd": "SE21" },
+    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE22", "postalCodeEnd": "SE22" },
+    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE24", "postalCodeEnd": "SE24" },
+    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE27", "postalCodeEnd": "SE27" }
+  ]
+}
+</script>
+</head>
+<body>
+<!-- GENERATED FILE — do not hand-edit. Source: tools/build-work-pages.py
+     Edit there, then run: cd tools && python3 build-work-pages.py -->
+
+<!-- ============================ HEADER ============================ -->
+<header class="site-header" id="siteHeader">
+  <a class="header-mark" href="/" aria-label="Northsaga home">
+    <svg viewBox="-77 -167 259 334" aria-hidden="true">
+      <g fill="none" stroke="currentColor" stroke-width="16">
+        <path d="M 0 -160 L -70 -32"/><path d="M 0 -160 L 0 160"/>
+        <path d="M 0 -160 L 175 160"/><path d="M 175 -160 L 175 160"/>
+      </g>
+    </svg>
+    <span>orthsaga</span>
+  </a>
+
+  <button class="menu-toggle" id="menuToggle" aria-expanded="false" aria-controls="menu">
+    <span class="menu-label">Menu</span>
+    <i></i><i></i>
+  </button>
+</header>
+
+<!-- ============================ MENU ============================ -->
+<nav class="menu" id="menu" aria-label="Main">
+  <ul class="menu-nav">
+    <li><a href="/#work" aria-current="page">The work</a></li>
+    <li><a href="/#process">How it works</a></li>
+    <li><a href="/case-studies">Case studies</a></li>
+    <li><a href="/#ledger">What it costs</a></li>
+    <li><a href="/#proof">Proof</a></li>
+    <li><a href="/journal/best-cron-jobs-for-ai-agents">Writing</a></li>
+    <li><a href="/#contact">Talk to us</a></li>
+  </ul>
+  <div class="menu-foot">
+    <span>Northsaga — operations, installed. Dulwich and West Norwood.</span>
+    <a href="mailto:hello@northsaga.ai">hello@northsaga.ai</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============================ INTRO ============================ -->
+<section class="band work-head">
+  <div class="container">
+    <p class="eyebrow">Workflow 01 · Voice agent and missed-call text-back</p>
+    <h1 class="display">Answering the phone</h1>
+    <p class="lede" style="margin-top:var(--space-3);">Every call you cannot answer gets picked up. If it is not you, it is an agent that takes the name, the number and the job, and texts them back inside a minute.</p>
+
+    <figure class="schematic">
+  <div class="schematic-scroll">
+    <svg viewBox="0 0 1002 344" width="1002" height="344"
+         role="img" aria-label="Drawing NS-01. Answering the phone. Your mobile rings first; the agent only answers when you do not.">
+      <title>Drawing NS-01. Answering the phone. Your mobile rings first; the agent only answers when you do not.</title>
+      <path class="sch-wire" d="M 206 172 L 272 172"/>
+      <path class="sch-arrow" d="M 272 172 L 265 167.66 L 265 176.34 Z"/>
+      <path class="sch-wire" d="M 468 172 H 501 V 54 H 534"/>
+      <path class="sch-arrow" d="M 534 54 L 527 49.66 L 527 58.34 Z"/>
+      <path class="sch-wire" d="M 632 98 L 632 128"/>
+      <path class="sch-arrow" d="M 632 128 L 627.66 121 L 636.34 121 Z"/>
+      <path class="sch-wire" d="M 730 54 H 749 V 113 H 796"/>
+      <path class="sch-arrow" d="M 796 113 L 789 108.66 L 789 117.34 Z"/>
+      <path class="sch-wire" d="M 730 172 H 763 V 231 H 796"/>
+      <path class="sch-arrow" d="M 796 231 L 789 226.66 L 789 235.34 Z"/>
+      <path class="sch-wire" d="M 730 290 H 777 V 113 H 796"/>
+      <path class="sch-arrow" d="M 796 113 L 789 108.66 L 789 117.34 Z"/>
+      <g class="sch-node">
+      <rect class="sch-box" x="10" y="128" width="196" height="88"/>
+      <text class="sch-role" x="24" y="152">TRIGGER</text>
+      <text class="sch-trigger" x="192" y="152" text-anchor="end">WEBHOOK</text>
+      <text class="sch-label" x="24" y="178">Inbound call to</text>
+      <text class="sch-label" x="24" y="196">your number</text>
+      </g>
+      <g class="sch-node">
+      <rect class="sch-box" x="272" y="128" width="196" height="88"/>
+      <text class="sch-role" x="286" y="152">ROUTING</text>
+      <text class="sch-label" x="286" y="178">Rings your mobile</text>
+      <text class="sch-label" x="286" y="196">for twenty seconds</text>
+      </g>
+      <g class="sch-node">
+      <rect class="sch-box" x="534" y="10" width="196" height="88"/>
+      <text class="sch-role" x="548" y="34">VOICE AGENT</text>
+      <text class="sch-label" x="548" y="60">Answers if you cannot.</text>
+      <text class="sch-label" x="548" y="78">Asks three questions</text>
+      </g>
+      <g class="sch-node">
+      <rect class="sch-box" x="534" y="128" width="196" height="88"/>
+      <text class="sch-role" x="548" y="152">TEXT-BACK</text>
+      <text class="sch-label" x="548" y="178">Text to the caller</text>
+      <text class="sch-label" x="548" y="196">inside a minute</text>
+      </g>
+      <g class="sch-node">
+      <rect class="sch-box" x="534" y="246" width="196" height="88"/>
+      <text class="sch-role" x="548" y="270">SWEEP</text>
+      <text class="sch-trigger" x="716" y="270" text-anchor="end">CRON</text>
+      <text class="sch-label" x="548" y="296">Catches anything</text>
+      <text class="sch-label" x="548" y="314">the webhook missed</text>
+      </g>
+      <g class="sch-node">
+      <rect class="sch-box" x="796" y="69" width="196" height="88"/>
+      <text class="sch-role" x="810" y="93">JOB SHEET</text>
+      <text class="sch-label" x="810" y="119">One row: name, job,</text>
+      <text class="sch-label" x="810" y="137">postcode, urgency</text>
+      </g>
+      <g class="sch-node">
+      <rect class="sch-box" x="796" y="187" width="196" height="88"/>
+      <text class="sch-role" x="810" y="211">ALERT</text>
+      <text class="sch-label" x="810" y="237">The same thing to</text>
+      <text class="sch-label" x="810" y="255">your phone and inbox</text>
+      </g>
+    </svg>
+  </div>
+  <figcaption><span class="sch-no">NS-01</span>Answering the phone. Your mobile rings first; the agent only answers when you do not.</figcaption>
+</figure>
+
+    <div class="prose" style="margin-top:var(--space-5);">
+      <p>Most of the work a small firm loses, it loses at the phone. Not to a better quote. To whoever picked up second.</p><p>You are on a roof, under a sink, or driving. The phone rings out. The caller has three more numbers on the same search page and no particular reason to prefer yours. By the time you hear the voicemail — if they left one, and most do not — the job belongs to somebody else.</p><p>This is the agent that stops that. It rings your mobile first, because if you can answer, you should. If you cannot, it answers, takes the details in a plain voice, and writes them down where you will see them. The caller has a text from you before they have dialled the next number.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ STAGES ============================ -->
+<section class="band band--tall" id="stages">
+  <div class="container">
+    <p class="eyebrow">What happens, in order</p>
+    <ol class="stages">
+      <li class="reveal">
+        <span class="num">01</span>
+        <div>
+          <h3>The call comes in</h3>
+          <p>It rings your mobile for twenty seconds, exactly as it does now. If you pick up, the agent never runs and you never hear from it. Nothing about your day changes on the calls you can take.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">02</span>
+        <div>
+          <h3>The agent answers</h3>
+          <p>It gives the firm's name and asks three things: what the job is, where it is, and when they need it. It does not pretend to be a person, and it does not quote. Quoting is yours.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">03</span>
+        <div>
+          <h3>The details get written down</h3>
+          <p>Name, number, postcode, job, urgency. One row on the job sheet, one line in your inbox, one text to your phone. The same five facts in all three, so there is nothing to reconcile later.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">04</span>
+        <div>
+          <h3>The caller gets a text</h3>
+          <p>Inside a minute, in your name. We missed you, here is what we do, reply here and we will ring back. Most people answer that text rather than carry on down the list.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">05</span>
+        <div>
+          <h3>You ring back knowing something</h3>
+          <p>You are not returning a blank missed call. You know the job, the address and whether it can wait until Thursday.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">06</span>
+        <div>
+          <h3>Nothing gets quietly lost</h3>
+          <p>A sweep runs every five minutes and picks up anything the telephony provider failed to hand over. A call that neither of you answered appears on the sheet as a miss, rather than not appearing at all.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================ PARTS ============================ -->
+<section class="band band--paper band--tall" id="parts">
+  <div class="container">
+    <p class="eyebrow">What it is built from</p>
+    <h2 class="display" style="font-size:var(--step-3); max-width:20ch;">
+      Named parts, not a black box.
+    </h2>
+    <ul class="parts-list">
+      <li class="reveal">
+        <h3>Docker</h3>
+        <p>One compose file per client, version-controlled. Everything below runs inside it.</p>
+      </li>
+      <li class="reveal">
+        <h3>n8n, self-hosted</h3>
+        <p>The drawing above, as nodes you can watch run. You get a login on day one.</p>
+      </li>
+      <li class="reveal">
+        <h3>Python 3.12</h3>
+        <p>The workers: the five-minute sweep, the tidy-up of what the agent heard, and the writes to the sheet.</p>
+      </li>
+      <li class="reveal">
+        <h3>cron</h3>
+        <p>Two schedules on this workflow. The sweep, and the Monday morning summary.</p>
+      </li>
+      <li class="reveal">
+        <h3>Telephony</h3>
+        <p>Twilio, or your existing provider if it has an API worth the name. The number, the twenty-second fork to your mobile, and the text-back all sit here.</p>
+      </li>
+      <li class="reveal">
+        <h3>A voice model</h3>
+        <p>Answers, listens, asks its three questions, stops. Not a chatbot with a phone line attached.</p>
+      </li>
+      <li class="reveal">
+        <h3>Google Sheets</h3>
+        <p>The job sheet. Anything a person needs to read during the working day lives here, because everyone can already read a spreadsheet.</p>
+      </li>
+      <li class="reveal">
+        <h3>The warehouse</h3>
+        <p>Still to be chosen — <span class="tbd">product name to be confirmed</span>. Every call, every miss, every callback, kept with its history so the monthly figures are countable rather than remembered.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ BUILD ORDER ============================ -->
+<section class="band band--tall" id="build">
+  <div class="container">
+    <p class="eyebrow">How it is built, in order</p>
+    <h2 class="display" style="font-size:var(--step-3); max-width:22ch;">
+      From a bare machine to a live agent.
+    </h2>
+    <p class="lede" style="margin-top:var(--space-3);">
+      First line to last. Someone competent could follow this. That is the point of
+      printing it.
+    </p>
+
+    <figure class="schematic">
+  <div class="schematic-scroll">
+    <svg viewBox="0 0 1002 384" width="1002" height="384"
+         role="img" aria-label="Drawing NS-00. The box every agent runs in. The same host, the same compose file, the same n8n — which is why the fifth agent costs less to run than the first.">
+      <title>Drawing NS-00. The box every agent runs in. The same host, the same compose file, the same n8n — which is why the fifth agent costs less to run than the first.</title>
+      <path class="sch-wire" d="M 206 172 L 272 172"/>
+      <path class="sch-arrow" d="M 272 172 L 265 167.66 L 265 176.34 Z"/>
+      <path class="sch-wire" d="M 468 172 H 501 V 54 H 534"/>
+      <path class="sch-arrow" d="M 534 54 L 527 49.66 L 527 58.34 Z"/>
+      <path class="sch-wire" d="M 468 172 L 534 172"/>
+      <path class="sch-arrow" d="M 534 172 L 527 167.66 L 527 176.34 Z"/>
+      <path class="sch-wire" d="M 468 172 H 501 V 290 H 534"/>
+      <path class="sch-arrow" d="M 534 290 L 527 285.66 L 527 294.34 Z"/>
+      <path class="sch-wire" d="M 730 54 L 796 54"/>
+      <path class="sch-arrow" d="M 796 54 L 789 49.66 L 789 58.34 Z"/>
+      <path class="sch-wire" d="M 730 54 H 756 V 172 H 796"/>
+      <path class="sch-arrow" d="M 796 172 L 789 167.66 L 789 176.34 Z"/>
+      <path class="sch-wire" d="M 730 172 H 770 V 54 H 796"/>
+      <path class="sch-arrow" d="M 796 54 L 789 49.66 L 789 58.34 Z"/>
+      <path class="sch-wire" d="M 730 290 L 796 290"/>
+      <path class="sch-arrow" d="M 796 290 L 789 285.66 L 789 294.34 Z"/>
+      <path class="sch-wire sch-wire--dash" d="M 894 334 V 354 H 370 V 216"/>
+      <path class="sch-arrow" d="M 370 216 L 365.66 223 L 374.34 223 Z"/>
+      <g class="sch-node">
+      <rect class="sch-box" x="10" y="128" width="196" height="88"/>
+      <text class="sch-role" x="24" y="152">HOST</text>
+      <text class="sch-label" x="24" y="178">A spare PC, a NUC in</text>
+      <text class="sch-label" x="24" y="196">the office, or a VPS</text>
+      </g>
+      <g class="sch-node">
+      <rect class="sch-box" x="272" y="128" width="196" height="88"/>
+      <text class="sch-role" x="286" y="152">DOCKER</text>
+      <text class="sch-label" x="286" y="178">One compose file,</text>
+      <text class="sch-label" x="286" y="196">version-controlled</text>
+      </g>
+      <g class="sch-node">
+      <rect class="sch-box" x="534" y="10" width="196" height="88"/>
+      <text class="sch-role" x="548" y="34">N8N</text>
+      <text class="sch-trigger" x="716" y="34" text-anchor="end">WEBHOOK</text>
+      <text class="sch-label" x="548" y="60">The drawing above,</text>
+      <text class="sch-label" x="548" y="78">as nodes you can watch</text>
+      </g>
+      <g class="sch-node">
+      <rect class="sch-box" x="534" y="128" width="196" height="88"/>
+      <text class="sch-role" x="548" y="152">PYTHON 3.12</text>
+      <text class="sch-label" x="548" y="178">Workers for the jobs</text>
+      <text class="sch-label" x="548" y="196">n8n should not do</text>
+      </g>
+      <g class="sch-node">
+      <rect class="sch-box" x="534" y="246" width="196" height="88"/>
+      <text class="sch-role" x="548" y="270">CRON</text>
+      <text class="sch-trigger" x="716" y="270" text-anchor="end">CRON</text>
+      <text class="sch-label" x="548" y="296">Anything on a clock</text>
+      <text class="sch-label" x="548" y="314">rather than a trigger</text>
+      </g>
+      <g class="sch-node">
+      <rect class="sch-box" x="796" y="10" width="196" height="88"/>
+      <text class="sch-role" x="810" y="34">DATA LAYER</text>
+      <text class="sch-label" x="810" y="60">Sheets to read,</text>
+      <text class="sch-label" x="810" y="78">warehouse for history</text>
+      </g>
+      <g class="sch-node">
+      <rect class="sch-box" x="796" y="128" width="196" height="88"/>
+      <text class="sch-role" x="810" y="152">YOUR TOOLS</text>
+      <text class="sch-label" x="810" y="178">Phone, email, diary,</text>
+      <text class="sch-label" x="810" y="196">accounts, ads</text>
+      </g>
+      <g class="sch-node">
+      <rect class="sch-box" x="796" y="246" width="196" height="88"/>
+      <text class="sch-role" x="810" y="270">HEALTH CHECK</text>
+      <text class="sch-trigger" x="978" y="270" text-anchor="end">CRON</text>
+      <text class="sch-label" x="810" y="296">Heartbeat out</text>
+      <text class="sch-label" x="810" y="314">every two minutes</text>
+      </g>
+    </svg>
+  </div>
+  <figcaption><span class="sch-no">NS-00</span>The box every agent runs in. The same host, the same compose file, the same n8n — which is why the fifth agent costs less to run than the first.</figcaption>
+</figure>
+
+    <ol class="build-steps">
+      <li class="reveal">
+        <span class="num">01</span>
+        <div>
+          <h3>The box it runs in</h3>
+          <p>Docker on the host. That host is a spare PC in the office, a NUC on a shelf, or a VPS at about five pounds a month — whichever you already have. One <code>docker-compose.yml</code> per client, kept in version control, brought up with <code>docker compose up -d</code>. If the machine dies, the same file on a new machine puts everything back.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">02</span>
+        <div>
+          <h3>Inside the container</h3>
+          <p>Python 3.12, and only the libraries this workflow actually needs: <code>requests</code> for the telephony API, <code>gspread</code> for the job sheet, and <code>python-dateutil</code> for the working-hours logic. <code>cron</code> goes in the same image for anything that runs on a clock rather than on a trigger.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">03</span>
+        <div>
+          <h3>The cron jobs</h3>
+          <p>This workflow needs two. <code>*/5 * * * *</code> sweeps for calls the webhook did not deliver, because telephony webhooks fail quietly and a silent failure here is a lost job. <code>0 7 * * 1</code> sends the Monday morning summary: calls taken, calls missed, callbacks made. The full list we run on an agent, and what breaks when each one is missing, is written up in <a href="/journal/best-cron-jobs-for-ai-agents">the cron jobs worth setting up for an agent</a>.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">04</span>
+        <div>
+          <h3>n8n</h3>
+          <p>Self-hosted, in the same compose file. This is where the drawing above stops being a drawing: every box is a node, and every arrow is a connection you can click. You get a login and can watch a call move through it in real time. We would rather you looked than took our word for it.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">05</span>
+        <div>
+          <h3>Credentials and accounts</h3>
+          <p>Every account is opened in your name, on your card, with us added as a partner. Not ours with you as a guest. If you want us gone, you remove us in one click and everything keeps running. That is the arrangement, and it is a selling point rather than a footnote.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">06</span>
+        <div>
+          <h3>The data layer</h3>
+          <p>Google Sheets for the job sheet, because a person has to read it between jobs. The warehouse — <span class="tbd">to be confirmed</span> — for anything with history: every call, every miss, every callback, every recording reference. Sheets is for today. The warehouse is for the question you will ask in March about last October.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">07</span>
+        <div>
+          <h3>Wiring the phone in</h3>
+          <p>In this order, because each step needs the one before it. The number first, ported or new. Then the fork to your mobile with the twenty-second timeout. Then the voice agent on the far side of that timeout. Then the text-back on the same number, so the message comes from the number they rang. Then the write to the sheet. Then the alert to you. Testing the text-back before the number is live tests nothing.</p>
+        </div>
+      </li>
+      <li class="reveal">
+        <span class="num">08</span>
+        <div>
+          <h3>Testing on real calls before hand-over</h3>
+          <p>We ring it ourselves from four or five different phones, including one with a bad line, and we get somebody who is not us to ring it too. It has to answer in under six rings, get the postcode right, write one row rather than two, and text back inside sixty seconds. It has to do all of that on ten consecutive calls. Until it does, it is not finished and we do not invoice.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================ MEDIA ============================ -->
+<section class="band" id="media">
+  <div class="container">
+    <p class="eyebrow">See it working</p>
+    <ul class="media-list is-placeholder">
+      <li>
+        <h3>Recording of a real call</h3>
+        <p>A thirty-second clip of the agent taking a job, with the client's permission and the caller's.</p>
+      </li>
+      <li>
+        <h3>The job sheet</h3>
+        <p>A screenshot of a real week, with names removed.</p>
+      </li>
+      <li>
+        <h3>The text as the caller sees it</h3>
+        <p>A photograph of the phone, not a mock-up.</p>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================ PRICE ============================ -->
+<section class="band band--tall" id="price" style="background:var(--ink-deep);">
+  <div class="container">
+    <p class="eyebrow">What this one costs</p>
+    <div class="price-block">
+      <div class="price-row">
+        <span class="item">
+          <strong>Installed</strong>
+          <span>Built, connected to your number, tested on your real calls, handed over working.</span>
+        </span>
+        <span class="figure">£500 <small>one-off</small></span>
+      </div>
+      <div class="price-row">
+        <span class="item">
+          <strong>Maintained</strong>
+          <span>Monitoring, fixes, and changes as the business changes. A named person to ring.</span>
+        </span>
+        <span class="figure">£50 <small>per month</small></span>
+      </div>
+    </div>
+    <p class="price-note">You get that number before anything starts, not after. If it is not the number you were expecting, say so then — it is a much cheaper conversation than the one at the end.</p>
+
+    <div class="hero-actions">
+      <a class="btn" href="/#contact">Book the survey</a>
+      <a class="btn btn--quiet" href="/#ledger">Everything else it costs</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ PAGING ============================ -->
+<nav class="band work-paging" aria-label="Workflows">
+  <div class="container">
+    <div class="work-paging-inner">
+      <a class="work-back" href="/#work">All of the work</a>
+    </div>
+  </div>
+</nav>
+
+</main>
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <p class="footer-motto">New tools.<br>Old standards.</p>
+      <p class="footer-area">
+        Dulwich and West Norwood, south London.<br>
+        SE21, SE22, SE24, SE27 and surrounding.
+      </p>
+      <nav class="footer-nav" aria-label="Footer">
+        <a href="/#work">The work</a>
+        <a href="/#process">How it works</a>
+        <a href="/case-studies">Case studies</a>
+        <a href="/#ledger">What it costs</a>
+        <a href="/journal/best-cron-jobs-for-ai-agents">Writing</a>
+        <a href="/#contact">Talk to us</a>
+      </nav>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; <span id="year">2026</span> Northsaga. Registered in England.</span>
+      <a href="mailto:hello@northsaga.ai">hello@northsaga.ai</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/js/site.js" defer></script>
+</body>
+</html>

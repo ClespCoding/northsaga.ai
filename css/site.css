@@ -218,6 +218,7 @@ body[data-menu="open"] .menu-nav li:nth-child(3) a { transition-delay: 240ms; }
 body[data-menu="open"] .menu-nav li:nth-child(4) a { transition-delay: 300ms; }
 body[data-menu="open"] .menu-nav li:nth-child(5) a { transition-delay: 360ms; }
 body[data-menu="open"] .menu-nav li:nth-child(6) a { transition-delay: 420ms; }
+body[data-menu="open"] .menu-nav li:nth-child(7) a { transition-delay: 480ms; }
 
 .menu-foot {
   display: flex;
@@ -342,6 +343,13 @@ body[data-menu="open"] .menu-foot { opacity: 1; }
 .install-list p {
   color: rgba(18, 32, 43, 0.66);
   max-width: 54ch;
+}
+
+/* An item links to its workflow page once that page exists. */
+.install-list h3 a { border-bottom: 1px solid var(--hairline-light); }
+.install-list h3 a:hover {
+  color: var(--brass-soft);
+  border-bottom-color: var(--brass-soft);
 }
 
 @media (min-width: 820px) {
