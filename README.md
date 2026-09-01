@@ -33,6 +33,17 @@ northsaga.ai/
 │   ├── build-journal.py    Journal pages
 │   └── _homepage-list.html Generated — paste into .install-list in index.html
 │
+├── collectors/             NOT part of the site. The planning-lead collector
+│   │                       that runs on a schedule against council portals.
+│   │                       Python 3 standard library only, plus openssl.
+│   ├── collect.py          Entry point — see collectors/README.md
+│   ├── idox.py             Idox Public Access client
+│   ├── grade.py            Gates/railings relevance scoring
+│   ├── councils.py         Norwich, Broadland, South Norfolk
+│   ├── sheets.py           Google Sheets v4 via service-account JWT
+│   ├── run-daily.sh        Cron wrapper
+│   └── tests/              Offline tests — ./tests/run-all.sh
+│
 ├── css/
 │   ├── tokens.css          ← Every colour, size and space value. Change things HERE.
 │   ├── site.css            Layout and components

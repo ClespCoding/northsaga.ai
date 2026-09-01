@@ -1,0 +1,23 @@
+# Northsaga — planning application collector
+#
+# Install with:  crontab -e     (or drop into /etc/cron.d/northsaga-planning)
+#
+# Runs at 06:12 rather than 06:00 on purpose. Every scraper in the country
+# fires on the hour; arriving twelve minutes late is politer to the councils
+# and less likely to hit their nightly maintenance window.
+#
+# The collector looks back 7 days by default and de-duplicates on application
+# code, so a morning that fails for any reason is repaired by the next run
+# without anyone intervening.
+
+SHELL=/bin/sh
+PATH=/usr/local/bin:/usr/bin:/bin
+MAILTO=hello@northsaga.ai
+GOOGLE_APPLICATION_CREDENTIALS=/etc/northsaga/service-account.json
+
+# min hour dom mon dow  command
+12 6 * * * cd /opt/northsaga/collectors && ./run-daily.sh
+
+# Weekly wider sweep, in case a council back-dates a decision beyond the
+# 7-day window. Sunday 05:40.
+40 5 * * 0 cd /opt/northsaga/collectors && DAYS=30 ./run-daily.sh
