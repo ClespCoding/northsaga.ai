@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>ai.northsaga.planning.broadland</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/sh</string>
+        <string>__COLLECTORS_DIR__/run-daily.sh</string>
+    </array>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>COUNCILS</key>
+        <string>broadland</string>
+        <key>DAYS</key>
+        <string>7</string>
+        <key>GOOGLE_APPLICATION_CREDENTIALS</key>
+        <string>__CREDENTIALS__</string>
+        <key>PATH</key>
+        <string>/usr/local/bin:/usr/bin:/bin</string>
+    </dict>
+
+    <key>WorkingDirectory</key>
+    <string>__COLLECTORS_DIR__</string>
+
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>6</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <!-- Do not fire on login or on reload; this is a scheduled job only. -->
+    <key>RunAtLoad</key>
+    <false/>
+
+    <key>StandardOutPath</key>
+    <string>__COLLECTORS_DIR__/logs/launchd-broadland.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>__COLLECTORS_DIR__/logs/launchd-broadland.err.log</string>
+</dict>
+</plist>
