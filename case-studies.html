@@ -6,6 +6,7 @@
 <title>Case studies — Northsaga</title>
 <meta name="description" content="What Northsaga installed at Broadland Products and Telemechry: the situation before, what went in, what changed, and the number attached to it.">
 
+<link rel="canonical" href="https://northsaga.ai/case-studies">
 <link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/assets/favicon/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png">
@@ -35,28 +36,20 @@
      a failed or disabled script leaves most of the page invisible. -->
 <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 
-<!-- LocalBusiness. address, telephone and openingHours are deliberately absent
-     rather than invented — add them once confirmed. The postcodes in
-     areaServed are UNVERIFIED; check them against the real service area and
-     correct here, in the contact section and in the footer together. -->
+<!-- WebPage on a subpage. Identity lives on the homepage (Organization at
+     https://northsaga.ai/#business). address/telephone/openingHours deliberately
+     absent until confirmed; postcodes UNVERIFIED — correct in schema, contact
+     section and footer together when the service area is confirmed. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "@id": "https://northsaga.ai/#business",
-  "name": "Northsaga",
-  "url": "https://northsaga.ai/",
-  "email": "hello@northsaga.ai",
-  "description": "Installs and maintains AI agents for owner-managed small businesses and trades in Dulwich and West Norwood, south London.",
-  "slogan": "New tools. Old standards.",
-  "areaServed": [
-    { "@type": "Place", "name": "Dulwich, London" },
-    { "@type": "Place", "name": "West Norwood, London" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE21", "postalCodeEnd": "SE21" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE22", "postalCodeEnd": "SE22" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE24", "postalCodeEnd": "SE24" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE27", "postalCodeEnd": "SE27" }
-  ]
+  "@type": "WebPage",
+  "@id": "https://northsaga.ai/case-studies#page",
+  "url": "https://northsaga.ai/case-studies",
+  "name": "Case studies — Northsaga",
+  "isPartOf": { "@id": "https://northsaga.ai/#website" },
+  "about": { "@id": "https://northsaga.ai/#business" },
+  "publisher": { "@id": "https://northsaga.ai/#business" }
 }
 </script>
 </head>

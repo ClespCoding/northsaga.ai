@@ -1,3 +1,8 @@
 User-agent: *
 Allow: /
+
+# AI and search crawlers are welcome — the site is static HTML and ranks on
+# genuinely helpful local-expertise content, not on blocking. The line below
+# is a belt-and-braces index rule; the real gates are sitemap.xml and noindex
+# absence. See BRAND.md for the "namable client or number" claims rule.
 Sitemap: https://northsaga.ai/sitemap.xml

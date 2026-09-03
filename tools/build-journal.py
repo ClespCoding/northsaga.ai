@@ -31,6 +31,88 @@ OUT_DIR = os.path.join(ROOT, "journal")
 INSTALL_PRICE = "£500"
 MAINTAIN_PRICE = "£50"
 
+# Author for schema. George is the founder and writes the copy — the site so far
+# publishes no bylines; once a byline is added, keep this in sync.
+AUTHOR = {
+    "name": "George Astin",
+    "role": "Founder, Northsaga",
+}
+
+
+def article_jsonld(data):
+    """Article + FAQPage + HowTo structured data for the journal page, built
+    from the same cron-jobs.json content the page renders. The FAQ mirrors the
+    three labelled fields (does/why/fails) the readers actually see."""
+    url = f"https://northsaga.ai/journal/{data['slug']}"
+    updated = data["updated"]
+
+    faq_questions = [
+        {
+            "@type": "Question",
+            "name": f"Why does the {job['name'].lower()} job run on a schedule?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": f"{job['does']} {job['why']}",
+            },
+        }
+        for job in data["jobs"]
+    ]
+
+    howto_steps = [
+        {
+            "@type": "HowToStep",
+            "position": i,
+            "name": job["name"],
+            "text": f"{job['expression']} — {job['does']}",
+        }
+        for i, job in enumerate(data["jobs"], 1)
+    ]
+
+    article = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "@id": f"{url}#article",
+        "headline": data["title"],
+        "description": data["standfirst"],
+        "datePublished": updated,
+        "dateModified": updated,
+        "mainEntityOfPage": {"@type": "WebPage", "@id": f"{url}#page"},
+        "author": {
+            "@type": "Person",
+            "name": AUTHOR["name"],
+            "jobTitle": AUTHOR["role"],
+        },
+        "publisher": {"@id": "https://northsaga.ai/#business"},
+        "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": ["h1", ".lede"],
+        },
+    }
+    faq = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "@id": f"{url}#faq",
+        "mainEntity": faq_questions,
+    }
+    howto = {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "@id": f"{url}#howto",
+        "name": data["title"],
+        "description": data["standfirst"],
+        "totalTime": "PT1H",
+        "step": howto_steps,
+    }
+    blocks = [article, faq, howto]
+
+    def dump(obj):
+        import json as _json
+        return _json.dumps(obj, ensure_ascii=False, indent=2)
+
+    return "\n".join(
+        f'<script type="application/ld+json">\n{dump(b)}\n</script>' for b in blocks
+    )
+
 
 def entry(index, job):
     rows = [
@@ -72,6 +154,7 @@ def render(data):
             url=url,
             og_title=html.escape(data["title"]),
             og_description=data["standfirst"],
+            page_jsonld=article_jsonld(data),
         ),
         chrome.BANNER.format(source="assets/data/cron-jobs.json",
                              script="build-journal.py"),

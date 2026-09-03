@@ -25,19 +25,35 @@ FOOTER_NAV = [n for n in NAV if n[2] != "proof"]
 
 EMAIL = "hello@northsaga.ai"
 
-# LocalBusiness, byte-identical to index.html and case-studies.html. The
-# postcodes are UNVERIFIED — see CLAUDE.md. They appear here, in the contact
-# section and in the footer, and must be corrected in all three together.
-JSONLD = """<script type="application/ld+json">
+# Organization identity on the homepage, byte-aligned with index.html. On
+# generated subpages we render a WebPage stub instead (identity stays on the
+# homepage). The postcodes are UNVERIFIED — see CLAUDE.md. They appear in the
+# schema, the contact section and the footer, and must be corrected in all three
+# together.
+ORGANIZATION_JSONLD = """
+<script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
+  "@type": "Organization",
   "@id": "https://northsaga.ai/#business",
   "name": "Northsaga",
   "url": "https://northsaga.ai/",
   "email": "hello@northsaga.ai",
+  "logo": {
+    "@type": "ImageObject",
+    "url": "https://northsaga.ai/assets/logo/northsaga-mark-bone.svg"
+  },
   "description": "Installs and maintains AI agents for owner-managed small businesses and trades in Dulwich and West Norwood, south London.",
   "slogan": "New tools. Old standards.",
+  "sameAs": [
+    "https://github.com/ClespCoding/northsaga.ai"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer service",
+    "email": "hello@northsaga.ai",
+    "availableLanguage": "English"
+  },
   "areaServed": [
     { "@type": "Place", "name": "Dulwich, London" },
     { "@type": "Place", "name": "West Norwood, London" },
@@ -47,12 +63,34 @@ JSONLD = """<script type="application/ld+json">
     { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE27", "postalCodeEnd": "SE27" }
   ]
 }
-</script>"""
+</script>
+"""
+
+WEBPAGE_JSONLD = """
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": "{url}#page",
+  "url": "{url}",
+  "name": "{title}",
+  "isPartOf": { "@id": "https://northsaga.ai/#website" },
+  "about": { "@id": "https://northsaga.ai/#business" },
+  "publisher": { "@id": "https://northsaga.ai/#business" }
+}
+</script>
+"""
 
 
-def head(title, description, url, og_title, og_description, og_type="article"):
+def head(title, description, url, og_title, og_description, og_type="article",
+         page_jsonld=None):
     """The <head> block. Identical to the hand-written pages apart from the
-    extra css/work.css link, which only the generated pages need."""
+    extra css/work.css link, which only the generated pages need.
+    `page_jsonld` is a raw JSON-LD <script> string appended after the
+    WebPage block (e.g. an Article on the journal)."""
+    schema = WEBPAGE_JSONLD.replace("{url}", url).replace("{title}", title)
+    if page_jsonld:
+        schema += "\n" + page_jsonld
     return f"""<!DOCTYPE html>
 <html lang="en-GB">
 <head>
@@ -93,11 +131,13 @@ def head(title, description, url, og_title, og_description, og_type="article"):
      a failed or disabled script leaves most of the page invisible. -->
 <noscript><style>.reveal {{ opacity: 1; transform: none; }}</style></noscript>
 
-<!-- LocalBusiness. address, telephone and openingHours are deliberately absent
-     rather than invented — add them once confirmed. The postcodes in
-     areaServed are UNVERIFIED; check them against the real service area and
-     correct here, in the contact section and in the footer together. -->
-{JSONLD}
+<!-- WebPage stub. Identity lives on the homepage (Organization at
+     https://northsaga.ai/#business). address, telephone and openingHours are
+     deliberately absent rather than invented — add them once confirmed. The
+     postcodes in areaServed are UNVERIFIED; check them against the real
+     service area and correct here, in the contact section and in the footer
+     together. -->
+{schema}
 </head>
 <body>
 """

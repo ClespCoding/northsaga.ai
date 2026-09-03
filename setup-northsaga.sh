@@ -48,6 +48,23 @@ one).
 live on `main`. `.gitignore` gained `__pycache__/` in the same commit. This
 handoff file itself is deliberately left untracked.
 
+**Then a second pass, same day, superseded some of it.** Read this list before
+trusting anything below:
+
+- `work/` is now **`agents/`**, and `tools/build-work-pages.py` is now
+  `tools/build-agent-pages.py`. `vercel.json` carries a permanent redirect from
+  `/work/:slug`. `css/work.css` and the `.work-*` class names were **not**
+  renamed — they also serve the journal, and renaming them buys nothing.
+- **Agent 02, `quote-follow-up`, exists.** Five to go, not six.
+- **The node grammar gained an icon.** A node is now
+  `(col, row, ROLE, 'l1|l2', icon, trigger)` — the fifth element used to be the
+  trigger and is now the icon. Glyphs live in `tools/icons.py`.
+- **Schematics fit the viewport by default** and zoom via `js/schematic.js`.
+  They no longer keep their intrinsic width and scroll. The judgement call
+  below about the drawing at 390px is therefore closed.
+- Feedback wires now enter their target from the left through the column
+  gutter, not from below through whatever box happens to be underneath.
+
 ## The one thing that surprised us
 
 **The brief assumed seven workflow pages, `tools/build-work-pages.py`,
@@ -867,6 +884,7 @@ cat > 'case-studies.html' <<'NSEOF'
 <title>Case studies — Northsaga</title>
 <meta name="description" content="What Northsaga installed at Broadland Products and Telemechry: the situation before, what went in, what changed, and the number attached to it.">
 
+<link rel="canonical" href="https://northsaga.ai/case-studies">
 <link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/assets/favicon/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png">
@@ -896,28 +914,20 @@ cat > 'case-studies.html' <<'NSEOF'
      a failed or disabled script leaves most of the page invisible. -->
 <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 
-<!-- LocalBusiness. address, telephone and openingHours are deliberately absent
-     rather than invented — add them once confirmed. The postcodes in
-     areaServed are UNVERIFIED; check them against the real service area and
-     correct here, in the contact section and in the footer together. -->
+<!-- WebPage on a subpage. Identity lives on the homepage (Organization at
+     https://northsaga.ai/#business). address/telephone/openingHours deliberately
+     absent until confirmed; postcodes UNVERIFIED — correct in schema, contact
+     section and footer together when the service area is confirmed. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "@id": "https://northsaga.ai/#business",
-  "name": "Northsaga",
-  "url": "https://northsaga.ai/",
-  "email": "hello@northsaga.ai",
-  "description": "Installs and maintains AI agents for owner-managed small businesses and trades in Dulwich and West Norwood, south London.",
-  "slogan": "New tools. Old standards.",
-  "areaServed": [
-    { "@type": "Place", "name": "Dulwich, London" },
-    { "@type": "Place", "name": "West Norwood, London" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE21", "postalCodeEnd": "SE21" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE22", "postalCodeEnd": "SE22" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE24", "postalCodeEnd": "SE24" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE27", "postalCodeEnd": "SE27" }
-  ]
+  "@type": "WebPage",
+  "@id": "https://northsaga.ai/case-studies#page",
+  "url": "https://northsaga.ai/case-studies",
+  "name": "Case studies — Northsaga",
+  "isPartOf": { "@id": "https://northsaga.ai/#website" },
+  "about": { "@id": "https://northsaga.ai/#business" },
+  "publisher": { "@id": "https://northsaga.ai/#business" }
 }
 </script>
 </head>
@@ -1129,8 +1139,9 @@ cat > 'index.html' <<'NSEOF'
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Northsaga — AI agents installed into small businesses in Dulwich and West Norwood</title>
-<meta name="description" content="We install AI agents into small businesses and trades around Dulwich and West Norwood, then maintain them. Fixed price to install, fixed price to keep running. Built the old way. Runs the new way.">
+<meta name="description" content="We install AI agents into small businesses and trades around Dulwich and West Norwood, then maintain them. Fixed price to install, fixed price to keep. Built the old way. Runs the new way.">
 
+<link rel="canonical" href="https://northsaga.ai/">
 <link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/assets/favicon/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png">
@@ -1160,20 +1171,36 @@ cat > 'index.html' <<'NSEOF'
      a failed or disabled script leaves most of the page invisible. -->
 <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 
-<!-- LocalBusiness. address, telephone and openingHours are deliberately absent
-     rather than invented — add them once confirmed. The postcodes in
-     areaServed are UNVERIFIED; check them against the real service area and
-     correct here, in the contact section and in the footer together. -->
+<!-- Organization identity. address, telephone and openingHours are deliberately
+     absent rather than invented — add them once confirmed, then this can be a
+     LocalBusiness again. Tree: Organization (identity) -> WebSite (searchable) +
+     areaServed. sameAs only lists profiles that exist; GitHub is the only public
+     one today. The postcodes in areaServed are UNVERIFIED; check them against
+     the real service area and correct in the schema, contact section and footer
+     together. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
+  "@type": "Organization",
   "@id": "https://northsaga.ai/#business",
   "name": "Northsaga",
   "url": "https://northsaga.ai/",
   "email": "hello@northsaga.ai",
+  "logo": {
+    "@type": "ImageObject",
+    "url": "https://northsaga.ai/assets/logo/northsaga-mark-bone.svg"
+  },
   "description": "Installs and maintains AI agents for owner-managed small businesses and trades in Dulwich and West Norwood, south London.",
   "slogan": "New tools. Old standards.",
+  "sameAs": [
+    "https://github.com/ClespCoding/northsaga.ai"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer service",
+    "email": "hello@northsaga.ai",
+    "availableLanguage": "English"
+  },
   "areaServed": [
     { "@type": "Place", "name": "Dulwich, London" },
     { "@type": "Place", "name": "West Norwood, London" },
@@ -1182,6 +1209,16 @@ cat > 'index.html' <<'NSEOF'
     { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE24", "postalCodeEnd": "SE24" },
     { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE27", "postalCodeEnd": "SE27" }
   ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://northsaga.ai/#website",
+  "url": "https://northsaga.ai/",
+  "name": "Northsaga",
+  "publisher": { "@id": "https://northsaga.ai/#business" }
 }
 </script>
 </head>
@@ -1531,6 +1568,26 @@ cat > 'index.html' <<'NSEOF'
 </html>
 NSEOF
 
+cat > 'llms.txt' <<'NSEOF'
+# Northsaga
+
+> New tools. Old standards.
+
+Northsaga installs and maintains AI agents for owner-managed small businesses and trades in Dulwich and West Norwood, south London. Fixed price to install (£500 per agent), fixed price to maintain (£50 per agent per month). Every account is opened in the client's name, and clients can take the whole installation in-house on request.
+
+Key pages:
+
+- [Home](https://northsaga.ai/): what Northsaga does, what it costs, the six agents, the maintenance ledger
+- [Case studies](https://northsaga.ai/case-studies): named firms, named numbers
+- [Answering the phone agent](https://northsaga.ai/agents/answering-the-phone): voice agent + missed-call text-back, £500 installed / £50 a month maintained
+- [Quote follow-up agent](https://northsaga.ai/agents/quote-follow-up): chasing quotes on day three, seven and fourteen, £500 installed / £50 a month maintained
+- [The best cron jobs to set up for AI agents](https://northsaga.ai/journal/best-cron-jobs-for-ai-agents): twelve schedules Northsaga puts on every install, what each is for, and what breaks without it
+
+Contact: hello@northsaga.ai
+
+Optional standard: [llms.txt](https://llmstxt.org/)
+NSEOF
+
 cat > 'robots.txt' <<'NSEOF'
 User-agent: *
 Allow: /
@@ -1554,11 +1611,31 @@ NSEOF
 cat > 'sitemap.xml' <<'NSEOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://northsaga.ai/</loc><priority>1.0</priority></url>
-  <url><loc>https://northsaga.ai/case-studies</loc><priority>0.8</priority></url>
-  <url><loc>https://northsaga.ai/agents/answering-the-phone</loc><priority>0.8</priority></url>
-  <url><loc>https://northsaga.ai/agents/quote-follow-up</loc><priority>0.8</priority></url>
-  <url><loc>https://northsaga.ai/journal/best-cron-jobs-for-ai-agents</loc><priority>0.7</priority></url>
+  <url>
+    <loc>https://northsaga.ai/</loc>
+    <lastmod>2026-08-06</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://northsaga.ai/case-studies</loc>
+    <lastmod>2026-08-06</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://northsaga.ai/agents/answering-the-phone</loc>
+    <lastmod>2026-08-06</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://northsaga.ai/agents/quote-follow-up</loc>
+    <lastmod>2026-08-06</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://northsaga.ai/journal/best-cron-jobs-for-ai-agents</loc>
+    <lastmod>2026-08-06</lastmod>
+    <priority>0.7</priority>
+  </url>
 </urlset>
 NSEOF
 
@@ -1637,30 +1714,26 @@ cat > 'agents/answering-the-phone.html' <<'NSEOF'
      a failed or disabled script leaves most of the page invisible. -->
 <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 
-<!-- LocalBusiness. address, telephone and openingHours are deliberately absent
-     rather than invented — add them once confirmed. The postcodes in
-     areaServed are UNVERIFIED; check them against the real service area and
-     correct here, in the contact section and in the footer together. -->
+<!-- WebPage stub. Identity lives on the homepage (Organization at
+     https://northsaga.ai/#business). address, telephone and openingHours are
+     deliberately absent rather than invented — add them once confirmed. The
+     postcodes in areaServed are UNVERIFIED; check them against the real
+     service area and correct here, in the contact section and in the footer
+     together. -->
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "@id": "https://northsaga.ai/#business",
-  "name": "Northsaga",
-  "url": "https://northsaga.ai/",
-  "email": "hello@northsaga.ai",
-  "description": "Installs and maintains AI agents for owner-managed small businesses and trades in Dulwich and West Norwood, south London.",
-  "slogan": "New tools. Old standards.",
-  "areaServed": [
-    { "@type": "Place", "name": "Dulwich, London" },
-    { "@type": "Place", "name": "West Norwood, London" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE21", "postalCodeEnd": "SE21" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE22", "postalCodeEnd": "SE22" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE24", "postalCodeEnd": "SE24" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE27", "postalCodeEnd": "SE27" }
-  ]
+  "@type": "WebPage",
+  "@id": "https://northsaga.ai/agents/answering-the-phone#page",
+  "url": "https://northsaga.ai/agents/answering-the-phone",
+  "name": "Answering the phone — Northsaga",
+  "isPartOf": { "@id": "https://northsaga.ai/#website" },
+  "about": { "@id": "https://northsaga.ai/#business" },
+  "publisher": { "@id": "https://northsaga.ai/#business" }
 }
 </script>
+
 </head>
 <body>
 <!-- GENERATED FILE — do not hand-edit. Source: tools/build-agent-pages.py
@@ -2184,30 +2257,26 @@ cat > 'agents/quote-follow-up.html' <<'NSEOF'
      a failed or disabled script leaves most of the page invisible. -->
 <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 
-<!-- LocalBusiness. address, telephone and openingHours are deliberately absent
-     rather than invented — add them once confirmed. The postcodes in
-     areaServed are UNVERIFIED; check them against the real service area and
-     correct here, in the contact section and in the footer together. -->
+<!-- WebPage stub. Identity lives on the homepage (Organization at
+     https://northsaga.ai/#business). address, telephone and openingHours are
+     deliberately absent rather than invented — add them once confirmed. The
+     postcodes in areaServed are UNVERIFIED; check them against the real
+     service area and correct here, in the contact section and in the footer
+     together. -->
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "@id": "https://northsaga.ai/#business",
-  "name": "Northsaga",
-  "url": "https://northsaga.ai/",
-  "email": "hello@northsaga.ai",
-  "description": "Installs and maintains AI agents for owner-managed small businesses and trades in Dulwich and West Norwood, south London.",
-  "slogan": "New tools. Old standards.",
-  "areaServed": [
-    { "@type": "Place", "name": "Dulwich, London" },
-    { "@type": "Place", "name": "West Norwood, London" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE21", "postalCodeEnd": "SE21" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE22", "postalCodeEnd": "SE22" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE24", "postalCodeEnd": "SE24" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE27", "postalCodeEnd": "SE27" }
-  ]
+  "@type": "WebPage",
+  "@id": "https://northsaga.ai/agents/quote-follow-up#page",
+  "url": "https://northsaga.ai/agents/quote-follow-up",
+  "name": "Quote follow-up — Northsaga",
+  "isPartOf": { "@id": "https://northsaga.ai/#website" },
+  "about": { "@id": "https://northsaga.ai/#business" },
+  "publisher": { "@id": "https://northsaga.ai/#business" }
 }
 </script>
+
 </head>
 <body>
 <!-- GENERATED FILE — do not hand-edit. Source: tools/build-agent-pages.py
@@ -2709,7 +2778,7 @@ cat > 'assets/data/cron-jobs.json' <<'NSEOF'
 {
   "slug": "best-cron-jobs-for-ai-agents",
   "title": "The best cron jobs to set up for AI agents",
-  "standfirst": "An agent that only runs when something pokes it will fail quietly. These are the schedules we put on every install, what each one is for, and what breaks when it is missing.",
+  "standfirst": "An agent that only runs when something pokes it will fail quietly. The schedules we put on every install, what each is for, and what breaks when it is missing.",
   "updated": "2026-08-06",
   "intro": [
     "Most of an agent's work is triggered. A call comes in, a form is filled, an email arrives, and something happens. That part is easy to demonstrate and easy to sell.",
@@ -4136,7 +4205,7 @@ cat > 'journal/best-cron-jobs-for-ai-agents.html' <<'NSEOF'
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The best cron jobs to set up for AI agents — Northsaga</title>
-<meta name="description" content="An agent that only runs when something pokes it will fail quietly. These are the schedules we put on every install, what each one is for, and what breaks when it is missing.">
+<meta name="description" content="An agent that only runs when something pokes it will fail quietly. The schedules we put on every install, what each is for, and what breaks when it is missing.">
 
 <link rel="canonical" href="https://northsaga.ai/journal/best-cron-jobs-for-ai-agents">
 
@@ -4147,7 +4216,7 @@ cat > 'journal/best-cron-jobs-for-ai-agents.html' <<'NSEOF'
 <meta name="theme-color" content="#0E1A24">
 
 <meta property="og:title" content="The best cron jobs to set up for AI agents">
-<meta property="og:description" content="An agent that only runs when something pokes it will fail quietly. These are the schedules we put on every install, what each one is for, and what breaks when it is missing.">
+<meta property="og:description" content="An agent that only runs when something pokes it will fail quietly. The schedules we put on every install, what each is for, and what breaks when it is missing.">
 <meta property="og:type" content="article">
 <meta property="og:url" content="https://northsaga.ai/journal/best-cron-jobs-for-ai-agents">
 <meta property="og:image" content="https://northsaga.ai/assets/og-image.png">
@@ -4155,7 +4224,7 @@ cat > 'journal/best-cron-jobs-for-ai-agents.html' <<'NSEOF'
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="The best cron jobs to set up for AI agents">
-<meta name="twitter:description" content="An agent that only runs when something pokes it will fail quietly. These are the schedules we put on every install, what each one is for, and what breaks when it is missing.">
+<meta name="twitter:description" content="An agent that only runs when something pokes it will fail quietly. The schedules we put on every install, what each is for, and what breaks when it is missing.">
 <meta name="twitter:image" content="https://northsaga.ai/assets/og-image.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -4170,27 +4239,242 @@ cat > 'journal/best-cron-jobs-for-ai-agents.html' <<'NSEOF'
      a failed or disabled script leaves most of the page invisible. -->
 <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 
-<!-- LocalBusiness. address, telephone and openingHours are deliberately absent
-     rather than invented — add them once confirmed. The postcodes in
-     areaServed are UNVERIFIED; check them against the real service area and
-     correct here, in the contact section and in the footer together. -->
+<!-- WebPage stub. Identity lives on the homepage (Organization at
+     https://northsaga.ai/#business). address, telephone and openingHours are
+     deliberately absent rather than invented — add them once confirmed. The
+     postcodes in areaServed are UNVERIFIED; check them against the real
+     service area and correct here, in the contact section and in the footer
+     together. -->
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "@id": "https://northsaga.ai/#business",
-  "name": "Northsaga",
-  "url": "https://northsaga.ai/",
-  "email": "hello@northsaga.ai",
-  "description": "Installs and maintains AI agents for owner-managed small businesses and trades in Dulwich and West Norwood, south London.",
-  "slogan": "New tools. Old standards.",
-  "areaServed": [
-    { "@type": "Place", "name": "Dulwich, London" },
-    { "@type": "Place", "name": "West Norwood, London" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE21", "postalCodeEnd": "SE21" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE22", "postalCodeEnd": "SE22" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE24", "postalCodeEnd": "SE24" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE27", "postalCodeEnd": "SE27" }
+  "@type": "WebPage",
+  "@id": "https://northsaga.ai/journal/best-cron-jobs-for-ai-agents#page",
+  "url": "https://northsaga.ai/journal/best-cron-jobs-for-ai-agents",
+  "name": "The best cron jobs to set up for AI agents — Northsaga",
+  "isPartOf": { "@id": "https://northsaga.ai/#website" },
+  "about": { "@id": "https://northsaga.ai/#business" },
+  "publisher": { "@id": "https://northsaga.ai/#business" }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "@id": "https://northsaga.ai/journal/best-cron-jobs-for-ai-agents#article",
+  "headline": "The best cron jobs to set up for AI agents",
+  "description": "An agent that only runs when something pokes it will fail quietly. The schedules we put on every install, what each is for, and what breaks when it is missing.",
+  "datePublished": "2026-08-06",
+  "dateModified": "2026-08-06",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://northsaga.ai/journal/best-cron-jobs-for-ai-agents#page"
+  },
+  "author": {
+    "@type": "Person",
+    "name": "George Astin",
+    "jobTitle": "Founder, Northsaga"
+  },
+  "publisher": {
+    "@id": "https://northsaga.ai/#business"
+  },
+  "speakable": {
+    "@type": "SpeakableSpecification",
+    "cssSelector": [
+      "h1",
+      ".lede"
+    ]
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "@id": "https://northsaga.ai/journal/best-cron-jobs-for-ai-agents#faq",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Why does the webhook-miss sweep job run on a schedule?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Asks the source system directly for anything created in the last hour, and compares it against what the agent actually received. Webhooks are delivered on a best-effort basis. Providers drop them during their own incidents, and a retry that arrives while your container is restarting is gone for good."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does the queue drain and retry job run on a schedule?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Picks up anything that failed on its first attempt — a timed-out API call, a rate-limited send — and retries it with a longer gap each time. Gives up after five attempts and moves the item to a dead-letter table. Third-party APIs fail for a minute at a time, constantly. Retrying inside the original request just makes the original request slow and then fail anyway."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does the token and credential refresh job run on a schedule?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Refreshes OAuth tokens before they expire rather than after, and checks the expiry date on anything that cannot be refreshed automatically. Refresh tokens expire on a schedule you do not control, and some providers invalidate them when a password changes. Refreshing on a clock means the failure happens while somebody is awake."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does the heartbeat job run on a schedule?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sends a ping to an external monitor. If the monitor stops hearing from it for ten minutes, it alerts a person. This is the one job that has to be watched from outside the box. An agent cannot tell you it is down, because it is down."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does the health check on the things it depends on job run on a schedule?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Checks that the database answers, the sheet is writable, and each API returns something sensible to a cheap read-only call. A heartbeat proves the agent is running. It does not prove the agent can do anything. These are different failures and they need different checks."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does the daily digest job run on a schedule?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Sends one email or text before the working day: what came in, what the agent handled, and what needs a person. It is the owner's daily proof the thing is earning its keep, and it is how they notice a problem the monitoring did not think to look for."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does the weekly summary job run on a schedule?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Monday morning. The week's totals against the week before: calls answered, quotes chased, reviews asked for, jobs booked. Daily numbers are noise. Weekly numbers are a trend, and a trend is what tells you whether the agent still fits how the business works now."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does the backup and export job run on a schedule?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Dumps the database and copies it, plus the n8n workflow definitions and the compose file, somewhere that is not the same machine. A backup on the host is not a backup. It is a second copy of the thing that is about to fail."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does the log rotation and pruning job run on a schedule?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Compresses last week's logs, deletes anything older than the retention period, and prunes unused Docker images and volumes. Agents are chatty. Verbose logging plus a few months is how a small VPS runs out of disk."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does the cost and usage check against the budget job run on a schedule?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Adds up the hour's model and API spend, compares it against a daily ceiling, and warns at 80 per cent. At 100 per cent it stops non-urgent work and leaves the live paths running. A loop that retries a failing call is a loop that spends money. Usage-based pricing turns a bug into an invoice."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does the scrapes, with jitter job run on a schedule?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Runs the daily competitor and property pull. The job starts with a random pause of up to fifteen minutes — <code>sleep $((RANDOM % 900))</code> in front of the command — so the pull lands somewhere in a window rather than on a stroke. Cron has no jitter of its own, so everybody's overnight job fires at midnight or on the hour, on the second. That is both rude to whoever you are pulling from and the easiest possible pattern to block."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does the stale-record cleanup job run on a schedule?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Closes off anything the agent left half-finished: quotes still being chased after ninety days, jobs marked pending with no activity for a fortnight, follow-up sequences whose contact replied on another channel. Agents create records and are much worse at deciding when a record is finished. The pile grows until the useful ones are hard to see."
+      }
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "@id": "https://northsaga.ai/journal/best-cron-jobs-for-ai-agents#howto",
+  "name": "The best cron jobs to set up for AI agents",
+  "description": "An agent that only runs when something pokes it will fail quietly. The schedules we put on every install, what each is for, and what breaks when it is missing.",
+  "totalTime": "PT1H",
+  "step": [
+    {
+      "@type": "HowToStep",
+      "position": 1,
+      "name": "Webhook-miss sweep",
+      "text": "*/5 * * * * — Asks the source system directly for anything created in the last hour, and compares it against what the agent actually received."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 2,
+      "name": "Queue drain and retry",
+      "text": "*/10 * * * * — Picks up anything that failed on its first attempt — a timed-out API call, a rate-limited send — and retries it with a longer gap each time. Gives up after five attempts and moves the item to a dead-letter table."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 3,
+      "name": "Token and credential refresh",
+      "text": "17 */6 * * * — Refreshes OAuth tokens before they expire rather than after, and checks the expiry date on anything that cannot be refreshed automatically."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 4,
+      "name": "Heartbeat",
+      "text": "*/2 * * * * — Sends a ping to an external monitor. If the monitor stops hearing from it for ten minutes, it alerts a person."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 5,
+      "name": "Health check on the things it depends on",
+      "text": "*/15 * * * * — Checks that the database answers, the sheet is writable, and each API returns something sensible to a cheap read-only call."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 6,
+      "name": "Daily digest",
+      "text": "0 7 * * 1-5 — Sends one email or text before the working day: what came in, what the agent handled, and what needs a person."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 7,
+      "name": "Weekly summary",
+      "text": "0 7 * * 1 — Monday morning. The week's totals against the week before: calls answered, quotes chased, reviews asked for, jobs booked."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 8,
+      "name": "Backup and export",
+      "text": "30 2 * * * — Dumps the database and copies it, plus the n8n workflow definitions and the compose file, somewhere that is not the same machine."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 9,
+      "name": "Log rotation and pruning",
+      "text": "0 3 * * 0 — Compresses last week's logs, deletes anything older than the retention period, and prunes unused Docker images and volumes."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 10,
+      "name": "Cost and usage check against the budget",
+      "text": "0 * * * * — Adds up the hour's model and API spend, compares it against a daily ceiling, and warns at 80 per cent. At 100 per cent it stops non-urgent work and leaves the live paths running."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 11,
+      "name": "Scrapes, with jitter",
+      "text": "13 4 * * * — Runs the daily competitor and property pull. The job starts with a random pause of up to fifteen minutes — <code>sleep $((RANDOM % 900))</code> in front of the command — so the pull lands somewhere in a window rather than on a stroke."
+    },
+    {
+      "@type": "HowToStep",
+      "position": 12,
+      "name": "Stale-record cleanup",
+      "text": "40 3 * * * — Closes off anything the agent left half-finished: quotes still being chased after ninety days, jobs marked pending with no activity for a fortnight, follow-up sequences whose contact replied on another channel."
+    }
   ]
 }
 </script>
@@ -4241,7 +4525,7 @@ cat > 'journal/best-cron-jobs-for-ai-agents.html' <<'NSEOF'
   <div class="container">
     <p class="eyebrow">Writing</p>
     <h1 class="display">The best cron jobs to set up for AI agents</h1>
-    <p class="lede" style="margin-top:var(--space-3);">An agent that only runs when something pokes it will fail quietly. These are the schedules we put on every install, what each one is for, and what breaks when it is missing.</p>
+    <p class="lede" style="margin-top:var(--space-3);">An agent that only runs when something pokes it will fail quietly. The schedules we put on every install, what each is for, and what breaks when it is missing.</p>
     <p class="article-meta">Updated 2026-08-06</p>
 
     <div class="prose" style="margin-top:var(--space-5);">
@@ -5812,6 +6096,88 @@ OUT_DIR = os.path.join(ROOT, "journal")
 INSTALL_PRICE = "£500"
 MAINTAIN_PRICE = "£50"
 
+# Author for schema. George is the founder and writes the copy — the site so far
+# publishes no bylines; once a byline is added, keep this in sync.
+AUTHOR = {
+    "name": "George Astin",
+    "role": "Founder, Northsaga",
+}
+
+
+def article_jsonld(data):
+    """Article + FAQPage + HowTo structured data for the journal page, built
+    from the same cron-jobs.json content the page renders. The FAQ mirrors the
+    three labelled fields (does/why/fails) the readers actually see."""
+    url = f"https://northsaga.ai/journal/{data['slug']}"
+    updated = data["updated"]
+
+    faq_questions = [
+        {
+            "@type": "Question",
+            "name": f"Why does the {job['name'].lower()} job run on a schedule?",
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": f"{job['does']} {job['why']}",
+            },
+        }
+        for job in data["jobs"]
+    ]
+
+    howto_steps = [
+        {
+            "@type": "HowToStep",
+            "position": i,
+            "name": job["name"],
+            "text": f"{job['expression']} — {job['does']}",
+        }
+        for i, job in enumerate(data["jobs"], 1)
+    ]
+
+    article = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "@id": f"{url}#article",
+        "headline": data["title"],
+        "description": data["standfirst"],
+        "datePublished": updated,
+        "dateModified": updated,
+        "mainEntityOfPage": {"@type": "WebPage", "@id": f"{url}#page"},
+        "author": {
+            "@type": "Person",
+            "name": AUTHOR["name"],
+            "jobTitle": AUTHOR["role"],
+        },
+        "publisher": {"@id": "https://northsaga.ai/#business"},
+        "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": ["h1", ".lede"],
+        },
+    }
+    faq = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "@id": f"{url}#faq",
+        "mainEntity": faq_questions,
+    }
+    howto = {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "@id": f"{url}#howto",
+        "name": data["title"],
+        "description": data["standfirst"],
+        "totalTime": "PT1H",
+        "step": howto_steps,
+    }
+    blocks = [article, faq, howto]
+
+    def dump(obj):
+        import json as _json
+        return _json.dumps(obj, ensure_ascii=False, indent=2)
+
+    return "\n".join(
+        f'<script type="application/ld+json">\n{dump(b)}\n</script>' for b in blocks
+    )
+
 
 def entry(index, job):
     rows = [
@@ -5853,6 +6219,7 @@ def render(data):
             url=url,
             og_title=html.escape(data["title"]),
             og_description=data["standfirst"],
+            page_jsonld=article_jsonld(data),
         ),
         chrome.BANNER.format(source="assets/data/cron-jobs.json",
                              script="build-journal.py"),
@@ -5966,19 +6333,35 @@ FOOTER_NAV = [n for n in NAV if n[2] != "proof"]
 
 EMAIL = "hello@northsaga.ai"
 
-# LocalBusiness, byte-identical to index.html and case-studies.html. The
-# postcodes are UNVERIFIED — see CLAUDE.md. They appear here, in the contact
-# section and in the footer, and must be corrected in all three together.
-JSONLD = """<script type="application/ld+json">
+# Organization identity on the homepage, byte-aligned with index.html. On
+# generated subpages we render a WebPage stub instead (identity stays on the
+# homepage). The postcodes are UNVERIFIED — see CLAUDE.md. They appear in the
+# schema, the contact section and the footer, and must be corrected in all three
+# together.
+ORGANIZATION_JSONLD = """
+<script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
+  "@type": "Organization",
   "@id": "https://northsaga.ai/#business",
   "name": "Northsaga",
   "url": "https://northsaga.ai/",
   "email": "hello@northsaga.ai",
+  "logo": {
+    "@type": "ImageObject",
+    "url": "https://northsaga.ai/assets/logo/northsaga-mark-bone.svg"
+  },
   "description": "Installs and maintains AI agents for owner-managed small businesses and trades in Dulwich and West Norwood, south London.",
   "slogan": "New tools. Old standards.",
+  "sameAs": [
+    "https://github.com/ClespCoding/northsaga.ai"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer service",
+    "email": "hello@northsaga.ai",
+    "availableLanguage": "English"
+  },
   "areaServed": [
     { "@type": "Place", "name": "Dulwich, London" },
     { "@type": "Place", "name": "West Norwood, London" },
@@ -5988,12 +6371,34 @@ JSONLD = """<script type="application/ld+json">
     { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE27", "postalCodeEnd": "SE27" }
   ]
 }
-</script>"""
+</script>
+"""
+
+WEBPAGE_JSONLD = """
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "@id": "{url}#page",
+  "url": "{url}",
+  "name": "{title}",
+  "isPartOf": { "@id": "https://northsaga.ai/#website" },
+  "about": { "@id": "https://northsaga.ai/#business" },
+  "publisher": { "@id": "https://northsaga.ai/#business" }
+}
+</script>
+"""
 
 
-def head(title, description, url, og_title, og_description, og_type="article"):
+def head(title, description, url, og_title, og_description, og_type="article",
+         page_jsonld=None):
     """The <head> block. Identical to the hand-written pages apart from the
-    extra css/work.css link, which only the generated pages need."""
+    extra css/work.css link, which only the generated pages need.
+    `page_jsonld` is a raw JSON-LD <script> string appended after the
+    WebPage block (e.g. an Article on the journal)."""
+    schema = WEBPAGE_JSONLD.replace("{url}", url).replace("{title}", title)
+    if page_jsonld:
+        schema += "\n" + page_jsonld
     return f"""<!DOCTYPE html>
 <html lang="en-GB">
 <head>
@@ -6034,11 +6439,13 @@ def head(title, description, url, og_title, og_description, og_type="article"):
      a failed or disabled script leaves most of the page invisible. -->
 <noscript><style>.reveal {{ opacity: 1; transform: none; }}</style></noscript>
 
-<!-- LocalBusiness. address, telephone and openingHours are deliberately absent
-     rather than invented — add them once confirmed. The postcodes in
-     areaServed are UNVERIFIED; check them against the real service area and
-     correct here, in the contact section and in the footer together. -->
-{JSONLD}
+<!-- WebPage stub. Identity lives on the homepage (Organization at
+     https://northsaga.ai/#business). address, telephone and openingHours are
+     deliberately absent rather than invented — add them once confirmed. The
+     postcodes in areaServed are UNVERIFIED; check them against the real
+     service area and correct here, in the contact section and in the footer
+     together. -->
+{schema}
 </head>
 <body>
 """
@@ -7502,6 +7909,6 @@ NSEOF
 chmod +x tools/*.py 2>/dev/null || true
 
 echo "Northsaga installed into $DEST"
-echo "  33 text files, 5 binary assets"
+echo "  34 text files, 5 binary assets"
 echo
 echo "  cd $DEST && python3 -m http.server 8000"

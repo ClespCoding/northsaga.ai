@@ -47,6 +47,7 @@ northsaga.ai/
     │   └── cron-jobs.json  The journal article's content. Edit this, not the HTML.
     ├── og-image.svg         Source for the share card
     ├── og-image.png         Generated — see note below
+    ├── llms.txt              Agentic-discovery file (llmstxt.org/ directory style)
     ├── logo/
     │   ├── northsaga-mark-bone.svg      Mark, light — default
     │   ├── northsaga-mark-ink.svg       Mark, dark — for paper

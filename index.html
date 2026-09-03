@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Northsaga — AI agents installed into small businesses in Dulwich and West Norwood</title>
-<meta name="description" content="We install AI agents into small businesses and trades around Dulwich and West Norwood, then maintain them. Fixed price to install, fixed price to keep running. Built the old way. Runs the new way.">
+<meta name="description" content="We install AI agents into small businesses and trades around Dulwich and West Norwood, then maintain them. Fixed price to install, fixed price to keep. Built the old way. Runs the new way.">
 
+<link rel="canonical" href="https://northsaga.ai/">
 <link rel="icon" href="/assets/favicon/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/assets/favicon/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/favicon/apple-touch-icon.png">
@@ -35,20 +36,36 @@
      a failed or disabled script leaves most of the page invisible. -->
 <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 
-<!-- LocalBusiness. address, telephone and openingHours are deliberately absent
-     rather than invented — add them once confirmed. The postcodes in
-     areaServed are UNVERIFIED; check them against the real service area and
-     correct here, in the contact section and in the footer together. -->
+<!-- Organization identity. address, telephone and openingHours are deliberately
+     absent rather than invented — add them once confirmed, then this can be a
+     LocalBusiness again. Tree: Organization (identity) -> WebSite (searchable) +
+     areaServed. sameAs only lists profiles that exist; GitHub is the only public
+     one today. The postcodes in areaServed are UNVERIFIED; check them against
+     the real service area and correct in the schema, contact section and footer
+     together. -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
+  "@type": "Organization",
   "@id": "https://northsaga.ai/#business",
   "name": "Northsaga",
   "url": "https://northsaga.ai/",
   "email": "hello@northsaga.ai",
+  "logo": {
+    "@type": "ImageObject",
+    "url": "https://northsaga.ai/assets/logo/northsaga-mark-bone.svg"
+  },
   "description": "Installs and maintains AI agents for owner-managed small businesses and trades in Dulwich and West Norwood, south London.",
   "slogan": "New tools. Old standards.",
+  "sameAs": [
+    "https://github.com/ClespCoding/northsaga.ai"
+  ],
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer service",
+    "email": "hello@northsaga.ai",
+    "availableLanguage": "English"
+  },
   "areaServed": [
     { "@type": "Place", "name": "Dulwich, London" },
     { "@type": "Place", "name": "West Norwood, London" },
@@ -57,6 +74,16 @@
     { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE24", "postalCodeEnd": "SE24" },
     { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE27", "postalCodeEnd": "SE27" }
   ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "@id": "https://northsaga.ai/#website",
+  "url": "https://northsaga.ai/",
+  "name": "Northsaga",
+  "publisher": { "@id": "https://northsaga.ai/#business" }
 }
 </script>
 </head>

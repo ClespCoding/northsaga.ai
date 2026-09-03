@@ -1,0 +1,17 @@
+# Northsaga
+
+> New tools. Old standards.
+
+Northsaga installs and maintains AI agents for owner-managed small businesses and trades in Dulwich and West Norwood, south London. Fixed price to install (£500 per agent), fixed price to maintain (£50 per agent per month). Every account is opened in the client's name, and clients can take the whole installation in-house on request.
+
+Key pages:
+
+- [Home](https://northsaga.ai/): what Northsaga does, what it costs, the six agents, the maintenance ledger
+- [Case studies](https://northsaga.ai/case-studies): named firms, named numbers
+- [Answering the phone agent](https://northsaga.ai/agents/answering-the-phone): voice agent + missed-call text-back, £500 installed / £50 a month maintained
+- [Quote follow-up agent](https://northsaga.ai/agents/quote-follow-up): chasing quotes on day three, seven and fourteen, £500 installed / £50 a month maintained
+- [The best cron jobs to set up for AI agents](https://northsaga.ai/journal/best-cron-jobs-for-ai-agents): twelve schedules Northsaga puts on every install, what each is for, and what breaks without it
+
+Contact: hello@northsaga.ai
+
+Optional standard: [llms.txt](https://llmstxt.org/)

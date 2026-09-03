@@ -38,30 +38,26 @@
      a failed or disabled script leaves most of the page invisible. -->
 <noscript><style>.reveal { opacity: 1; transform: none; }</style></noscript>
 
-<!-- LocalBusiness. address, telephone and openingHours are deliberately absent
-     rather than invented — add them once confirmed. The postcodes in
-     areaServed are UNVERIFIED; check them against the real service area and
-     correct here, in the contact section and in the footer together. -->
+<!-- WebPage stub. Identity lives on the homepage (Organization at
+     https://northsaga.ai/#business). address, telephone and openingHours are
+     deliberately absent rather than invented — add them once confirmed. The
+     postcodes in areaServed are UNVERIFIED; check them against the real
+     service area and correct here, in the contact section and in the footer
+     together. -->
+
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "@id": "https://northsaga.ai/#business",
-  "name": "Northsaga",
-  "url": "https://northsaga.ai/",
-  "email": "hello@northsaga.ai",
-  "description": "Installs and maintains AI agents for owner-managed small businesses and trades in Dulwich and West Norwood, south London.",
-  "slogan": "New tools. Old standards.",
-  "areaServed": [
-    { "@type": "Place", "name": "Dulwich, London" },
-    { "@type": "Place", "name": "West Norwood, London" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE21", "postalCodeEnd": "SE21" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE22", "postalCodeEnd": "SE22" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE24", "postalCodeEnd": "SE24" },
-    { "@type": "PostalCodeRangeSpecification", "postalCodeBegin": "SE27", "postalCodeEnd": "SE27" }
-  ]
+  "@type": "WebPage",
+  "@id": "https://northsaga.ai/agents/answering-the-phone#page",
+  "url": "https://northsaga.ai/agents/answering-the-phone",
+  "name": "Answering the phone — Northsaga",
+  "isPartOf": { "@id": "https://northsaga.ai/#website" },
+  "about": { "@id": "https://northsaga.ai/#business" },
+  "publisher": { "@id": "https://northsaga.ai/#business" }
 }
 </script>
+
 </head>
 <body>
 <!-- GENERATED FILE — do not hand-edit. Source: tools/build-agent-pages.py

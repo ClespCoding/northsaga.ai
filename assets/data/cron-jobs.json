@@ -1,7 +1,7 @@
 {
   "slug": "best-cron-jobs-for-ai-agents",
   "title": "The best cron jobs to set up for AI agents",
-  "standfirst": "An agent that only runs when something pokes it will fail quietly. These are the schedules we put on every install, what each one is for, and what breaks when it is missing.",
+  "standfirst": "An agent that only runs when something pokes it will fail quietly. The schedules we put on every install, what each is for, and what breaks when it is missing.",
   "updated": "2026-08-06",
   "intro": [
     "Most of an agent's work is triggered. A call comes in, a form is filled, an email arrives, and something happens. That part is easy to demonstrate and easy to sell.",
