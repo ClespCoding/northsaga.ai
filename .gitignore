@@ -3,3 +3,9 @@
 node_modules
 *.log
 __pycache__/
+
+# Collector runtime output — never commit logs or credentials
+collectors/logs/
+collectors/*.json
+!collectors/tests/**
+service-account.json
